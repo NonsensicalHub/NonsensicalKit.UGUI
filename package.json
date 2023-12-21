@@ -1,0 +1,49 @@
+{
+  "name": "com.tony_bean_is_alive.nonsensicalkit.ugui",
+  "displayName": "NonsensicalKit.UGUI",
+  "version": "0.0.1",
+  "unity": "2021.3",
+  "samples": [
+    {
+      "displayName": "MultilevelMenu",
+      "description": "\u591a\u7ea7\u83dc\u5355",
+      "path": "Samples~/MultilevelMenu"
+    },
+    {
+      "displayName": "RightClickMenu",
+      "description": "\u53f3\u952e\u83dc\u5355",
+      "path": "Samples~/RightClickMenu"
+    },
+    {
+      "displayName": "ScrollView",
+      "description": "\u65e0\u9650\u6eda\u52a8\u89c6\u56fe",
+      "path": "Samples~/ScrollView"
+    },
+    {
+      "displayName": "SquarePuppy",
+      "description": "\u8ddf\u968fUI",
+      "path": "Samples~/SquarePuppy"
+    },
+    {
+      "displayName": "StepGroup",
+      "description": "\u6b65\u8fdb\u5f0f\u5217\u8868",
+      "path": "Samples~/StepGroup"
+    },
+    {
+      "displayName": "TreeNodeTable",
+      "description": "\u6811\u7ed3\u6784\u5217\u8868",
+      "path": "Samples~/TreeNodeTable"
+    },
+    {
+      "displayName": "VideoManager",
+      "description": "\u89c6\u9891\u7ba1\u7406\u5668",
+      "path": "Samples~/VideoManager"
+    },
+    {
+      "displayName": "VisualLogicFlowGraph",
+      "description": "\u53ef\u89c6\u5316\u903b\u8f91\u6d41\u56fe\u5f62",
+      "path": "Samples~/VisualLogicFlowGraph"
+    }
+  ],
+  "description": "NonsensicalKit\u5173\u4e8eUGUI\u7684\u76f8\u5173\u5957\u4ef6\uff0c\u5305\u542b\u5404\u79cd\u5e38\u7528UI\u6240\u9700\u7684\u7ec4\u4ef6\uff0c\u505a\u5230\u4e0d\u7f16\u5199\u4ee3\u7801\u5b9e\u73b0\u5404\u79cd\u975e\u4e1a\u52a1\u529f\u80fd"
+}
