@@ -3,7 +3,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-namespace TonyBeanDong.NonsensicalkitUguikit.Tests 
+namespace NonsensicalKit.UGUI.Tests
 {
 	
 	class RuntimeExampleTest 

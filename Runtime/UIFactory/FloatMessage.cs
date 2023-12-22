@@ -1,10 +1,10 @@
-using NonsensicalKit.Editor.Log;
+using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
 using NonsensicalKit.Tools;
 using TMPro;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     public class FloatMessageInfo
     {

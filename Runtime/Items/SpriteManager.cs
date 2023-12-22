@@ -1,10 +1,10 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     public delegate IEnumerator GetSpriteHandle(ref Sprite sp);
 

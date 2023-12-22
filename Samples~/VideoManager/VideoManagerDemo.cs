@@ -1,4 +1,4 @@
-using NonsensicalKit.Editor.VideoManager;
+using NonsensicalKit.UGUI.VideoManager;
 using UnityEngine;
 
 public class VideoManagerDemo : MonoBehaviour

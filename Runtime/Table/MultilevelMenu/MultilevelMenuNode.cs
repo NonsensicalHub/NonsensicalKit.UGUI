@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     public class MultilevelMenuNode
     {

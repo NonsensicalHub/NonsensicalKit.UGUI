@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     /// 使UI跟随目标对象移动

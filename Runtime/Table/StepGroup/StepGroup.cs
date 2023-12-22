@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     /// <summary>
     /// 让滚动栏自动固定在规律的位置

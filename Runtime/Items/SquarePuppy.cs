@@ -1,7 +1,7 @@
 using NonsensicalKit.Tools;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     [RequireComponent(typeof(Rigidbody2D), typeof(RectTransform))]
     public class SquarePuppy : MonoBehaviour

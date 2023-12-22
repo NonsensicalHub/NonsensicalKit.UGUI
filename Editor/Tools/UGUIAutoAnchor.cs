@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.UGUI.Tools
+namespace NonsensicalKit.UGUI.Editor.Tools
 {
     /// <summary>
     /// 将对象的锚点设定为刚好符合大小和位置

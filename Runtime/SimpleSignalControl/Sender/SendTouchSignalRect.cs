@@ -1,8 +1,8 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.SimpleSignalControl
+namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     public class SendTouchSignalRect : NonsensicalMono, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
     {

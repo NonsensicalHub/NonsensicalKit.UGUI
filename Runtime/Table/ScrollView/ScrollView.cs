@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     /// <summary>
     /// ！注意！：如果只在开头一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好

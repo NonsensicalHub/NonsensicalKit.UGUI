@@ -1,11 +1,11 @@
 using NonsensicalKit.Tools.ObjectPool;
-using NonsensicalKit.Editor;
+using NonsensicalKit.UGUI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     public interface TreeNodeTableManager<out NodeElement, ElementData>
         where NodeElement : TreeNodeTableElementBase<ElementData>

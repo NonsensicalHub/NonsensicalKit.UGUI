@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     /// 与目标rect保持相同大小

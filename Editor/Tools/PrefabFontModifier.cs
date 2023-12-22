@@ -3,7 +3,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.UGUI.Tools
+namespace NonsensicalKit.UGUI.Editor.Tools
 {
     /// <summary>
     /// 批量修改预制体的字体

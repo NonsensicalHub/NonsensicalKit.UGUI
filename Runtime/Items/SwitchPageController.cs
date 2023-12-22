@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     public class SwitchPageController : NonsensicalUI
     {

@@ -2,7 +2,7 @@ using NonsensicalKit.Tools.InputTool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.VisualLogicGraph
+namespace NonsensicalKit.UGUI.VisualLogicGraph
 {
     /// <summary>
     /// 连接线

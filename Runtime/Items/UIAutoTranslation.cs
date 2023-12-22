@@ -1,7 +1,7 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     /// RectTransform下应当有一个且仅有一个Image，且锚点完全扩张

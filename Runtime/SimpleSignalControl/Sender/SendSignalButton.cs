@@ -1,8 +1,8 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.SimpleSignalControl
+namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     /// <summary>
     /// 发送信号按钮

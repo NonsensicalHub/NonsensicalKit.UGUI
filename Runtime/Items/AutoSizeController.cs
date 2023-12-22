@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     /// 自适应大小工具类，当大小大于一定数值时才开启大小自适应

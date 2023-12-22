@@ -1,5 +1,5 @@
-using NonsensicalKit.Editor;
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core;
+using NonsensicalKit.Core.Table;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;

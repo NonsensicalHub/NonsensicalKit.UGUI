@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     [RequireComponent(typeof(TooltipRect))]
     public class ToggleTooltip : MonoBehaviour

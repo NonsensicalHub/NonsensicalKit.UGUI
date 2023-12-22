@@ -1,10 +1,10 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     public abstract class TreeNodeTableElementDraggableBase<ElementData> : TreeNodeTableElementBase<ElementData>,
         IDropHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler

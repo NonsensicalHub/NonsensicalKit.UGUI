@@ -1,4 +1,4 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using NonsensicalKit.Tools.ObjectPool;
 using NonsensicalKit.Tools;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.VisualLogicGraph
+namespace NonsensicalKit.UGUI.VisualLogicGraph
 {
     /// <summary>
     /// 逻辑点位积累

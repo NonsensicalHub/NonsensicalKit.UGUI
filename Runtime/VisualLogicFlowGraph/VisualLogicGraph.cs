@@ -1,13 +1,13 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using NonsensicalKit.Tools.ObjectPool;
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.VisualLogicGraph
+namespace NonsensicalKit.UGUI.VisualLogicGraph
 {
     /// <summary>
     /// 可视化逻辑图形

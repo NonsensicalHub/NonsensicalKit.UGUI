@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.Effect
+namespace NonsensicalKit.UGUI.Effect
 {
     /// <summary>
     /// 缩放效果

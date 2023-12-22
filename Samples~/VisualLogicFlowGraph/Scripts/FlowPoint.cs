@@ -1,5 +1,4 @@
-using NonsensicalKit;
-using NonsensicalKit.Editor.VisualLogicGraph;
+using NonsensicalKit.UGUI.VisualLogicGraph;
 
 public class FlowPoint : VisualLogicPointBase
 {

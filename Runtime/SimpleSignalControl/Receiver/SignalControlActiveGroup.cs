@@ -1,7 +1,7 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.SimpleSignalControl
+namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     public class SignalControlActiveGroup : NonsensicalMono
     {

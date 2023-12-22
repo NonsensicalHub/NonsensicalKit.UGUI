@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using NonsensicalKit.Tools.ObjectPool;
-using NonsensicalKit.Editor.Log;
+using NonsensicalKit.Core.Log;
 
 #if TEXTMESHPRO_PRESENT
 using TMPro;
 #endif
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     public delegate bool InputComfirmHandle(string input);
 

@@ -1,4 +1,4 @@
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools;
 using UnityEngine;
 using UnityEngine.UI;

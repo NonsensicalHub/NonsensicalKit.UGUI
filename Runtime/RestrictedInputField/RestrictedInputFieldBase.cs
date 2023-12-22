@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-namespace NonsensicalKit.Editor.RestrictedInputField
+namespace NonsensicalKit.UGUI.RestrictedInputField
 {
     public abstract class RestrictedInputFieldBase : InputFieldBase
     {

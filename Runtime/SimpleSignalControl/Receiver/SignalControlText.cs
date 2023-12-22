@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.SimpleSignalControl
+namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     public class SignalControlText : TextBase
     {

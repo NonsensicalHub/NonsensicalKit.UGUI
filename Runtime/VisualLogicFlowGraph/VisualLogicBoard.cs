@@ -1,10 +1,10 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using NonsensicalKit.Tools.InputTool;
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core.Table;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.VisualLogicGraph
+namespace NonsensicalKit.UGUI.VisualLogicGraph
 {
     /// <summary>
     /// 黑板管理类

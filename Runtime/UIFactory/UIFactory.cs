@@ -1,13 +1,13 @@
-using NonsensicalKit.Editor;
-using NonsensicalKit.Editor.Log;
-using NonsensicalKit.Editor.Service;
+using NonsensicalKit.Core;
+using NonsensicalKit.Core.Log;
+using NonsensicalKit.Core.Service;
 using NonsensicalKit.Tools.ObjectPool;
 using NonsensicalKit.Tools;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     [ServicePrefab("Services/UIFactory")]
     public class UIFactory : NonsensicalMono, IMonoService

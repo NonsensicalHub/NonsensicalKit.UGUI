@@ -1,4 +1,4 @@
-namespace NonsensicalKit.Editor.VisualLogicGraph
+namespace NonsensicalKit.UGUI.VisualLogicGraph
 {
     public enum VisualLogicEnum
     {

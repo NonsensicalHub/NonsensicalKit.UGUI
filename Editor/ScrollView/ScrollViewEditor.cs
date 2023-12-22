@@ -1,9 +1,9 @@
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core.Table;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.UGUI.Table
+namespace NonsensicalKit.UGUI.Editor.Table
 {
     [CustomEditor(typeof(ScrollView))]
     public class ScrollViewEditor : ScrollRectEditor

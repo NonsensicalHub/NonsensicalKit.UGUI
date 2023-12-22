@@ -1,4 +1,4 @@
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public abstract class ListTableElement<ElementDataClass> : NonsensicalUI where ElementDataClass : class
     {

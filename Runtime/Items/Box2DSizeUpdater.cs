@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class Box2DSizeUpdater : MonoBehaviour

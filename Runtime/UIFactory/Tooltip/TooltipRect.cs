@@ -1,9 +1,9 @@
-using NonsensicalKit.Editor.Log;
-using NonsensicalKit.Editor.Service;
+using NonsensicalKit.Core.Log;
+using NonsensicalKit.Core.Service;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     public class TooltipRect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

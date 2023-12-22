@@ -1,4 +1,4 @@
-using NonsensicalKit.Editor.Log;
+using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine.UI;
 #endif
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     public class TooltipInfo
     {

@@ -1,6 +1,4 @@
-using NonsensicalKit;
-using NonsensicalKit.Editor.VisualLogicGraph;
-using NonsensicalKit.Tools;
+using NonsensicalKit.UGUI.VisualLogicGraph;
 using UnityEngine;
 
 public class VisualLogicGraphDemo : MonoBehaviour

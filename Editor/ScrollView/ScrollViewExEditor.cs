@@ -1,7 +1,7 @@
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core.Table;
 using UnityEditor;
 
-namespace NonsensicalKit.Editor.UGUI.Table
+namespace NonsensicalKit.UGUI.Editor.Table
 {
     [CustomEditor(typeof(ScrollViewEx))]
     public class ScrollViewExEditor : ScrollViewEditor

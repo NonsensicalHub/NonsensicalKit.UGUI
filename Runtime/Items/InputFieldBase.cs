@@ -1,5 +1,5 @@
 using UnityEngine;
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 
 #if TEXTMESHPRO_PRESENT
 using TMPro;
@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 #endif
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
 #if TEXTMESHPRO_PRESENT
     [RequireComponent(typeof(TMP_InputField))]

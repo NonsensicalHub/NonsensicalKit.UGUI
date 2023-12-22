@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.RestrictedInputField
+namespace NonsensicalKit.UGUI.RestrictedInputField
 {
     public class RestrictedInputFieldFixedValue : RestrictedInputFieldBase
     {

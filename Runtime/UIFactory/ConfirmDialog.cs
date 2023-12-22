@@ -1,4 +1,4 @@
-using NonsensicalKit.Editor.Log;
+using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
 using System;
 using UnityEngine;
@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 #endif
 
-namespace NonsensicalKit.Editor.UIFactory
+namespace NonsensicalKit.UGUI.UIFactory
 {
     public class ConfirmInfo
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.RestrictedInputField
+namespace NonsensicalKit.UGUI.RestrictedInputField
 {
     public class RestrictedInputFieldFloatRange : RestrictedInputFieldBase
     {

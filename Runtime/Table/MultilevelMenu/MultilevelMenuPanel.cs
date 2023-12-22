@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     public class MultilevelMenuPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

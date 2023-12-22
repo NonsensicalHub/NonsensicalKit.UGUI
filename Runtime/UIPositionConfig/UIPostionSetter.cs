@@ -1,9 +1,9 @@
-using NonsensicalKit.Editor;
-using NonsensicalKit.Editor.Service;
-using NonsensicalKit.Editor.Service.Config;
+using NonsensicalKit.Core;
+using NonsensicalKit.Core.Service;
+using NonsensicalKit.Core.Service.Config;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.UIPosition
+namespace NonsensicalKit.UGUI.UIPosition
 {
     /// <summary>
     /// 通过配置文件动态修改ui位置

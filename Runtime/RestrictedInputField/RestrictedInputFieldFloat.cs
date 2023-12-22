@@ -1,4 +1,4 @@
-namespace NonsensicalKit.Editor.RestrictedInputField
+namespace NonsensicalKit.UGUI.RestrictedInputField
 {
     public class RestrictedInputFieldFloat : RestrictedInputFieldBase
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     /// 通过修改中心点实现平移运动，用于UI在屏幕边缘隐藏的情况

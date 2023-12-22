@@ -1,7 +1,7 @@
-using NonsensicalKit.Editor.Service.Config;
+using NonsensicalKit.Core.Service.Config;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.UIPosition
+namespace NonsensicalKit.UGUI.UIPosition
 {
     [CreateAssetMenu(fileName = "UIPostionConfig", menuName = "ScriptableObjects/UIPostionConfig")]
     public class UIPostionConfig : ConfigObject

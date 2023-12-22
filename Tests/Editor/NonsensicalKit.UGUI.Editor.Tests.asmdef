@@ -1,5 +1,5 @@
 {
-    "name": "NonsensicalKit.UGUI.Editor.Tests",
+    "name": "NonsensicalKit.UGUI.Tests.Editor",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",

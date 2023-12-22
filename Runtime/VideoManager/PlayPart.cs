@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.VideoManager
+namespace NonsensicalKit.UGUI.VideoManager
 {
     public class PlayPart : MonoBehaviour,IPointerEnterHandler,IPointerMoveHandler,IPointerExitHandler
     {

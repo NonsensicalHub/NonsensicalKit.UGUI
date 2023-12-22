@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public abstract class ListTableManager<ListElement, ElementData> : NonsensicalUI
             where ListElement : ListTableElement<ElementData>

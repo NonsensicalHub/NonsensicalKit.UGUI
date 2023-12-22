@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     public class FullScreenWorldCanvas : MonoBehaviour
     {

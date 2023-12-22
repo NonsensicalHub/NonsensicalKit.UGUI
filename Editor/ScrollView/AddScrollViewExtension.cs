@@ -1,9 +1,9 @@
-using NonsensicalKit.Editor.Table;
+using NonsensicalKit.Core.Table;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.UGUI.Table
+namespace NonsensicalKit.UGUI.Editor.Table
 {
     public class AddScrollViewExtension
     {

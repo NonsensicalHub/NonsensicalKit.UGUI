@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     public class DragSpace : MonoBehaviour, IBeginDragHandler, IDragHandler
     {

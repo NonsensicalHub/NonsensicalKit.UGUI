@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.UI;
 #endif
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     /// 长按一段时间才会触发的按钮    

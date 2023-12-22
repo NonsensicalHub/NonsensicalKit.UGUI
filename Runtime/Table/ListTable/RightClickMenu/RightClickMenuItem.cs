@@ -1,6 +1,6 @@
 using System;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public class RightClickMenuItem
     {

@@ -1,7 +1,7 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Editor
+namespace NonsensicalKit.UGUI
 {
     /// <summary>
     ///  EventSystem信息集中处理类

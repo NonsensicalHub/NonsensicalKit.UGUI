@@ -1,8 +1,7 @@
-using NonsensicalKit.Editor;
+using NonsensicalKit.Core;
 using NonsensicalKit.Tools.InputTool;
-using NonsensicalKit.Editor;
-using NonsensicalKit.Editor.Table;
-using System;
+using NonsensicalKit.UGUI;
+using NonsensicalKit.UGUI.Table;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

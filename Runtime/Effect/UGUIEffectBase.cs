@@ -1,7 +1,7 @@
-using NonsensicalKit.Editor.Log;
+using NonsensicalKit.Core.Log;
 using UnityEngine;
 
-namespace NonsensicalKit.Editor.Effect
+namespace NonsensicalKit.UGUI.Effect
 {
     public abstract class UGUIEffectBase : MonoBehaviour
     {

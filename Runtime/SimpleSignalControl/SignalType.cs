@@ -1,4 +1,4 @@
-namespace NonsensicalKit.Editor.SimpleSignalControl
+namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     public enum SignalType
     {

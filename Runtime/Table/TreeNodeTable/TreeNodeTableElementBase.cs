@@ -1,7 +1,8 @@
+using NonsensicalKit.UGUI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Editor.Table
+namespace NonsensicalKit.Core.Table
 {
     public abstract class TreeNodeTableElementBase<ElementDataClass> : NonsensicalUI where ElementDataClass : class, ITreeNodeClass<ElementDataClass>
     {
