@@ -1,9 +1,8 @@
-using NonsensicalKit;
 using NonsensicalKit.Core.Table;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class TreeNodeClassSample : ITreeNodeClass<TreeNodeClassSample>
     {

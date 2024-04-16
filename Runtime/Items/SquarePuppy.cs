@@ -49,6 +49,7 @@ namespace NonsensicalKit.UGUI
                 v.Push(collision.transform.position - transform.position);
             }
         }
+
         private void UpdateLine()
         {
             var center = (Vector2)_selfRect.position + _selfRect.rect.center * _selfRect.lossyScale;

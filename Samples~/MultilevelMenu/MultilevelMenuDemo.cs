@@ -1,17 +1,19 @@
-using NonsensicalKit.Tools.InputTool;
 using NonsensicalKit.Core.Table;
+using NonsensicalKit.Tools.InputTool;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MultilevelMenuDemo : MonoBehaviour
+namespace NonsensicalKit.UGUI.Samples.Table
 {
-    [SerializeField] private MultilevelMenu m_menu;
-
-    private bool _flag = true;
-
-    private void Awake()
+    public class MultilevelMenuDemo : MonoBehaviour
     {
-        m_menu.Init(new List<MultilevelMenuInfo>() {
+        [SerializeField] private MultilevelMenu m_menu;
+
+        private bool _flag = true;
+
+        private void Awake()
+        {
+            m_menu.Init(new List<MultilevelMenuInfo>() {
             new MultilevelMenuInfo ("1",OnSelect ),
             new MultilevelMenuInfo ("2",OnSelect ),
             new MultilevelMenuInfo ("3", OnSelect),
@@ -20,39 +22,40 @@ public class MultilevelMenuDemo : MonoBehaviour
             new MultilevelMenuInfo ("Step1",OnSelect,Check),
             new MultilevelMenuInfo ("Step2",OnSelect,Check),
         });
-    }
-
-    private void OnSelect(MultilevelContext context)
-    {
-        Debug.Log(context.Path);
-        if (context.Path == "STEP1")
-        {
-            _flag = false;
         }
-    }
 
-    private bool Check(MultilevelContext context)
-    {
-        switch (context.Path)
+        private void OnSelect(MultilevelContext context)
         {
-            case "Step2": return !_flag;
-            default: return true;
+            Debug.Log(context.Path);
+            if (context.Path == "STEP1")
+            {
+                _flag = false;
+            }
         }
-    }
 
-    private void Start()
-    {
-        InputHub.Instance.OnMouseRightButtonUp += Demo;
-    }
+        private bool Check(MultilevelContext context)
+        {
+            switch (context.Path)
+            {
+                case "Step2": return !_flag;
+                default: return true;
+            }
+        }
 
-    private void OnDestroy()
-    {
-        InputHub.Instance.OnMouseRightButtonUp -= Demo;
-    }
+        private void Start()
+        {
+            InputHub.Instance.OnMouseRightButtonUp += Demo;
+        }
 
-    private void Demo()
-    {
-        m_menu.Open();
-        m_menu.transform.position = InputHub.Instance.CrtMousePos;
+        private void OnDestroy()
+        {
+            InputHub.Instance.OnMouseRightButtonUp -= Demo;
+        }
+
+        private void Demo()
+        {
+            m_menu.Open();
+            m_menu.transform.position = InputHub.Instance.CrtMousePos;
+        }
     }
 }

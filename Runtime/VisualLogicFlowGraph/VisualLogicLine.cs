@@ -10,7 +10,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     [RequireComponent(typeof(RectTransform))]
     public class VisualLogicLine : MonoBehaviour, IPointerClickHandler
     {
-        public VisualLogicPointBase Outputpoint=> _output;
+        public VisualLogicPointBase Outputpoint => _output;
         public VisualLogicPointBase Inputpoint => _input;
         /// <summary>
         /// 输出点位

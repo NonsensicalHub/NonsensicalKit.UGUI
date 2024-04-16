@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.VideoManager
 {
-    public class PlayPart : MonoBehaviour,IPointerEnterHandler,IPointerMoveHandler,IPointerExitHandler
+    public class PlayPart : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler
     {
         [SerializeField] private Button m_btn_play;
         [SerializeField] private Button m_btn_pause;
@@ -15,6 +13,15 @@ namespace NonsensicalKit.UGUI.VideoManager
         private bool _isPlaying;
 
         private float _timer;
+
+        private VideoManager _manager;
+
+        private void Awake()
+        {
+            m_btn_play.gameObject.SetActive(false);
+            m_btn_pause.gameObject.SetActive(false);
+
+        }
 
         private void Update()
         {
@@ -25,9 +32,27 @@ namespace NonsensicalKit.UGUI.VideoManager
             }
         }
 
-        public void OnPlayStateChanged( bool isPlaying)
+        public void Init(VideoManager manager)
         {
-            _isPlaying= isPlaying;
+            _manager = manager;
+            manager.OnPlayStateChanged .AddListener( OnPlayStateChanged);
+            m_btn_play.onClick.AddListener(Play);
+            m_btn_pause.onClick.AddListener(Pause);
+        }
+
+        private void Play()
+        {
+            _manager.PlayButton();
+        }
+
+        private void Pause()
+        {
+            _manager.PauseButton();
+        }
+
+        public void OnPlayStateChanged(bool isPlaying)
+        {
+            _isPlaying = isPlaying;
 
             UpdateState();
         }
@@ -55,7 +80,7 @@ namespace NonsensicalKit.UGUI.VideoManager
             if (_isPlaying)
             {
                 m_btn_play.gameObject.SetActive(false);
-                m_btn_pause.gameObject.SetActive(_isHover&&( _timer > 0));
+                m_btn_pause.gameObject.SetActive(_isHover && (_timer > 0));
             }
             else
             {

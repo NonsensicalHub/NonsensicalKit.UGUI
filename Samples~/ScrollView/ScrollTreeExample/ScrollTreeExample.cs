@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class ScrollTreeExample : MonoBehaviour
     {
@@ -21,7 +21,7 @@ namespace NonsensicalKit.Samples
         {
             m_content = m_scrollView.content;
             _minWidth = m_content.rect.width;
-            IOCC.Set<List<ScrollTreeNode>>("crt",new List<ScrollTreeNode>());
+            IOCC.Set<List<ScrollTreeNode>>("crt", new List<ScrollTreeNode>());
         }
 
         private void Start()
@@ -35,7 +35,7 @@ namespace NonsensicalKit.Samples
             {
                 var v = _roots[78].Childs;
                 var vv = v[v.Count - 2].Childs;
-                var vvv = vv[vv.Count -1].Childs;
+                var vvv = vv[vv.Count - 1].Childs;
                 var vvvv = vvv[0];
                 Focus(vvvv);
             }
@@ -58,7 +58,7 @@ namespace NonsensicalKit.Samples
             });
             m_scrollView.SetUpdateFunc((index, rectTransform) =>
             {
-                rectTransform.GetComponent<ScrollTreeNode>().Init(_showing[index],this) ;
+                rectTransform.GetComponent<ScrollTreeNode>().Init(_showing[index], this);
                 UpdateWidth();
             });
 
@@ -72,31 +72,31 @@ namespace NonsensicalKit.Samples
 
         private void UpdateWidth()
         {
-            var v = IOCC.Get<List<ScrollTreeNode>>("crt") ;
+            var v = IOCC.Get<List<ScrollTreeNode>>("crt");
 
             float max = _minWidth;
             foreach (var item in v)
             {
                 var vv = item.GetWidth();
-                if (max<vv)
+                if (max < vv)
                 {
                     max = vv;
                 }
             }
-            m_content.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left,0,max);
+            m_content.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, max);
         }
 
         private void InitData()
         {
             _roots = new List<ScrollTreeNodeInfo>();
-            for (int i =0; i <= 100; ++i)
+            for (int i = 0; i <= 100; ++i)
             {
-                var root= new ScrollTreeNodeInfo("I_"+i+"_"+Guid.NewGuid().ToString().Substring(0,8),0);
+                var root = new ScrollTreeNodeInfo("I_" + i + "_" + Guid.NewGuid().ToString().Substring(0, 8), 0);
                 _roots.Add(root);
                 int jLength = UnityEngine.Random.Range(2, 7);
                 for (int j = 0; j < jLength; j++)
                 {
-                    var jj=new ScrollTreeNodeInfo("II_" + j + "_" + Guid.NewGuid().ToString().Substring(0, 8), 1);
+                    var jj = new ScrollTreeNodeInfo("II_" + j + "_" + Guid.NewGuid().ToString().Substring(0, 8), 1);
                     root.Childs.Add(jj);
                     jj.Parent = root;
                     int kLength = UnityEngine.Random.Range(1, 6);
@@ -134,7 +134,7 @@ namespace NonsensicalKit.Samples
                 return;
             }
             info.IsExpanded = false;
-            FoldInternal(info.Childs, _showing.IndexOf(info)+1);
+            FoldInternal(info.Childs, _showing.IndexOf(info) + 1);
 
             m_scrollView.UpdateData(false);
         }
@@ -153,29 +153,29 @@ namespace NonsensicalKit.Samples
 
         public void Unfold(ScrollTreeNodeInfo info)
         {
-            if (_showing.Contains(info)==false)
+            if (_showing.Contains(info) == false)
             {
                 Debug.LogError("Error");
                 return;
             }
-            if (info.IsExpanded==true)
+            if (info.IsExpanded == true)
             {
                 return;
             }
             info.IsExpanded = true;
-            UnfoldInternal(info.Childs, _showing.IndexOf(info)+1);
+            UnfoldInternal(info.Childs, _showing.IndexOf(info) + 1);
             m_scrollView.UpdateData(false);
         }
 
-        private int UnfoldInternal(List<ScrollTreeNodeInfo> infos,int index)
+        private int UnfoldInternal(List<ScrollTreeNodeInfo> infos, int index)
         {
             foreach (var item in infos)
             {
-                _showing.Insert(index,item);
+                _showing.Insert(index, item);
                 index++;
                 if (item.IsExpanded)
                 {
-                    index= UnfoldInternal(item.Childs,index);
+                    index = UnfoldInternal(item.Childs, index);
                 }
             }
             return index;
@@ -184,24 +184,24 @@ namespace NonsensicalKit.Samples
         private void Focus(ScrollTreeNodeInfo info)
         {
             var parent = info;
-            Stack<ScrollTreeNodeInfo> stack=new Stack<ScrollTreeNodeInfo>();
+            Stack<ScrollTreeNodeInfo> stack = new Stack<ScrollTreeNodeInfo>();
 
-            while (parent.Parent!=null)
+            while (parent.Parent != null)
             {
                 stack.Push(parent.Parent);
                 parent = parent.Parent;
             }
 
-            while (stack.Count>0)
+            while (stack.Count > 0)
             {
                 var v = stack.Pop();
-                if (v.IsExpanded==false)
+                if (v.IsExpanded == false)
                 {
                     Unfold(v);
                 }
             }
 
-            StartCoroutine(Delay (info));
+            StartCoroutine(Delay(info));
         }
 
         private IEnumerator Delay(ScrollTreeNodeInfo info)
@@ -209,7 +209,7 @@ namespace NonsensicalKit.Samples
             var v = _showing.IndexOf(info);
             if (v > 0)
             {
-                v--; 
+                v--;
             }
 
             m_scrollView.ScrollTo(v);

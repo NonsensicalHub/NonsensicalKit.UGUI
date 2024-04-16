@@ -1,4 +1,3 @@
-using NonsensicalKit.Core;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -180,7 +179,6 @@ namespace NonsensicalKit.Core.Table
                 _hovers[i].SetActive(index == i);
             }
         }
-
 
         private bool IsVaild(TreeNodeTableElementDraggableBase<ElementData> target)
         {

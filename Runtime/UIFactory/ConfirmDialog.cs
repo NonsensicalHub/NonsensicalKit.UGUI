@@ -80,7 +80,7 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         private void LeftButtonClick()
         {
-            if (_crtConfirmInfo.LeftButtonClick==null)
+            if (_crtConfirmInfo.LeftButtonClick == null)
             {
                 Pool.Store(gameObject);
             }
@@ -100,7 +100,6 @@ namespace NonsensicalKit.UGUI.UIFactory
             {
                 Pool.Store(gameObject);
             }
-
         }
     }
 }

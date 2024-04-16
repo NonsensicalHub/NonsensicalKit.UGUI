@@ -1,3 +1,4 @@
+using NonsensicalKit.Core.Log;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace NonsensicalKit.UGUI.Table
         /// 是否以group内忽视对象外的预设子物体作为预制体,为否时应当手动设置_prefab参数
         /// </summary>
         [Tooltip("是否使用group内忽视对象外的首个子物体作为表格元素预制体")][SerializeField] protected bool m_childPrefab = true;
+        [Tooltip("首行不同")][SerializeField] protected bool m_differentFirst = false;
 
         /// <summary>
         /// 用于动态生成子物体的预制体，当_firstPrefab为true时会自动使用group的忽视对象外的子物体作为预制体
@@ -72,7 +74,7 @@ namespace NonsensicalKit.UGUI.Table
             }
             else
             {
-                Debug.LogWarning("未设置Group");
+                LogCore.Warning("未设置Group", gameObject);
                 enabled = false;
             }
         }
@@ -92,7 +94,7 @@ namespace NonsensicalKit.UGUI.Table
         }
         public void Clean()
         {
-            _elementDatas=new List<ElementData>();
+            _elementDatas = new List<ElementData>();
             foreach (var item in _elements)
             {
                 item.gameObject.SetActive(false);
@@ -133,7 +135,7 @@ namespace NonsensicalKit.UGUI.Table
             //应用数据链表
             for (int i = 0; i < datasCount; i++)
             {
-                ListElement crtElement= GetElement(i);
+                ListElement crtElement = GetElement(i);
                 crtElement.gameObject.SetActive(true);
                 crtElement.SetValue(_elementDatas[i]);
             }
@@ -151,7 +153,7 @@ namespace NonsensicalKit.UGUI.Table
         {
             _elementDatas.Add(appendElementData);
 
-            ListElement crtElement= GetElement(_elementDatas.Count-1);
+            ListElement crtElement = GetElement(_elementDatas.Count - 1);
             crtElement.gameObject.SetActive(true);
             crtElement.SetValue(appendElementData);
 
@@ -165,7 +167,7 @@ namespace NonsensicalKit.UGUI.Table
                 return;
             }
 
-            if (m_prefabs.Length<2)
+            if (m_prefabs.Length < 2)
             {
                 //移至最后
                 _elements.Remove(deleteElement);
@@ -184,7 +186,7 @@ namespace NonsensicalKit.UGUI.Table
 
                 //当预制体超过一个时，删除元素后其后每个元素使用的预制体都会改变
 
-                int index=_elements.IndexOf(deleteElement);
+                int index = _elements.IndexOf(deleteElement);
 
                 for (int i = index; i < _elementDatas.Count; i++)
                 {
@@ -216,7 +218,7 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private ListElement GetElement(int index)
+        protected ListElement GetElement(int index)
         {
             if (index < _elements.Count)
             {
@@ -232,24 +234,31 @@ namespace NonsensicalKit.UGUI.Table
         }
 
         /// <summary>
+        /// 更新尾部元素，将其移至最后
+        /// </summary>
+        protected void UpdateTail()
+        {
+            foreach (var item in _tail)
+            {
+                item.SetAsLastSibling();
+            }
+        }
+
+        /// <summary>
         /// 获取符合当前索引的预制体
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         private GameObject GetPrefab(int index)
         {
-            return m_prefabs[index % m_prefabs.Length];
-        }
-
-        /// <summary>
-        /// 更新尾部元素，将其移至最后
-        /// </summary>
-        private void UpdateTail()
-        {
-            foreach (var item in _tail)
+            if (m_differentFirst)
             {
-                item.SetAsLastSibling();
+                if (index == 0)
+                    return m_prefabs[0];
+                else
+                    return m_prefabs[1];
             }
+            return m_prefabs[index % m_prefabs.Length];
         }
     }
 }

@@ -49,7 +49,7 @@ namespace NonsensicalKit.UGUI.Table
                 CloseSelf();
             }
         }
-        
+
         private void OnOpen(IEnumerable<RightClickMenuItem> datas)
         {
             OpenSelf();

@@ -73,7 +73,7 @@ namespace NonsensicalKit.UGUI
                         transform.localScale = Vector3.one * m_scale;
                     }
 
-                    Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position)+new Vector3(Offset.x,Offset.y,0);
+                    Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position) + new Vector3(Offset.x, Offset.y, 0);
                     Back = pos.z < 0;
                     if (!Back)
                     {

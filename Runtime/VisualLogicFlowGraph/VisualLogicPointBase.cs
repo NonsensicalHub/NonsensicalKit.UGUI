@@ -1,6 +1,6 @@
 using NonsensicalKit.Core;
-using NonsensicalKit.Tools.ObjectPool;
 using NonsensicalKit.Tools;
+using NonsensicalKit.Tools.ObjectPool;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,11 +42,11 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 所属逻辑节点
         /// </summary>
-        public VisualLogicNodeBase BelongNode {  get; set; }
+        public VisualLogicNodeBase BelongNode { get; set; }
         /// <summary>
         /// 连接线对象池
         /// </summary>
-        public ComponentPool_MK2<VisualLogicLine> LinePool {protected get; set; }
+        public ComponentPool_MK2<VisualLogicLine> LinePool { protected get; set; }
         /// <summary>
         /// 此点位的所有连接线
         /// </summary>
@@ -144,7 +144,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 创建新点位信息类
         /// </summary>
         /// <param name="createFunc"></param>
-        public void NewInfo(Func<string,IVisualLogicPointInfo> createFunc)
+        public void NewInfo(Func<string, IVisualLogicPointInfo> createFunc)
         {
             Info = createFunc(m_type);
             if (string.IsNullOrEmpty(Info.ID))
@@ -223,15 +223,15 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 return;
             }
-            if (ConnectVerification(input)==false)
+            if (ConnectVerification(input) == false)
             {
                 return;
             }
 
-            VisualLogicLine line= null;
+            VisualLogicLine line = null;
             if (_flyLine != null)
             {
-                line= _flyLine;
+                line = _flyLine;
                 _flyLine = null;
             }
             else
@@ -247,7 +247,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 Info.Connect.Add(input.Info.ID);
             }
 
-            BelongNode.AfterPointChanged(this,true);
+            BelongNode.AfterPointChanged(this, true);
             input.BelongNode.AfterPointChanged(input, true);
         }
 
@@ -266,7 +266,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
 
             if (Info.Connect.Contains(input.Info.ID))
             {
-                _connectLines.Remove(line) ;
+                _connectLines.Remove(line);
                 input._connectLines.Remove(line);
                 Info.Connect.Remove(input.Info.ID);
                 LinePool.Store(line);

@@ -22,7 +22,7 @@ namespace NonsensicalKit.UGUI
             {
                 _oldSize = _rect.rect.size;
                 _boxCollider.size = _rect.rect.size * m_radio;
-                _boxCollider.offset = -_rect.rect.size * (_rect.pivot - Vector2.one * 0.5f) ;
+                _boxCollider.offset = -_rect.rect.size * (_rect.pivot - Vector2.one * 0.5f);
             }
         }
     }

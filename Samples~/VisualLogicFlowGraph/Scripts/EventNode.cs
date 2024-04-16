@@ -1,6 +1,9 @@
 using NonsensicalKit.UGUI.VisualLogicGraph;
 
-public class EventNode : VisualLogicNodeBase
+namespace NonsensicalKit.UGUI.Samples.VisualLogicGraph
 {
+    public class EventNode : VisualLogicNodeBase
+    {
 
+    }
 }

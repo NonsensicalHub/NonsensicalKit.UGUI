@@ -84,7 +84,7 @@ namespace NonsensicalKit.Core.Table
             index = Mathf.Clamp(index, 0, count - 1);
             _startOffset = Mathf.Clamp(index - m_pageSize / 2, 0, count - ItemCountFunc());
             UpdateData(true);
-            
+
             base.InternalScrollTo(index - _startOffset);
         }
 

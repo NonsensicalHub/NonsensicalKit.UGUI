@@ -141,7 +141,6 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             AfterUpdateState();
         }
 
-
         /// <summary>
         /// 被回收时清理点位的信息
         /// </summary>
@@ -160,7 +159,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 点位更新后（连接或断开时）
         /// </summary>
-        public virtual void AfterPointChanged(VisualLogicPointBase  pointBase,bool isConnect)
+        public virtual void AfterPointChanged(VisualLogicPointBase pointBase, bool isConnect)
         {
 
         }

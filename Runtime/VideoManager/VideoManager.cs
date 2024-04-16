@@ -14,7 +14,7 @@ namespace NonsensicalKit.UGUI.VideoManager
         [SerializeField] private Canvas m_fullscreenCanvas;
         [SerializeField] private VideoControlSpace m_controlSpace;
         [SerializeField] private VideoProgressSlider m_videoProgressSlider;
-        [SerializeField] private RectTransform m_playPart;
+        [SerializeField] private PlayPart m_playPart;
         [SerializeField] private RectTransform m_controlPart;
         [SerializeField] private RawImage m_rimg_video;
 
@@ -166,6 +166,8 @@ namespace NonsensicalKit.UGUI.VideoManager
                 m_btn_fullScreen.gameObject.SetActive(!_fullScreen);
                 m_btn_reset.gameObject.SetActive(_fullScreen);
                 UpdateFixed();
+
+                m_playPart.Init(this);
             }
         }
 
@@ -386,17 +388,18 @@ namespace NonsensicalKit.UGUI.VideoManager
         {
             m_btn_fixedControl.gameObject.SetActive(!_isControlFixed);
             m_btn_unfixedControl.gameObject.SetActive(_isControlFixed);
+            var playPartRect = m_playPart.GetComponent<RectTransform>();
             if (_isControlFixed)
             {
-                m_playPart.anchorMin = new Vector2(0, m_controlPart.anchorMax.y);
-                m_playPart.offsetMin = Vector2.zero;
-                m_playPart.offsetMax = Vector2.zero;
+                playPartRect.anchorMin = new Vector2(0, m_controlPart.anchorMax.y);
+                playPartRect.offsetMin = Vector2.zero;
+                playPartRect.offsetMax = Vector2.zero;
 
                 m_controlSpace.Fixed();
             }
             else
             {
-                m_playPart.Stretch();
+                playPartRect.Stretch();
                 m_controlSpace.Unfixed();
             }
             UpdateRenderTextureSize();

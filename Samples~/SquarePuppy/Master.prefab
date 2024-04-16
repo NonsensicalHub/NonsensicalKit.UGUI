@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 6510718728548952232}
   - component: {fileID: 6510718728548952230}
   - component: {fileID: 6510718728548952233}
-  - component: {fileID: 6510718728548952228}
+  - component: {fileID: 7186141420035886429}
   m_Layer: 5
   m_Name: Master
   m_TagString: Untagged
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6510718728548952228
+--- !u!114 &7186141420035886429
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6510718728548952235}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7eee510e775d26043abb6fea3a9ce472, type: 3}
+  m_Script: {fileID: 11500000, guid: af1a3fadec698824ba405dafdc04c782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
@@ -184,11 +184,11 @@ GameObject:
   - component: {fileID: 6510718729453437051}
   - component: {fileID: 6510718729453437049}
   - component: {fileID: 6510718729453437048}
-  - component: {fileID: 6510718729453437046}
   - component: {fileID: 6510718729453437047}
   - component: {fileID: 6510718729453437044}
-  - component: {fileID: 6510718729453437045}
-  - component: {fileID: 7874763212420069204}
+  - component: {fileID: 8328361263062896584}
+  - component: {fileID: 1823354042145501246}
+  - component: {fileID: 5245659174338166494}
   m_Layer: 5
   m_Name: Puppy
   m_TagString: Untagged
@@ -255,25 +255,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6510718729453437046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6510718729453437050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d23496af2270112418f1355f4e89b242, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_master: {fileID: 6510718728548952232}
-  m_line: {fileID: 6510718729595833135}
-  m_strength: 5
-  m_minDiastance: 50
-  m_maxDiastance: 100
-  m_speed: 1000
-  m_cd: 0.5
 --- !u!50 &6510718729453437047
 Rigidbody2D:
   serializedVersion: 4
@@ -321,7 +302,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6510718729453437045
+--- !u!114 &8328361263062896584
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -330,11 +311,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 6510718729453437050}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17fdb02f99730ed4db3865deb05b18f8, type: 3}
+  m_Script: {fileID: 11500000, guid: abaec6a251016794dbbe64f2bb9de4d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_radio: 1.05
---- !u!114 &7874763212420069204
+  m_master: {fileID: 6510718728548952232}
+  m_line: {fileID: 6510718729595833135}
+  m_strength: 5
+  m_minDiastance: 50
+  m_maxDiastance: 100
+  m_speed: 1000
+  m_cd: 0.5
+--- !u!114 &1823354042145501246
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -343,12 +330,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 6510718729453437050}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2590f2e4d33d9e442bd7a451c806eb21, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ca9362d617b29243b7999d19ffb5cf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_controlTarget: {fileID: 6510718729453437051}
+  m_radio: 1
+--- !u!114 &5245659174338166494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6510718729453437050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d3691f50e5ad374e94662ddff645f01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_controlRect: {fileID: 6510718729453437051}
   m_ensureInBoundary: 0
-  m_boundary: {fileID: 0}
+  m_checkRect: {fileID: 0}
+  m_boundaryRect: {fileID: 0}
 --- !u!1 &6510718729595833134
 GameObject:
   m_ObjectHideFlags: 0

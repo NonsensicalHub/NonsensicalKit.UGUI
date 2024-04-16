@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class ScrollViewExTest : MonoBehaviour
     {

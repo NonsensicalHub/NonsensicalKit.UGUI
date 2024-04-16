@@ -3,7 +3,7 @@ using NonsensicalKit.Tools;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class TreeNodeTableElementSample : TreeNodeTableElementDraggableBase<TreeNodeClassSample>
     {
@@ -36,7 +36,7 @@ namespace NonsensicalKit.Samples
 
         private void OnNameClick()
         {
-            Debug.Log(ElementData.NodeName+" Click");
+            Debug.Log(ElementData.NodeName + " Click");
         }
 
         private void OnVisibleButtonClick()

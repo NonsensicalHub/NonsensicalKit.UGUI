@@ -43,7 +43,7 @@ namespace NonsensicalKit.Core.Table
 
         protected virtual void OnFoldButtonClick()
         {
-            IManager. DoFold(this, true);
+            IManager.DoFold(this, true);
         }
 
         protected virtual void OnUnfoldButtonClick()

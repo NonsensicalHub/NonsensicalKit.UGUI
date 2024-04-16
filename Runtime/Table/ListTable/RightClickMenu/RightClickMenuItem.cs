@@ -15,5 +15,4 @@ namespace NonsensicalKit.UGUI.Table
             this.ClickAction = clickAction;
         }
     }
-
 }

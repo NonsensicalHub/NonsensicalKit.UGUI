@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class ScrollTreeNode : NonsensicalMono
     {

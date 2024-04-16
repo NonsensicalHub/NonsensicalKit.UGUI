@@ -27,7 +27,6 @@ namespace NonsensicalKit.UGUI.UIPosition
         public UIPostionParameter[] ButtonsParameter;
     }
 
-
     public enum HorizonType
     {
         None,
@@ -40,7 +39,6 @@ namespace NonsensicalKit.UGUI.UIPosition
         Top,
         Bottom
     }
-
 
     [System.Serializable]
     public class UIPostionParameter

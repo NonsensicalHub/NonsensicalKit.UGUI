@@ -72,9 +72,9 @@ namespace NonsensicalKit.Core.Table
             if (_forceScroll) return;   //强制滚动时不进行任何处理
 
             var velocity = m_scollRect.velocity.magnitude;
-            if (_lastVelocity!= velocity)
+            if (_lastVelocity != velocity)
             {
-                if (_lastVelocity==0)
+                if (_lastVelocity == 0)
                 {
                     OnControl?.Invoke();
                 }

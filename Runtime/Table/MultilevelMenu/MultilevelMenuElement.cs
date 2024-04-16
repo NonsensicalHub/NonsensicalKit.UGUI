@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Core.Table 
+namespace NonsensicalKit.Core.Table
 {
     public class MultilevelMenuElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
@@ -33,7 +33,7 @@ namespace NonsensicalKit.Core.Table
             _canClick = true;
             _mouseHover = false;
             m_hover.gameObject.SetActive(false);
-            if (_childsPanel!=null)
+            if (_childsPanel != null)
             {
                 _childsPanel.gameObject.SetActive(false);
             }
@@ -63,7 +63,7 @@ namespace NonsensicalKit.Core.Table
             _canClick = false;
             StopAllCoroutines();
             StartCoroutine(ColdDown());
-            if (!_MultilevelMenuNode.MenuInfo.AlwayCanClick&& _MultilevelMenuNode.Deployable)
+            if (!_MultilevelMenuNode.MenuInfo.AlwayCanClick && _MultilevelMenuNode.Deployable)
             {
                 ShowChilds();
             }

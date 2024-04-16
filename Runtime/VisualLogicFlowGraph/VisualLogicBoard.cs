@@ -1,6 +1,6 @@
 using NonsensicalKit.Core;
-using NonsensicalKit.Tools.InputTool;
 using NonsensicalKit.Core.Table;
+using NonsensicalKit.Tools.InputTool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -117,13 +117,13 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 //点击空白处时清空正在连接的线
                 startPoint.StoreFlyLine();
-                IOCC.Set<VisualLogicPointBase>(VisualLogicEnum.ConnectingPoint,null);
+                IOCC.Set<VisualLogicPointBase>(VisualLogicEnum.ConnectingPoint, null);
             }
 
             if (eventData.button == PointerEventData.InputButton.Right)
             {
                 //右键开启新建菜单
-                RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, _renderCamera, out var pos) ;
+                RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, _renderCamera, out var pos);
                 _menu.transform.position = pos;
                 RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, eventData.enterEventCamera, out var pos2);
                 IOCC.Set<Vector3>(VisualLogicEnum.CreatPos, pos2);

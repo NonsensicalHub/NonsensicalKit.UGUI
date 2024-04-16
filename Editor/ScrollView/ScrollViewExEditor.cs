@@ -6,7 +6,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
     [CustomEditor(typeof(ScrollViewEx))]
     public class ScrollViewExEditor : ScrollViewEditor
     {
-       private SerializedProperty _pageSize;
+        private SerializedProperty _pageSize;
 
         protected override void OnEnable()
         {

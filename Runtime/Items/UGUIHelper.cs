@@ -168,14 +168,19 @@ namespace NonsensicalKit.UGUI
             rt.offsetMax = Vector2.zero;
         }
 
-        public static void GetWorldMinMax(this RectTransform rt,ref Vector3[] minMaxArray)
+        /// <summary>
+        /// 获取世界坐标系下的min点和max点坐标
+        /// </summary>
+        /// <param name="rt"></param>
+        /// <param name="minMaxArray"></param>
+        public static void GetWorldMinMax(this RectTransform rt, ref Vector3[] minMaxArray)
         {
             if (minMaxArray == null || minMaxArray.Length < 2)
             {
                 Debug.LogError("Calling GetWorldMinMax with an array that is null or has less than 2 elements.");
                 return;
             }
-           rt.GetLocalMinMax( ref minMaxArray);
+            rt.GetLocalMinMax(ref minMaxArray);
             Matrix4x4 matrix4x = rt.transform.localToWorldMatrix;
             for (int i = 0; i < 2; i++)
             {

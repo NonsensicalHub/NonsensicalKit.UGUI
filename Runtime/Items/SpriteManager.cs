@@ -15,7 +15,7 @@ namespace NonsensicalKit.UGUI
     {
         [SerializeField] private bool m_autoDestroy = false;
         private Dictionary<string, SpriteInfo> _crtSprites = new Dictionary<string, SpriteInfo>();
-        
+
         private void Update()
         {
             UnloadUnused();
@@ -36,7 +36,7 @@ namespace NonsensicalKit.UGUI
 
         public void SetSprite(string spriteName, GetSpriteHandle spriteCreateMethod)
         {
-            _crtSprites[spriteName]= new SpriteInfo(spriteCreateMethod);
+            _crtSprites[spriteName] = new SpriteInfo(spriteCreateMethod);
         }
 
         public void TrySetSprite(string spriteName, Func<Sprite> spriteCreateMethod)
@@ -56,7 +56,7 @@ namespace NonsensicalKit.UGUI
             _crtSprites[spriteName] = new SpriteInfo(spriteCreateMethod);
         }
 
-        public void TryGetSprite(string spriteName, Action<Sprite> callback, GetSpriteHandle fallback=null)
+        public void TryGetSprite(string spriteName, Action<Sprite> callback, GetSpriteHandle fallback = null)
         {
             StartCoroutine(TryGetSpriteCoroutine(spriteName, callback, fallback));
         }
@@ -88,7 +88,7 @@ namespace NonsensicalKit.UGUI
                 }
             }
 
-            if (sprite==null&&fallback!=null)
+            if (sprite == null && fallback != null)
             {
                 yield return fallback(ref sprite);
                 if (sprite != null)
@@ -103,7 +103,7 @@ namespace NonsensicalKit.UGUI
             callback?.Invoke(sprite);
         }
 
-        public IEnumerator TryGetSprite( Sprite sprite, string spriteName, GetSpriteHandle fallback = null)
+        public IEnumerator TryGetSprite(Sprite sprite, string spriteName, GetSpriteHandle fallback = null)
         {
             if (_crtSprites.ContainsKey(spriteName))
             {
@@ -158,9 +158,9 @@ namespace NonsensicalKit.UGUI
             }
         }
 
-       public void UnloadUnused()
+        public void UnloadUnused()
         {
-            List<string> unloads=new List<string>();
+            List<string> unloads = new List<string>();
             foreach (var item in _crtSprites)
             {
                 if (item.Value.UseCount == 0)
@@ -186,7 +186,7 @@ namespace NonsensicalKit.UGUI
             _crtSprites.Clear();
         }
 
-        private  class SpriteInfo
+        private class SpriteInfo
         {
             public Sprite Sprite;
             public GetSpriteHandle SpriteCreateMethod;

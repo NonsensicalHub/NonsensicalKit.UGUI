@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 6434260090246034136}
   - component: {fileID: 6434260090246034138}
   - component: {fileID: 6434260090246034133}
-  - component: {fileID: 6434260090246034139}
+  - component: {fileID: 4612874372630646243}
   m_Layer: 5
   m_Name: RightClickMenu
   m_TagString: Untagged
@@ -320,7 +320,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &6434260090246034139
+--- !u!114 &4612874372630646243
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -329,12 +329,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6434260090246034137}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dca6ffe25ce1d747a3bb773c0bc7287, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d3fbd9820d69694f8bb3f3dde45419e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_initShow: 1
   m_group: {fileID: 6434260090029127429}
   m_childPrefab: 1
+  m_differentFirst: 0
   m_prefabs:
   - {fileID: 0}
   m_ignoreHead: 0
@@ -442,7 +443,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6434260090619836225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f82bae7acc670344e917f9af8530806d, type: 3}
+  m_Script: {fileID: 11500000, guid: f9e3c2c63ae61ec40a4a796019ccba15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_initShow: 1

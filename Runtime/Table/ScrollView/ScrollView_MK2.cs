@@ -228,7 +228,7 @@ namespace NonsensicalKit.Core.Table
             }
             _dataCount = newDataCount;
 
-            if (((int)m_layoutType&DIRECTION_FLAG)==1)
+            if (((int)m_layoutType & DIRECTION_FLAG) == 1)
             {
                 _head?.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, _headSize);
                 _tail?.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, _tailSize);
@@ -243,18 +243,18 @@ namespace NonsensicalKit.Core.Table
                 case ItemLayoutType.Vertical:
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _viewRectInContent.width);
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _headSize + _tailSize + newDataCount * m_itemSize.y);
-                
+
                     break;
                 case ItemLayoutType.Horizontal:
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _headSize + _tailSize + newDataCount * m_itemSize.x);
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _viewRectInContent.height); 
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _viewRectInContent.height);
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _viewRectInContent.width);
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _headSize + _tailSize + ((int)((newDataCount - 1) / (float)_horizontalCount)+1) * m_itemSize.y);
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _headSize + _tailSize + ((int)((newDataCount - 1) / (float)_horizontalCount) + 1) * m_itemSize.y);
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _headSize + _tailSize + ((int)((newDataCount - 1) / (float)_verticalCount)+1) * m_itemSize.x);
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _headSize + _tailSize + ((int)((newDataCount - 1) / (float)_verticalCount) + 1) * m_itemSize.x);
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _viewRectInContent.height);
                     break;
                 default:
@@ -305,7 +305,7 @@ namespace NonsensicalKit.Core.Table
                     midIndex = 0;
                     break;
             }
-            midIndex = Mathf.Clamp(midIndex,0,_dataCount-1);
+            midIndex = Mathf.Clamp(midIndex, 0, _dataCount - 1);
             //向前判断
             bool canSeen = true;
             int crtIndex = midIndex;
@@ -614,7 +614,7 @@ namespace NonsensicalKit.Core.Table
                         _tailSize = dir == 1 ? _tail.rect.height : _tail.rect.width;
                     }
 
-                    
+
                 }
             }
             InitViewRect();

@@ -50,4 +50,3 @@ namespace NonsensicalKit.UGUI.UIFactory
         }
     }
 }
-

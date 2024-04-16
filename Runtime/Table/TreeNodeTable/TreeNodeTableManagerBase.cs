@@ -139,7 +139,7 @@ namespace NonsensicalKit.Core.Table
             InsertNode(data, parent, parent.ElementData.Childs.Count, fold);
         }
 
-       
+
         protected virtual void InsertNode(ElementData data, NodeElement parent, int childIndex, bool fold = false)
         {
             FocusNode(parent.ElementData, false);

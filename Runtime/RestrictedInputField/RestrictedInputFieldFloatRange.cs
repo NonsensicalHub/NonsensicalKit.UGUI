@@ -22,7 +22,6 @@ namespace NonsensicalKit.UGUI.RestrictedInputField
 #endif
         }
 
-
         protected override void Restrict()
         {
             if (float.TryParse(_ipf_self.text, out var v))

@@ -28,14 +28,14 @@ namespace NonsensicalKit.Core.Table
         public MultilevelMenuNode(string name, MultilevelMenuInfo info)
         {
             Name = name;
-            MenuInfo= info;
+            MenuInfo = info;
         }
 
         public MultilevelContext Context
         {
             get
             {
-                if (_context==null)
+                if (_context == null)
                 {
                     _context = new MultilevelContext(MenuInfo.Path, Name, MenuInfo.State);
                 }

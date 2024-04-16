@@ -20,11 +20,11 @@ namespace NonsensicalKit.UGUI.Effect
                 if (_rt == null)
                 {
                     _error = true;
-                   LogCore.Warning("目标对象未挂载RectTransform组件");
+                    LogCore.Warning("目标对象未挂载RectTransform组件");
                 }
             }
         }
-        public void ShowEffect(string command="")
+        public void ShowEffect(string command = "")
         {
             if (!_error)
             {

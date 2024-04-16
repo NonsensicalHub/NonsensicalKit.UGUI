@@ -1,12 +1,11 @@
 using NonsensicalKit.Core;
 using NonsensicalKit.Tools.InputTool;
-using NonsensicalKit.UGUI;
 using NonsensicalKit.UGUI.Table;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class RightClickMenuSample : NonsensicalMono
     {

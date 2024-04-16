@@ -1,13 +1,15 @@
-using NonsensicalKit.UGUI.VideoManager;
 using UnityEngine;
 
-public class VideoManagerDemo : MonoBehaviour
+namespace NonsensicalKit.UGUI.Samples.VideoManager
 {
-    [SerializeField] private VideoManager m_videoManager;
-    [SerializeField] private string m_videoUrl = "http://vjs.zencdn.net/v/oceans.mp4";
-
-    public void PlayTest()
+    public class VideoManagerDemo : MonoBehaviour
     {
-        m_videoManager.PlayVideo(m_videoUrl);
+        [SerializeField] private NonsensicalKit.UGUI.VideoManager.VideoManager m_videoManager;
+        [SerializeField] private string m_videoUrl = "http://vjs.zencdn.net/v/oceans.mp4";
+
+        public void PlayTest()
+        {
+            m_videoManager.PlayVideo(m_videoUrl);
+        }
     }
 }

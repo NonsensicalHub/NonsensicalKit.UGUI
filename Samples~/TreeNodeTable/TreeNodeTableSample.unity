@@ -1065,15 +1065,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_initShow: 1
-  _group: {fileID: 7483878753309586372}
-  _pool: {fileID: 2027164749}
+  m_group: {fileID: 0}
+  m_pool: {fileID: 2027164749}
   _levelDistance: 25
-  _prefabs:
+  m_prefabs:
   - {fileID: 0}
-  - {fileID: 0}
-  _childPrefab: 1
-  _updateWidth: 0
-  _fixedWidth: 0
+  m_childPrefab: 1
+  m_updateWidth: 0
+  m_fixedWidth: 0
   m_scrollrect: {fileID: 536440514}
 --- !u!225 &536440513
 CanvasGroup:
@@ -2640,8 +2639,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: focus
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 697d3611eb6fdff4eb99f8d4a775cb5c, type: 2}
+  m_sharedMaterial: {fileID: -5963540817906001490, guid: 697d3611eb6fdff4eb99f8d4a775cb5c,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Samples
+namespace NonsensicalKit.UGUI.Samples.Table
 {
     public class TreeNodeTableManagerSample : TreeNodeTableManagerBase<TreeNodeTableElementSample, TreeNodeClassSample>
     {

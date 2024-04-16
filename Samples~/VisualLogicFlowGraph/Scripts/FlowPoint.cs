@@ -1,6 +1,9 @@
 using NonsensicalKit.UGUI.VisualLogicGraph;
 
-public class FlowPoint : VisualLogicPointBase
+namespace NonsensicalKit.UGUI.Samples.VisualLogicGraph
 {
+    public class FlowPoint : VisualLogicPointBase
+    {
 
+    }
 }

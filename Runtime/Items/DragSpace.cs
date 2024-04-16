@@ -1,3 +1,5 @@
+using NonsensicalKit.Core.Log;
+using NonsensicalKit.Tools.EditorTool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -5,27 +7,50 @@ namespace NonsensicalKit.UGUI
 {
     public class DragSpace : MonoBehaviour, IBeginDragHandler, IDragHandler
     {
-        [SerializeField] private RectTransform m_controlTarget;
-
+        /// <summary>
+        /// 需要移动的对象
+        /// </summary>
+        [SerializeField] private RectTransform m_controlRect;
+        /// <summary>
+        /// 是否限定范围
+        /// </summary>
         [SerializeField] private bool m_ensureInBoundary;
-        [SerializeField] private RectTransform m_boundary;
+        /// <summary>
+        /// 限定在范围内的对象
+        /// </summary>
+        [ShowIF("m_ensureInBoundary")][SerializeField] private RectTransform m_checkRect;
+        /// <summary>
+        /// 确定范围的对象
+        /// </summary>
+        [ShowIF("m_ensureInBoundary")][SerializeField] private RectTransform m_boundaryRect;
 
+        /// <summary>
+        /// 开始拖拽时鼠标和拖拽对象位置点的偏移，移动时要维持此偏移不变
+        /// </summary>
         private Vector3 _startOffset;
 
+        /// <summary>
+        /// 触发拖拽的事件摄像机，为了防止多摄像机渲染时的参考系变更，故进行存储
+        /// </summary>
         private Camera _eventCamera;
 
         private void Awake()
         {
-            if (m_controlTarget == null)
+            if (m_controlRect == null)
             {
-                Debug.LogError("未设置控制对象");
+                LogCore.Warning("未设置控制对象",gameObject);
+                enabled = false;
+            }
+            if (m_checkRect == null)
+            {
+                m_checkRect = m_controlRect;
             }
         }
 
         public void SetBoundary(RectTransform newBoundary)
         {
-            m_boundary = newBoundary;
-            if (m_boundary != null)
+            m_boundaryRect = newBoundary;
+            if (m_boundaryRect != null)
             {
                 m_ensureInBoundary = true;
             }
@@ -33,63 +58,70 @@ namespace NonsensicalKit.UGUI
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (m_boundary == null)
+            if (m_boundaryRect == null)
             {
                 m_ensureInBoundary = false;
             }
             _eventCamera = eventData.enterEventCamera;
             Vector3 pos;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlTarget, eventData.position, _eventCamera, out pos);
-            _startOffset = m_controlTarget.position - pos;
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out pos);
+            _startOffset = m_controlRect.position - pos;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             Vector3 pos;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlTarget, eventData.position, _eventCamera, out pos);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out pos);
             if (m_ensureInBoundary)
             {
-                m_controlTarget.position = EnsureRectInBounds(m_controlTarget, pos + _startOffset);
+                m_controlRect.position = EnsureRectInBounds(m_controlRect, pos + _startOffset, m_checkRect, m_boundaryRect);
             }
             else
             {
-                m_controlTarget.position = pos + _startOffset;
+                m_controlRect.position = pos + _startOffset;
             }
         }
 
-        private Vector3 EnsureRectInBounds(RectTransform rect, Vector3 targetPosition)
+        /// <summary>
+        /// 在controlRect试图移动到targetPosition时，确保移动后的checkRect仍然被boundaryRect包围
+        /// </summary>
+        /// <param name="controlRect"></param>
+        /// <param name="targetPosition"></param>
+        /// <param name="checkRect"></param>
+        /// <param name="boundaryRect"></param>
+        /// <returns></returns>
+        private Vector3 EnsureRectInBounds(RectTransform controlRect, Vector3 targetPosition, RectTransform checkRect, RectTransform boundaryRect)
         {
             Vector3[] minMax = new Vector3[2];
 
-            rect.GetWorldMinMax(ref minMax);
-            var newMin = targetPosition - rect.transform.position + minMax[0];
-            var newMax = targetPosition - rect.transform.position + minMax[1];
-            Vector2 minPoint = m_boundary.transform.InverseTransformPoint(newMin);
-            Vector2 maxPoint = m_boundary.transform.InverseTransformPoint(newMax);
-            Vector2 canvasMin = m_boundary.rect.min;
-            Vector2 canvasMax = m_boundary.rect.max;
+            checkRect.GetWorldMinMax(ref minMax);
+            var newMin = targetPosition - controlRect.transform.position + minMax[0];
+            var newMax = targetPosition - controlRect.transform.position + minMax[1];
+            Vector2 localMin = boundaryRect.transform.InverseTransformPoint(newMin);
+            Vector2 localMax = boundaryRect.transform.InverseTransformPoint(newMax);
+            Vector2 boundaryMin = boundaryRect.rect.min;
+            Vector2 boundaryMax = boundaryRect.rect.max;
 
-            float moveX = 0;
-            float moveY = 0;
-            Vector2 minOffset = minPoint - canvasMin;
-            Vector2 maxOffset = maxPoint - canvasMax;
+            Vector2 move = Vector2.zero;
+            Vector2 minOffset = localMin - boundaryMin;
+            Vector2 maxOffset = localMax - boundaryMax;
             if (minOffset.x < 0)
             {
-                moveX = -minOffset.x;
+                move.x = -minOffset.x;
             }
             else if (maxOffset.x > 0)
             {
-                moveX = -maxOffset.x;
+                move.x = -maxOffset.x;
             }
             if (minOffset.y < 0)
             {
-                moveY = -minOffset.y;
+                move.y = -minOffset.y;
             }
             else if (maxOffset.y > 0)
             {
-                moveY = -maxOffset.y;
+                move.y = -maxOffset.y;
             }
-            var worldMove = m_boundary.transform.TransformVector(new Vector3(moveX, moveY));
+            var worldMove = boundaryRect.transform.TransformVector(move);
             targetPosition += worldMove;
             return targetPosition;
         }
