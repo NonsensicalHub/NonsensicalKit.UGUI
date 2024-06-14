@@ -11,6 +11,7 @@ namespace NonsensicalKit.UGUI.UIFactory
         public string Message;
         public Vector2 StartPos;
         public Vector2 EndPos;
+        public Vector2 Speed;
         public float Time;
 
         public FloatMessageInfo(string message, Vector2 startPos, Vector2 endPos, float time)
@@ -33,9 +34,12 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         public GameObjectPool Pool { get; set; }
 
+        private Vector3 _originPosition;
+
         private void Awake()
         {
             _selfRect = GetComponent<RectTransform>();
+            _originPosition = transform.position;
         }
 
         public void SetArg(object arg)
@@ -43,16 +47,16 @@ namespace NonsensicalKit.UGUI.UIFactory
             FloatMessageInfo info = arg as FloatMessageInfo;
             if (info == null)
             {
-                LogCore.Warning("传入FloatMessage的参数有误");
+                LogCore.Warning($"传入{nameof(FloatMessage)}的参数有误");
                 Pool.Store(gameObject);
                 return;
             }
 
             m_txt_message.text = info.Message;
-            _selfRect.anchoredPosition = info.StartPos;
-            gameObject.SetActive(true);
             m_txt_message.ForceMeshUpdate();
             _selfRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_txt_message.textBounds.size.x + 20);
+
+            _selfRect.anchoredPosition = info.StartPos;
             _selfRect.DoMove(info.EndPos, info.Time).OnComplete(OnFloatComplete);
         }
 

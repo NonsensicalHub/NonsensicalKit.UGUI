@@ -25,12 +25,28 @@ namespace NonsensicalKit.UGUI.UIFactory
             this.LeftButtonClick = leftButtonClick;
             this.RightButtonClick = rightButtonClick;
         }
+        public ConfirmInfo(string message)
+        {
+            this.Message = message;
+            this.LeftButtonText = "确认";
+            this.RightButtonText = "确认";
+            this.LeftButtonClick = null;
+            this.RightButtonClick = null;
+        }
         public ConfirmInfo(string message, Func<bool> leftButtonClick)
         {
             this.Message = message;
             this.LeftButtonText = "确认";
             this.RightButtonText = "取消";
             this.LeftButtonClick = leftButtonClick;
+            this.RightButtonClick = null;
+        }
+        public ConfirmInfo(string message,Action leftButtonClick)
+        {
+            this.Message = message;
+            this.LeftButtonText = "确认";
+            this.RightButtonText = "取消";
+            this.LeftButtonClick = ()=> { leftButtonClick();return true; };
             this.RightButtonClick = null;
         }
     }
@@ -67,15 +83,16 @@ namespace NonsensicalKit.UGUI.UIFactory
             _crtConfirmInfo = arg as ConfirmInfo;
             if (_crtConfirmInfo == null)
             {
-                LogCore.Warning("传入ConfirmWindow的参数有误");
+                LogCore.Warning($"传入{nameof(ConfirmDialog)}的参数有误");
                 Pool.Store(gameObject);
                 return;
             }
 
+            m_btn_leftButton.gameObject.SetActive(_crtConfirmInfo.LeftButtonClick != null);
+
             m_txt_message.text = _crtConfirmInfo.Message;
             m_txt_leftButton.text = _crtConfirmInfo.LeftButtonText;
             m_txt_rightButton.text = _crtConfirmInfo.RightButtonText;
-            Pool.Store(gameObject);
         }
 
         private void LeftButtonClick()

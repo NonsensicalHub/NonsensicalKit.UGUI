@@ -43,7 +43,7 @@ namespace NonsensicalKit.UGUI
             _rectTransformSelf = transform.GetComponent<RectTransform>();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (m_mainCamera == null)
             {

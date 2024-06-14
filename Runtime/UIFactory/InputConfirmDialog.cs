@@ -74,7 +74,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             _crtConfirmInfo = arg as InputConfirmInfo;
             if (_crtConfirmInfo == null)
             {
-                LogCore.Warning("传入InputConfirmWindow的参数有误");
+                LogCore.Warning($"传入{nameof(InputConfirmDialog)}的参数有误");
                 Pool.Store(gameObject);
                 return;
             }

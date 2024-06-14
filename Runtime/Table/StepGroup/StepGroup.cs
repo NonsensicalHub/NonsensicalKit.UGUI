@@ -28,6 +28,10 @@ namespace NonsensicalKit.Core.Table
 
         [SerializeField] private UnityEvent<Vector2Int, Vector2Int> m_onIndexChanged;   //索引改变事件
         [SerializeField] private UnityEvent m_onControl;   //交互控制事件
+        [SerializeField] private UnityEvent<bool> m_xCanPlus;   
+        [SerializeField] private UnityEvent<bool> m_xCanMinus;   
+        [SerializeField] private UnityEvent<bool> m_yCanPlus;   
+        [SerializeField] private UnityEvent<bool> m_yCanMinus;   
 
         public UnityEvent<Vector2Int, Vector2Int> OnIndexChanged => m_onIndexChanged;
         public UnityEvent OnControl => m_onControl;
@@ -52,6 +56,7 @@ namespace NonsensicalKit.Core.Table
 
         private InputHub _input;
         private float _lastVelocity;
+        private Coroutine _scrollCoroutine;
 
         private void Awake()
         {
@@ -67,6 +72,7 @@ namespace NonsensicalKit.Core.Table
             Recount(m_startCount);
             Resize(m_startCellSize);
         }
+
         private void Update()
         {
             if (_forceScroll) return;   //强制滚动时不进行任何处理
@@ -131,16 +137,59 @@ namespace NonsensicalKit.Core.Table
             var oldIndex = _crtIndex;
             _crtIndex = index;
             CheckIndex();
-
             if (gameObject.activeSelf)
             {
-                StartCoroutine(CorScrollTo(index));
+                if (_scrollCoroutine != null)
+                {
+                    StopCoroutine(_scrollCoroutine);
+                }
+                _scrollCoroutine = StartCoroutine(CorScrollTo(index));
             }
             else
             {
                 _content.anchoredPosition = new Vector2(-GetCrtHorizontalPos(), GetCrtVerticalPos());
             }
             m_onIndexChanged?.Invoke(oldIndex, _crtIndex);
+        }
+
+        public void XPlusOne()
+        {
+            if (_crtIndex.x + 1 >= _crtCount.x)
+            {
+                return;
+            }
+
+            ScrollTo(new Vector2Int(_crtIndex.x + 1, _crtIndex.y));
+        }
+
+        public void XMinusOne()
+        {
+            if (_crtIndex.x - 1 < 0)
+            {
+                return;
+            }
+
+            ScrollTo(new Vector2Int(_crtIndex.x - 1, _crtIndex.y));
+        }
+
+        public void YPlusOne()
+        {
+            if (_crtIndex.y + 1 >= _crtCount.y)
+            {
+                return;
+            }
+
+            ScrollTo(new Vector2Int(_crtIndex.x, _crtIndex.y + 1));
+        }
+
+        public void YMinusOne()
+        {
+            if (_crtIndex.y - 1 < 0)
+            {
+                return;
+            }
+
+            ScrollTo(new Vector2Int(_crtIndex.x, _crtIndex.y - 1));
         }
 
         public void Recount(int xCount, int yCount)
@@ -171,7 +220,6 @@ namespace NonsensicalKit.Core.Table
         private Vector2 UpdateState()
         {
             Vector2Int oldIndex = _crtIndex;
-
 
             float crtX = -_content.anchoredPosition.x;
             float crtXTarget = GetCrtHorizontalPos();
@@ -248,11 +296,11 @@ namespace NonsensicalKit.Core.Table
         /// </summary>
         private void CheckIndex()
         {
-            if (_crtCount.x == 0)
+            if (_crtCount.x <= 0)
             {
                 _crtCount.x = 1;
             }
-            if (_crtCount.y == 0)
+            if (_crtCount.y <= 0)
             {
                 _crtCount.y = 1;
             }
@@ -274,6 +322,11 @@ namespace NonsensicalKit.Core.Table
             {
                 _crtIndex.y = _crtCount.y - 1;
             }
+
+            m_xCanPlus?.Invoke(_crtIndex.x < _crtCount.x - 1);
+            m_xCanMinus.Invoke(_crtIndex.x > 0);
+            m_yCanPlus?.Invoke(_crtIndex.y < _crtCount.y - 1);
+            m_yCanMinus.Invoke(_crtIndex.y > 0);
         }
 
         private void Init()
@@ -348,6 +401,7 @@ namespace NonsensicalKit.Core.Table
 
             //计算新的位置
             _content.anchoredPosition = new Vector2(-GetCrtHorizontalPos(), GetCrtVerticalPos());
+            CheckIndex();
         }
 
         private IEnumerator CorScrollTo(Vector2Int index)

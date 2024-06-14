@@ -352,6 +352,26 @@ namespace NonsensicalKit.Core.Table
             AddNode(element, newParent as NodeElement, fold);
         }
 
+        public virtual void Move(TreeNodeTableElementBase<ElementData> ne, TreeNodeTableElementBase<ElementData> newParent, int index = -1)
+        {
+            bool fold = ne.ElementData.IsFold;
+            Fold(ne as NodeElement);
+            var element = ne.ElementData;
+            element.Parent.Childs.Remove(element);
+            element.Parent.Belong.GetComponent<TreeNodeTableElementBase<ElementData>>().UpdateFoldUI();
+            StoreElement(element.Level, ne.gameObject);
+
+            if (index < 0)
+            {
+                AddNode(element, newParent as NodeElement, fold);
+            }
+            else
+            {
+                InsertNode(element, newParent as NodeElement, index, fold);
+            }
+        }
+
+
         public virtual void MoveSameLevel(TreeNodeTableElementBase<ElementData> ne, TreeNodeTableElementBase<ElementData> targetElement, bool isTop)
         {
             bool fold = ne.ElementData.IsFold;

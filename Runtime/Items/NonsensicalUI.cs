@@ -45,6 +45,19 @@ namespace NonsensicalKit.UGUI
             base.OnDestroy();
         }
 
+        public bool CheckAlpha()
+        {
+            var uis = gameObject.GetComponentsInParent<NonsensicalUI>();
+            foreach (var item in uis)
+            {
+                if (item.IsShow == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public void Appear(bool immediately = false)
         {
             OpenSelf(immediately);

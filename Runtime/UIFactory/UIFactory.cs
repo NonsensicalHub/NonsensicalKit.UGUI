@@ -45,39 +45,36 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         private void OnOpenUI(string type, object arg)
         {
-            if (pools.ContainsKey(type) == false)
-            {
-                LogCore.Warning($"未配置类型为{type}的UI");
-                return;
-            }
-            var v = pools[type].New();
-
-            IFactoryUI ui = v.GetComponent<IFactoryUI>();
-            ui.SetArg(arg);
+            OpenUI(type, arg);
         }
 
         private void Init()
         {
+            pools = new Dictionary<string, GameObjectPool>();
             foreach (var item in m_prefabs)
             {
-                if (pools.ContainsKey(item.Type))
+                var key = string.IsNullOrEmpty(item.Alias) ? item.Type.ToString() : item.Alias;
+
+                if (pools.ContainsKey(key))
                 {
-                    LogCore.Warning($"UI类型:{item.Type} 配置了多次");
+                    LogCore.Warning($"键值{key} 配置了多次");
                     return;
                 }
                 if (item.Prefab == null)
                 {
-                    LogCore.Warning($"类型为{item.Type}的UI未配置预制体");
+                    LogCore.Warning($"键值为{key}的UI未配置预制体");
                     return;
                 }
                 IFactoryUI ui = item.Prefab.GetComponent<IFactoryUI>();
                 if (ui == null)
                 {
-                    LogCore.Warning($"类型为{item.Type}的UI其预制体未挂载实现了IFactoryUI的接口");
+                    LogCore.Warning($"键值为{key}的UI其预制体未挂载实现了IFactoryUI的接口的脚本");
                     return;
                 }
 
                 GameObjectPool newPool = new GameObjectPool(item.Prefab, OnUIReset, OnUIInit, OnUIFirstInit);
+
+                pools.Add(key, newPool);
             }
         }
 
@@ -96,7 +93,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             go.SetActive(false);
             IFactoryUI ui = go.GetComponent<IFactoryUI>();
             ui.Pool = pool;
-            go.transform.SetParent(m_canvas.transform);
+            go.transform.SetParent(m_canvas.transform,false);
         }
 
         private void Reset()
@@ -120,11 +117,20 @@ namespace NonsensicalKit.UGUI.UIFactory
     {
         [TypeQualifiedString(typeof(IFactoryUI))]
         public string Type;
+        public string Alias;
         public GameObject Prefab;
 
         public FactoryUIPrefabSetting(string type, GameObject prefab)
         {
             Type = type;
+            Alias = null;
+            Prefab = prefab;
+        }
+
+        public FactoryUIPrefabSetting(string type, string alias, GameObject prefab)
+        {
+            Type = type;
+            Alias = alias;
             Prefab = prefab;
         }
     }

@@ -84,6 +84,11 @@ namespace NonsensicalKit.Core.Table
         protected override void Awake()
         {
             base.Awake();
+        }
+        protected override void Start()
+        {
+            base.Start();
+
             content.pivot = Vector2.up; //(0,1),左上角
         }
         protected override void OnDestroy()
