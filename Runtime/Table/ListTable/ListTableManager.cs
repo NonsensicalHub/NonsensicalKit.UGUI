@@ -49,34 +49,12 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         protected List<Transform> _tail = new List<Transform>();
 
+        protected bool _initFlag = true;
+
         protected override void Awake()
         {
             base.Awake();
-
-            if (m_group)
-            {
-                if (m_childPrefab)
-                {
-                    for (int i = 0; i < m_prefabs.Length; i++)
-                    {
-                        m_prefabs[i] = m_group.GetChild(m_ignoreHead + i).gameObject;
-                        m_prefabs[i].gameObject.SetActive(false);
-                    }
-                }
-
-                if (m_ignoreTail > 0)
-                {
-                    for (int i = 0; i < m_ignoreTail; i++)
-                    {
-                        _tail.Add(m_group.GetChild(m_group.childCount - m_ignoreTail));
-                    }
-                }
-            }
-            else
-            {
-                LogCore.Warning("未设置Group", gameObject);
-                enabled = false;
-            }
+            Init();
         }
 
         public void SetDatas(IEnumerable<ElementData> datas)
@@ -92,6 +70,7 @@ namespace NonsensicalKit.UGUI.Table
                 item.gameObject.SetActive(false);
             }
         }
+
         public void Clean()
         {
             _elementDatas = new List<ElementData>();
@@ -130,6 +109,7 @@ namespace NonsensicalKit.UGUI.Table
 
         protected virtual void UpdateUI()
         {
+            Init();
             int datasCount = _elementDatas.Count;
 
             //应用数据链表
@@ -151,6 +131,7 @@ namespace NonsensicalKit.UGUI.Table
 
         protected virtual void Append(ElementData appendElementData)
         {
+            Init();
             _elementDatas.Add(appendElementData);
 
             ListElement crtElement = GetElement(_elementDatas.Count - 1);
@@ -162,6 +143,7 @@ namespace NonsensicalKit.UGUI.Table
 
         protected virtual void Delete(ListElement deleteElement)
         {
+            Init();
             if (!_elements.Contains(deleteElement))
             {
                 return;
@@ -208,9 +190,41 @@ namespace NonsensicalKit.UGUI.Table
             Delete(_elements[index]);
         }
 
-        protected virtual void InitElement(ListElement element)
+        protected virtual void InitNewElement(ListElement element)
         {
 
+        }
+
+        private void Init()
+        {
+            if (_initFlag)
+            {
+                if (m_group)
+                {
+                    if (m_childPrefab)
+                    {
+                        for (int i = 0; i < m_prefabs.Length; i++)
+                        {
+                            m_prefabs[i] = m_group.GetChild(m_ignoreHead + i).gameObject;
+                            m_prefabs[i].gameObject.SetActive(false);
+                        }
+                    }
+
+                    if (m_ignoreTail > 0)
+                    {
+                        for (int i = 0; i < m_ignoreTail; i++)
+                        {
+                            _tail.Add(m_group.GetChild(m_group.childCount - m_ignoreTail));
+                        }
+                    }
+                }
+                else
+                {
+                    LogCore.Warning("未设置Group", gameObject);
+                    enabled = false;
+                }
+                _initFlag = false;
+            }
         }
 
         /// <summary>
@@ -218,7 +232,7 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        protected ListElement GetElement(int index)
+        private ListElement GetElement(int index)
         {
             if (index < _elements.Count)
             {
@@ -227,7 +241,7 @@ namespace NonsensicalKit.UGUI.Table
             else
             {
                 var newElement = Instantiate(GetPrefab(index), m_group).GetComponent<ListElement>();
-                InitElement(newElement);
+                InitNewElement(newElement);
                 _elements.Add(newElement);
                 return newElement;
             }
@@ -236,7 +250,7 @@ namespace NonsensicalKit.UGUI.Table
         /// <summary>
         /// 更新尾部元素，将其移至最后
         /// </summary>
-        protected void UpdateTail()
+        private void UpdateTail()
         {
             foreach (var item in _tail)
             {

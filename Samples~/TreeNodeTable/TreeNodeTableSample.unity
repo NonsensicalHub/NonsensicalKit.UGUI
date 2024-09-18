@@ -358,7 +358,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1310079367}
   m_HandleRect: {fileID: 1310079366}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1065,10 +1065,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_initShow: 1
-  m_group: {fileID: 0}
+  m_group: {fileID: 7483878753309586372}
   m_pool: {fileID: 2027164749}
   _levelDistance: 25
   m_prefabs:
+  - {fileID: 0}
   - {fileID: 0}
   m_childPrefab: 1
   m_updateWidth: 0
@@ -1964,6 +1965,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0

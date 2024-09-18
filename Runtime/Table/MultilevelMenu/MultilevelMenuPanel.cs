@@ -52,6 +52,7 @@ namespace NonsensicalKit.Core.Table
         {
             _mouseHover = true;
         }
+
         public void OnPointerExit(PointerEventData eventData)
         {
             _mouseHover = false;
@@ -60,6 +61,7 @@ namespace NonsensicalKit.Core.Table
                 gameObject.SetActive(false);
             }
         }
+
         public void Open()
         {
             gameObject.SetActive(true);

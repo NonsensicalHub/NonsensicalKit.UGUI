@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.TextMeshPro",
-        "NonsensicalKit.UGUI"
+        "NonsensicalKit.UGUI",
+        "NonsensicalKit.Core"
     ],
     "includePlatforms": [
         "Editor"

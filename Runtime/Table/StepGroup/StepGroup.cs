@@ -66,7 +66,10 @@ namespace NonsensicalKit.Core.Table
 
             _crtIndex = m_startIndex;
             _content = m_scollRect.content;
+        }
 
+        private void Start()
+        {
             CheckIndex();
             Init();
             Recount(m_startCount);

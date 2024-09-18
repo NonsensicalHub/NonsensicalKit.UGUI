@@ -67,6 +67,7 @@ namespace NonsensicalKit.UGUI.Samples.Table
                 return _showing.Count;
             });
 
+            Debug.Log(m_scrollView);
             m_scrollView.UpdateData(false);
         }
 

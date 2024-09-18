@@ -1,5 +1,6 @@
 using NonsensicalKit.Core;
 using NonsensicalKit.Core.Table;
+using NonsensicalKit.Tools;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,7 +22,17 @@ namespace NonsensicalKit.UGUI.Samples.Table
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                m_scrollView.ScrollTo(Random.Range(0, _test.Count));
+                var r = Random.Range(0, _test.Count);
+                Debug.Log("滚动至:" + (r+1), gameObject);
+                m_scrollView.ScrollTo(r,0);
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                //var r = Random.Range(0, _test.Count);
+                var r = _test.Count - 1;
+               var v= m_scrollView.GetScrollValue(r, 1);
+                Debug.Log($"滚动至:{r+1}，值为{v}", gameObject);
+                m_scrollView.DoScrollTo(new Vector2(m_scrollView.horizontalNormalizedPosition,v),0.5f);
             }
         }
 

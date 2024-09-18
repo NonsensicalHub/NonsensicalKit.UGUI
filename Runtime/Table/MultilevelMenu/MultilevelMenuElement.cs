@@ -37,6 +37,10 @@ namespace NonsensicalKit.Core.Table
             {
                 _childsPanel.gameObject.SetActive(false);
             }
+            if (_MultilevelMenuNode!=null)
+            {
+                m_btn_click.interactable = _MultilevelMenuNode.CanClick;
+            }
         }
 
         public void Init(MultilevelMenuNode MultilevelMenuNode, IMultilevelMenu MultilevelMenu)
@@ -76,7 +80,6 @@ namespace NonsensicalKit.Core.Table
                 }
             }
         }
-
 
         private void ShowChilds()
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace NonsensicalKit.Core.Table
 {
     /// <summary>
-    /// ！注意！：如果只在开头一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好
+    /// ！注意！：如果只在开头UpdateData一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好
     /// 参考： 
     /// https://github.com/aillieo/UnityDynamicScrollView
     /// https://blog.csdn.net/linxinfa/article/details/122019054
@@ -74,7 +74,7 @@ namespace NonsensicalKit.Core.Table
             base.SetItemCountFunc(func);
         }
 
-        protected override void InternalScrollTo(int index)
+        protected override void InternalScrollTo(int index,float pos)
         {
             int count = 0;
             if (_realItemCountFunc != null)
@@ -85,9 +85,8 @@ namespace NonsensicalKit.Core.Table
             _startOffset = Mathf.Clamp(index - m_pageSize / 2, 0, count - ItemCountFunc());
             UpdateData(true);
 
-            base.InternalScrollTo(index - _startOffset);
+            base.InternalScrollTo(index - _startOffset,  pos);
         }
-
 
         private void OnValueChanged(Vector2 position)
         {

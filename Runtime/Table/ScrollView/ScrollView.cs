@@ -3,12 +3,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.Core.Table
 {
     /// <summary>
-    /// ！注意！：如果只在开头一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好
+    /// ！注意！：如果只在开头UpdateData一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好
     /// 参考： 
     /// https://github.com/aillieo/UnityDynamicScrollView
     /// https://blog.csdn.net/linxinfa/article/details/122019054
@@ -68,6 +69,8 @@ namespace NonsensicalKit.Core.Table
         public Func<int, Vector2> ItemSizeFunc;         //获取对应索引的item的尺寸的Func
         public Func<int, RectTransform> ItemGetFunc;    //分配对应索引item的Func
         public Action<int, RectTransform> ItemRecycleFunc;   //回收对应索引item的Func
+
+        public bool IsDragging { get; private set; }
 
         protected ItemLayoutType LayoutType { get { return m_layoutType; } }
 
@@ -129,6 +132,29 @@ namespace NonsensicalKit.Core.Table
             }
         }
 
+        public override void OnBeginDrag(PointerEventData eventData)
+        {
+            base.OnBeginDrag(eventData);
+            IsDragging = true;
+        }
+        public override void OnEndDrag(PointerEventData eventData)
+        {
+            base.OnEndDrag(eventData);
+            IsDragging = false;
+        }
+
+        protected override void SetContentAnchoredPosition(Vector2 position)
+        {
+            base.SetContentAnchoredPosition(position);
+            UpdateCriticalItems();
+        }
+
+        protected override void SetNormalizedPosition(float value, int axis)
+        {
+            ResetCriticalItems();
+            base.SetNormalizedPosition(value, axis);
+        }
+
         /// <summary>
         /// 更新数据,强制更新所有item的rect
         /// </summary>
@@ -186,26 +212,22 @@ namespace NonsensicalKit.Core.Table
         /// <param name="index"></param>
         public void ScrollTo(int index)
         {
-            InternalScrollTo(index);
+            ScrollTo(index, 0.5f);
         }
 
-        protected override void SetContentAnchoredPosition(Vector2 position)
+        public void ScrollTo(int index, float pos)
         {
-            base.SetContentAnchoredPosition(position);
-            UpdateCriticalItems();
-        }
-
-        protected override void SetNormalizedPosition(float value, int axis)
-        {
-            ResetCriticalItems();
-            base.SetNormalizedPosition(value, axis);
+            pos = Mathf.Clamp01(pos);
+            InternalScrollTo(index, pos);
         }
 
         /// <summary>
-        /// 滚动至目标item具体实现
+        /// 获取滚动到目标位置时的value
         /// </summary>
         /// <param name="index"></param>
-        protected virtual void InternalScrollTo(int index)
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public float GetScrollValue(int index, float pos)
         {
             index = Mathf.Clamp(index, 0, _dataCount - 1);
             EnsureItemRect(index);
@@ -213,18 +235,31 @@ namespace NonsensicalKit.Core.Table
             int dir = (int)LayoutType & DIRECTION_FLAG;
             if (dir == 1)
             {
+                var p = r.yMax + pos * (_viewRectInContent.height - r.height);
                 // vertical
-                float value = 1 - (-r.yMax / (content.sizeDelta.y - _viewRectInContent.height));
-                //value = Mathf.Clamp01(value);
-                SetNormalizedPosition(value, 1);
+                float value = 1 + p / (content.sizeDelta.y - _viewRectInContent.height);
+                value = Mathf.Clamp01(value);
+                return value;
             }
             else
             {
+                var p = r.xMin  - pos * (_viewRectInContent.width - r.width);
                 // horizontal
-                float value = r.xMin / (content.sizeDelta.x - _viewRectInContent.width);
-                //value = Mathf.Clamp01(value);
-                SetNormalizedPosition(value, 0);
+                float value = p / (content.sizeDelta.x - _viewRectInContent.width);
+                value = Mathf.Clamp01(value);
+                return value;
             }
+        }
+
+        /// <summary>
+        /// 滚动至目标item具体实现
+        /// </summary>
+        /// <param name="index"></param>
+        protected virtual void InternalScrollTo(int index, float pos)
+        {
+            int dir = (int)LayoutType & DIRECTION_FLAG;
+            var value = GetScrollValue(index ,pos);
+            SetNormalizedPosition(value, dir);
         }
 
         /// <summary>

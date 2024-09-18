@@ -1,3 +1,4 @@
+using NonsensicalKit.Core;
 using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools.InputTool;
 using System.Collections.Generic;
@@ -14,20 +15,32 @@ namespace NonsensicalKit.UGUI.Samples.Table
         private void Awake()
         {
             m_menu.Init(new List<MultilevelMenuInfo>() {
-            new MultilevelMenuInfo ("1",OnSelect ),
-            new MultilevelMenuInfo ("2",OnSelect ),
-            new MultilevelMenuInfo ("3", OnSelect),
-            new MultilevelMenuInfo ("4/5",OnSelect),
-            new MultilevelMenuInfo ("4/6/7",OnSelect),
-            new MultilevelMenuInfo ("Step1",OnSelect,Check),
-            new MultilevelMenuInfo ("Step2",OnSelect,Check),
-        });
+                new MultilevelMenuInfo ("1",OnSelect ),
+                new MultilevelMenuInfo ("2",OnSelect ),
+                new MultilevelMenuInfo ("3", OnSelect),
+                new MultilevelMenuInfo ("4/5",OnSelect),
+                new MultilevelMenuInfo ("4/6/7",OnSelect),
+                new MultilevelMenuInfo ("Step1",OnSelect,Check),
+                new MultilevelMenuInfo ("Step2",OnSelect,Check),
+            });
+        }
+
+        private void Start()
+        {
+            InputHub.Instance.OnMouseRightButtonUp += Demo;
+        }
+
+        private void OnDestroy()
+        {
+            if (!NonsensicalInstance.ApplicationIsQuitting)
+            {
+                InputHub.Instance.OnMouseRightButtonUp -= Demo;
+            }
         }
 
         private void OnSelect(MultilevelContext context)
         {
-            Debug.Log(context.Path);
-            if (context.Path == "STEP1")
+            if (context.Path == "Step1")
             {
                 _flag = false;
             }
@@ -40,16 +53,6 @@ namespace NonsensicalKit.UGUI.Samples.Table
                 case "Step2": return !_flag;
                 default: return true;
             }
-        }
-
-        private void Start()
-        {
-            InputHub.Instance.OnMouseRightButtonUp += Demo;
-        }
-
-        private void OnDestroy()
-        {
-            InputHub.Instance.OnMouseRightButtonUp -= Demo;
         }
 
         private void Demo()

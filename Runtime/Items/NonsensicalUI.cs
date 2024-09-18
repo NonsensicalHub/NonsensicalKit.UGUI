@@ -58,19 +58,31 @@ namespace NonsensicalKit.UGUI
             return true;
         }
 
+        public void Appear()
+        {
+            OpenSelf(true);
+        }
+        
         public void Appear(bool immediately = false)
         {
             OpenSelf(immediately);
+        }
+
+        public void Disappear()
+        {
+            CloseSelf(true);
         }
 
         public void Disappear(bool immediately = false)
         {
             CloseSelf(immediately);
         }
+
         public void Switch(bool immediately = false)
         {
             SwitchSelf(immediately);
         }
+
         protected virtual void OpenSelf()
         {
             OpenSelf(true);

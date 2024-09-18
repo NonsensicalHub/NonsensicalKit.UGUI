@@ -8,6 +8,13 @@ namespace NonsensicalKit.UGUI.Editor.Table
     [CustomEditor(typeof(ScrollView_MK2))]
     public class ScrollView_MK2Editor : ScrollRectEditor
     {
+        private SerializedProperty _verticalMid;
+        private SerializedProperty _top;
+        private SerializedProperty _horizonMid;
+        private SerializedProperty _left;
+        private SerializedProperty _spacing;
+        private SerializedProperty _autoResize;
+
         private SerializedProperty _itemSize;
         private SerializedProperty _layoutType;
         private SerializedProperty _ignoreHead;
@@ -33,6 +40,13 @@ namespace NonsensicalKit.UGUI.Editor.Table
 
         protected override void OnEnable()
         {
+            _verticalMid = serializedObject.FindProperty("m_verticalMid");
+            _top = serializedObject.FindProperty("m_top");
+            _horizonMid = serializedObject.FindProperty("m_horizonMid");
+            _left = serializedObject.FindProperty("m_left");
+            _spacing = serializedObject.FindProperty("m_spacing");
+            _autoResize = serializedObject.FindProperty("m_autoResize");
+
             _itemSize = serializedObject.FindProperty("m_itemSize");
             _layoutType = serializedObject.FindProperty("m_layoutType");
             _ignoreHead = serializedObject.FindProperty("m_ignoreHead");
@@ -68,6 +82,19 @@ namespace NonsensicalKit.UGUI.Editor.Table
 
         protected virtual void DrawBaseConfig()
         {
+            EditorGUILayout.PropertyField(_verticalMid);
+            if (_verticalMid.boolValue == false)
+            {
+                EditorGUILayout.PropertyField(_top);
+            }
+            EditorGUILayout.PropertyField(_horizonMid);
+            if (_horizonMid.boolValue == false)
+            {
+                EditorGUILayout.PropertyField(_left);
+            }
+            EditorGUILayout.PropertyField(_spacing);
+            EditorGUILayout.PropertyField(_autoResize);
+
             EditorGUILayout.PropertyField(_itemSize);
             EditorGUILayout.PropertyField(_layoutType);
             EditorGUILayout.PropertyField(_ignoreHead);

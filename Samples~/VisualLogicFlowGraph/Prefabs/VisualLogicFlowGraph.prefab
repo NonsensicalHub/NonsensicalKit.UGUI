@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 895790902916882416}
   - component: {fileID: 895790902916882414}
   - component: {fileID: 895790902916882415}
-  - component: {fileID: 895790902916882413}
+  - component: {fileID: 7260290705546472940}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -79,7 +79,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &895790902916882413
+--- !u!114 &7260290705546472940
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 895790902916882417}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dae3864496f412498ac72076c9cfda7, type: 3}
+  m_Script: {fileID: 11500000, guid: 99a9c704a1df51d40a7ecf2461060f31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &895790903702260700
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 895790903838332764}
   - component: {fileID: 895790903838332765}
   - component: {fileID: 895790903838332763}
-  - component: {fileID: 895790903838332762}
+  - component: {fileID: 3511740589813981287}
   m_Layer: 5
   m_Name: VisualLogicFlowGraph
   m_TagString: Untagged
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
---- !u!114 &895790903838332762
+--- !u!114 &3511740589813981287
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,18 +231,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 895790903838332767}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63123c2293071a14cb74d1a185a6112f, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e681d532bd757447a79f7c53a6d72b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_nodePrefabs:
-  - Type: event
-    CreatePath: Event
-    Prefab: {fileID: 849395981034161728, guid: adb1eba85180b7048800cab5ea663ae8, type: 3}
-  m_board: {fileID: 895790902916882413}
-  m_linePrefab: {fileID: -595562499939042236, guid: eb91cf2eb81314b41b29a9ee05e7a61c, type: 3}
+  - Prefab: {fileID: 849395981034161728, guid: adb1eba85180b7048800cab5ea663ae8, type: 3}
+    CreatePath: event
+  m_board: {fileID: 7260290705546472940}
+  m_linePrefab: {fileID: 92376148453589339, guid: eb91cf2eb81314b41b29a9ee05e7a61c,
+    type: 3}
   m_lineSpace: {fileID: 895790903702260699}
   m_pool: {fileID: 895790904281602105}
-  m_menu: {fileID: 895790904106118530}
+  m_menu: {fileID: 5182629152668878979}
+  m_checkSize: 0
 --- !u!1 &895790904106118532
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,7 +253,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 895790904106118531}
-  - component: {fileID: 895790904106118530}
+  - component: {fileID: 5182629152668878979}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -280,7 +281,7 @@ RectTransform:
   m_AnchoredPosition: {x: 50, y: 50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
---- !u!114 &895790904106118530
+--- !u!114 &5182629152668878979
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -289,11 +290,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 895790904106118532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7563d81cf8dd2ae40a4b9d93e6308d20, type: 3}
+  m_Script: {fileID: 11500000, guid: f9f0d36a5cbfa8047a87f62b01d9c871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_panelTemplate: {fileID: 7639460974336035489, guid: 0fc966dcd13b53a4ba11a02f4ed3ea4c, type: 3}
-  m_elementTemplate: {fileID: 1071365367196723816, guid: f62973cc407bd954585cddf2d7441af4, type: 3}
+  m_panelTemplate: {fileID: 4060441086137696859, guid: 0fc966dcd13b53a4ba11a02f4ed3ea4c,
+    type: 3}
+  m_elementTemplate: {fileID: 5437510695092595926, guid: f62973cc407bd954585cddf2d7441af4,
+    type: 3}
 --- !u!1 &895790904281602106
 GameObject:
   m_ObjectHideFlags: 0

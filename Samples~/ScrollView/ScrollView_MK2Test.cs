@@ -1,8 +1,11 @@
+using DG.Tweening;
 using NonsensicalKit.Core;
 using NonsensicalKit.Core.Table;
+using NonsensicalKit.Tools;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Samples.Table
 {
@@ -14,7 +17,8 @@ namespace NonsensicalKit.UGUI.Samples.Table
 
         private void Start()
         {
-            NonsensicalInstance.Instance.DelayDoIt(0, S);
+            S();
+            //NonsensicalInstance.Instance.DelayDoIt(0, S);
         }
 
         private void Update()
@@ -23,16 +27,40 @@ namespace NonsensicalKit.UGUI.Samples.Table
             {
                 m_scrollView_MK2.ScrollTo(Random.Range(0, _test.Count));
             }
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                InitData(1);
+                m_scrollView_MK2.UpdateData(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                var r = Random.Range(0, _test.Count);
+                var v = m_scrollView_MK2.GetScrollValue(r, 0);
+                Debug.Log($"获取滚动到{r+1}的值为{v}");
+                m_scrollView_MK2.DoScrollTo(new Vector2(v, m_scrollView_MK2.verticalNormalizedPosition), 0.5f);
+            }
         }
 
         private void S()
         {
             // 构造测试数据
-            InitData();
+            InitData(1);
 
             m_scrollView_MK2.SetUpdateFunc((index, rectTransform) =>
             {
-                rectTransform.GetComponentInChildren<TextMeshProUGUI>().text = _test[index];
+                var t = rectTransform.GetComponentInChildren<TextMeshProUGUI>().text;// += "_"+_test[index];
+                if (string.IsNullOrEmpty(t))
+                {
+                    rectTransform.GetComponentInChildren<TextMeshProUGUI>().text = _test[index] + "_" + 1;
+                }
+                else
+                {
+                    var sp = t.Split('_');
+                    var countString = sp[1];
+                    int count = int.Parse(countString);
+                    count++;
+                    rectTransform.GetComponentInChildren<TextMeshProUGUI>().text = _test[index] + "_" + count;
+                }
             });
 
             m_scrollView_MK2.SetItemCountFunc(() =>
@@ -43,12 +71,12 @@ namespace NonsensicalKit.UGUI.Samples.Table
             m_scrollView_MK2.UpdateData(false);
         }
 
-        private void InitData()
+        private void InitData(int count)
         {
             _test = new List<string>();
-            for (int i = 1; i <= 123456; ++i)
+            for (int i = 1; i <= count * 100000; ++i)
             {
-                _test.Add(i.ToString());
+                _test.Add(i.ToString() );
             }
         }
     }

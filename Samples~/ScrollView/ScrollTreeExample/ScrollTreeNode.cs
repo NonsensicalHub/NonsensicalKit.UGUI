@@ -67,11 +67,15 @@ namespace NonsensicalKit.UGUI.Samples.Table
         private void OnExpandClick()
         {
             _tree.Unfold(_nodeInfo);
+            m_btn_expand.gameObject.SetActive(false);
+            m_btn_collapse.gameObject.SetActive(true);
         }
 
         private void OnCollapseClick()
         {
             _tree.Fold(_nodeInfo);
+            m_btn_expand.gameObject.SetActive(true);
+            m_btn_collapse.gameObject.SetActive(false);
         }
 
         private void OnFocus(ScrollTreeNodeInfo info)
