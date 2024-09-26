@@ -1,3 +1,4 @@
+using NonsensicalKit.Tools.EditorTool;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI
@@ -10,13 +11,13 @@ namespace NonsensicalKit.UGUI
     {
         [SerializeField] private RectTransform m_target;
         [SerializeField] private bool m_sameWidth;
-        [SerializeField] private bool m_clampWidth;
-        [SerializeField] private float m_minWidth;
-        [SerializeField] private float m_maxWidth;
+        [SerializeField][ShowIF("m_sameWidth")] private bool m_clampWidth;
+        [SerializeField][ShowIF("m_clampWidth")] private float m_minWidth;
+        [SerializeField][ShowIF("m_clampWidth")] private float m_maxWidth;
         [SerializeField] private bool m_sameHeight;
-        [SerializeField] private bool m_clampHeight;
-        [SerializeField] private float m_minHeight;
-        [SerializeField] private float m_maxHeight;
+        [SerializeField][ShowIF("m_sameHeight")] private bool m_clampHeight;
+        [SerializeField][ShowIF("m_clampHeight")] private float m_minHeight;
+        [SerializeField][ShowIF("m_clampHeight")] private float m_maxHeight;
 
         private RectTransform _self;
 
@@ -27,39 +28,32 @@ namespace NonsensicalKit.UGUI
 
         private void Update()
         {
-            Vector2 targetSize = new Vector2();
             if (m_sameWidth)
             {
+                float targetSize;
                 if (m_clampWidth)
                 {
-                    targetSize.x = Mathf.Clamp(m_target.sizeDelta.x, m_minWidth, m_maxWidth);
+                    targetSize = Mathf.Clamp(m_target.rect.width, m_minWidth, m_maxWidth);
                 }
                 else
                 {
-                    targetSize.x = m_target.sizeDelta.x;
+                    targetSize = m_target.rect.width;
                 }
-            }
-            else
-            {
-                targetSize.x = _self.sizeDelta.x;
+                _self.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetSize);
             }
             if (m_sameHeight)
             {
+                float targetSize;
                 if (m_clampHeight)
                 {
-                    targetSize.y = Mathf.Clamp(m_target.sizeDelta.y, m_minHeight, m_maxHeight);
+                    targetSize = Mathf.Clamp(m_target.rect.height, m_minHeight, m_maxHeight);
                 }
                 else
                 {
-                    targetSize.y = m_target.sizeDelta.y;
+                    targetSize = m_target.rect.height;
                 }
+                _self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetSize);
             }
-            else
-            {
-                targetSize.y = _self.sizeDelta.y;
-            }
-
-            _self.sizeDelta = targetSize;
         }
     }
 }

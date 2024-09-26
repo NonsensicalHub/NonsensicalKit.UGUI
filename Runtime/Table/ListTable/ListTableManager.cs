@@ -17,13 +17,13 @@ namespace NonsensicalKit.UGUI.Table
         /// 是否以group内忽视对象外的预设子物体作为预制体,为否时应当手动设置_prefab参数
         /// </summary>
         [Tooltip("是否使用group内忽视对象外的首个子物体作为表格元素预制体")][SerializeField] protected bool m_childPrefab = true;
-        [Tooltip("首行不同")][SerializeField] protected bool m_differentFirst = false;
+        [Tooltip("首行不同独自使用第一个预制体")][SerializeField] protected bool m_differentFirst = false;
 
         /// <summary>
         /// 用于动态生成子物体的预制体，当_firstPrefab为true时会自动使用group的忽视对象外的子物体作为预制体
         /// 当有超过一个预制体时，会轮流使用每一个预制体
         /// </summary>
-        [Tooltip("表格元素的预制体，当勾选_childPrefab时可为空")][SerializeField] protected GameObject[] m_prefabs = new GameObject[1];
+        [Tooltip("表格元素的预制体，当勾选_childPrefab时可为空")][SerializeField] protected ListElement[] m_prefabs = new ListElement[1];
 
         /// <summary>
         /// 忽视头部子物体数量，当_childPrefab为true时获取子物体预制体时会也会忽略这些物体
@@ -39,6 +39,7 @@ namespace NonsensicalKit.UGUI.Table
         /// 当前元素数据
         /// </summary>
         protected List<ElementData> _elementDatas = new List<ElementData>();
+
         /// <summary>
         /// 当前所有元素组件，包含未使用的
         /// </summary>
@@ -73,11 +74,12 @@ namespace NonsensicalKit.UGUI.Table
 
         public void Clean()
         {
-            _elementDatas = new List<ElementData>();
             foreach (var item in _elements)
             {
-                item.gameObject.SetActive(false);
+                Destroy(item.gameObject);
             }
+            _elementDatas.Clear();
+            _elements.Clear();
         }
 
         protected virtual void UpdateUI(IEnumerable<ElementData> datas)
@@ -199,29 +201,48 @@ namespace NonsensicalKit.UGUI.Table
         {
             if (_initFlag)
             {
-                if (m_group)
+                if (m_group==null)
                 {
-                    if (m_childPrefab)
-                    {
-                        for (int i = 0; i < m_prefabs.Length; i++)
-                        {
-                            m_prefabs[i] = m_group.GetChild(m_ignoreHead + i).gameObject;
-                            m_prefabs[i].gameObject.SetActive(false);
-                        }
-                    }
+                    LogCore.Error("未设置Group", gameObject);
+                    enabled = false;
+                    return;
+                }
 
-                    if (m_ignoreTail > 0)
+                if (m_childPrefab)
+                {
+                    for (int i = 0; i < m_prefabs.Length; i++)
                     {
-                        for (int i = 0; i < m_ignoreTail; i++)
-                        {
-                            _tail.Add(m_group.GetChild(m_group.childCount - m_ignoreTail));
-                        }
+                        m_prefabs[i] = m_group.GetChild(m_ignoreHead + i).GetComponent<ListElement>();
+                        m_prefabs[i].gameObject.SetActive(false);
                     }
                 }
-                else
+
+                if (m_ignoreTail > 0)
                 {
-                    LogCore.Warning("未设置Group", gameObject);
-                    enabled = false;
+                    for (int i = 0; i < m_ignoreTail; i++)
+                    {
+                        _tail.Add(m_group.GetChild(m_group.childCount - m_ignoreTail));
+                    }
+                }
+
+                foreach (var item in m_prefabs)
+                {
+                    if (item==null)
+                    {
+                        LogCore.Error("预制体为空或挂载组件有误", gameObject);
+                        enabled = false;
+                        return;
+                    }
+                }
+
+                if (m_differentFirst)
+                {
+                    if(m_prefabs.Length<2)
+                    {
+                        LogCore.Error("首行不同时至少需要两个预制体", gameObject);
+                        enabled = false;
+                        return;
+                    }
                 }
                 _initFlag = false;
             }
@@ -240,7 +261,7 @@ namespace NonsensicalKit.UGUI.Table
             }
             else
             {
-                var newElement = Instantiate(GetPrefab(index), m_group).GetComponent<ListElement>();
+                var newElement = Instantiate(GetPrefab(index), m_group);
                 InitNewElement(newElement);
                 _elements.Add(newElement);
                 return newElement;
@@ -263,16 +284,23 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private GameObject GetPrefab(int index)
+        private ListElement GetPrefab(int index)
         {
             if (m_differentFirst)
             {
-                if (index == 0)
+                if ( index == 0)
+                {
                     return m_prefabs[0];
+                }
                 else
-                    return m_prefabs[1];
+                {
+                    return m_prefabs[((index-1) %( m_prefabs.Length-1))+1];
+                }
             }
-            return m_prefabs[index % m_prefabs.Length];
+            else
+            {
+                return m_prefabs[index % m_prefabs.Length];
+            }
         }
     }
 }
