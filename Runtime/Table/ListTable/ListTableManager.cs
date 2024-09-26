@@ -17,7 +17,7 @@ namespace NonsensicalKit.UGUI.Table
         /// 是否以group内忽视对象外的预设子物体作为预制体,为否时应当手动设置_prefab参数
         /// </summary>
         [Tooltip("是否使用group内忽视对象外的首个子物体作为表格元素预制体")][SerializeField] protected bool m_childPrefab = true;
-        [Tooltip("首行不同独自使用第一个预制体")][SerializeField] protected bool m_differentFirst = false;
+        [Tooltip("首个元素独自使用第一个预制体")][SerializeField] protected bool m_differentFirst = false;
 
         /// <summary>
         /// 用于动态生成子物体的预制体，当_firstPrefab为true时会自动使用group的忽视对象外的子物体作为预制体
@@ -201,7 +201,7 @@ namespace NonsensicalKit.UGUI.Table
         {
             if (_initFlag)
             {
-                if (m_group==null)
+                if (m_group == null)
                 {
                     LogCore.Error("未设置Group", gameObject);
                     enabled = false;
@@ -210,10 +210,42 @@ namespace NonsensicalKit.UGUI.Table
 
                 if (m_childPrefab)
                 {
+                    if (m_group.childCount < m_ignoreHead + m_prefabs.Length)
+                    {
+                        LogCore.Error("Group子节点数量不足", gameObject);
+                        enabled = false;
+                        return;
+                    }
                     for (int i = 0; i < m_prefabs.Length; i++)
                     {
                         m_prefabs[i] = m_group.GetChild(m_ignoreHead + i).GetComponent<ListElement>();
+                        if (m_prefabs[i] == null)
+                        {
+                            LogCore.Error("预制体未挂载组件", m_group.GetChild(m_ignoreHead + i));
+                            enabled = false;
+                            return;
+                        }
                         m_prefabs[i].gameObject.SetActive(false);
+                    }
+                }
+
+                foreach (var item in m_prefabs)
+                {
+                    if (item == null)
+                    {
+                        LogCore.Error("预制体配置为空", gameObject);
+                        enabled = false;
+                        return;
+                    }
+                }
+
+                if (m_differentFirst)
+                {
+                    if (m_prefabs.Length < 2)
+                    {
+                        LogCore.Error("首行不同时至少需要两个预制体", gameObject);
+                        enabled = false;
+                        return;
                     }
                 }
 
@@ -225,25 +257,6 @@ namespace NonsensicalKit.UGUI.Table
                     }
                 }
 
-                foreach (var item in m_prefabs)
-                {
-                    if (item==null)
-                    {
-                        LogCore.Error("预制体为空或挂载组件有误", gameObject);
-                        enabled = false;
-                        return;
-                    }
-                }
-
-                if (m_differentFirst)
-                {
-                    if(m_prefabs.Length<2)
-                    {
-                        LogCore.Error("首行不同时至少需要两个预制体", gameObject);
-                        enabled = false;
-                        return;
-                    }
-                }
                 _initFlag = false;
             }
         }
@@ -288,13 +301,13 @@ namespace NonsensicalKit.UGUI.Table
         {
             if (m_differentFirst)
             {
-                if ( index == 0)
+                if (index == 0)
                 {
                     return m_prefabs[0];
                 }
                 else
                 {
-                    return m_prefabs[((index-1) %( m_prefabs.Length-1))+1];
+                    return m_prefabs[((index - 1) % (m_prefabs.Length - 1)) + 1];
                 }
             }
             else
