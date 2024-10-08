@@ -15,7 +15,7 @@ namespace NonsensicalKit.UGUI
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (Time.unscaledTime - _lastPressTime < m_minimumInteractionInterval)
+            if (Time.unscaledTime - _lastPressTime > m_minimumInteractionInterval)
             {
                 Press();
                 _lastPressTime = Time.unscaledTime;
