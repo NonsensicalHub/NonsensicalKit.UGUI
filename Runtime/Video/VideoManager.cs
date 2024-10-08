@@ -1,10 +1,11 @@
 using NonsensicalKit.Core;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-namespace NonsensicalKit.UGUI.VideoManager
+namespace NonsensicalKit.UGUI.Video
 {
     /// <summary>
     /// 视频播放管理器

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.UGUI.VideoManager
+namespace NonsensicalKit.UGUI.Video
 {
     public class VideoProgressSlider : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     {

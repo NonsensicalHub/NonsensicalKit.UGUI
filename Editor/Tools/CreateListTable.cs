@@ -13,7 +13,9 @@ namespace NonsensicalKit.UGUI.Editor.Tools
         [MenuItem("Assets/Create/NonsensicalKit/UGUI/CreateListTable", false, 100)]
         public static void ShowWindow()
         {
-            var path = FileTool.FileSaveSelector("prefab", "prefab");
+            var crtPath = AssetDatabase.GetAssetPath(Selection.activeObject);
+            Debug.Log(Path.Combine(Application.dataPath, "..", crtPath));
+            var path = FileTool.FileSaveSelector("prefab",Path.Combine(Application.dataPath,"..", crtPath), "prefab");
             if (string.IsNullOrEmpty(path))
             {
                 Debug.Log("Unable to create ListTable because no file path has been selected.");

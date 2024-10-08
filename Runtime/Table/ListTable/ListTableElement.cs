@@ -3,6 +3,7 @@ namespace NonsensicalKit.UGUI.Table
     public abstract class ListTableElement<ElementDataClass> : NonsensicalUI where ElementDataClass : class
     {
         public ElementDataClass ElementData { get; set; }
+        public int Index { get; set; }
 
         public virtual void SetValue(ElementDataClass elementData)
         {

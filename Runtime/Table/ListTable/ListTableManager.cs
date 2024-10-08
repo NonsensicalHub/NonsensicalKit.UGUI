@@ -119,6 +119,7 @@ namespace NonsensicalKit.UGUI.Table
             {
                 ListElement crtElement = GetElement(i);
                 crtElement.gameObject.SetActive(true);
+                crtElement.Index= i;
                 crtElement.SetValue(_elementDatas[i]);
             }
 
@@ -138,17 +139,18 @@ namespace NonsensicalKit.UGUI.Table
 
             ListElement crtElement = GetElement(_elementDatas.Count - 1);
             crtElement.gameObject.SetActive(true);
+            crtElement.Index = _elementDatas.Count - 1;
             crtElement.SetValue(appendElementData);
 
             UpdateTail();
         }
 
-        protected virtual void Delete(ListElement deleteElement)
+        protected virtual bool Delete(ListElement deleteElement)
         {
             Init();
             if (!_elements.Contains(deleteElement))
             {
-                return;
+                return false;
             }
 
             if (m_prefabs.Length < 2)
@@ -174,22 +176,24 @@ namespace NonsensicalKit.UGUI.Table
 
                 for (int i = index; i < _elementDatas.Count; i++)
                 {
+                    _elements[i].Index = i;
                     _elements[i].SetValue(_elementDatas[i]);
                 }
                 _elements[_elementDatas.Count].gameObject.SetActive(false);
             }
+            return true;
         }
 
-        protected virtual void Delete(ElementData deleteElementData)
+        protected virtual bool Delete(ElementData deleteElementData)
         {
             if (!_elementDatas.Contains(deleteElementData))
             {
-                return;
+                return false;
             }
 
             int index = _elementDatas.IndexOf(deleteElementData);
 
-            Delete(_elements[index]);
+            return Delete(_elements[index]);
         }
 
         protected virtual void InitNewElement(ListElement element)
