@@ -4,7 +4,16 @@ using UnityEngine;
 
 namespace NonsensicalKit.UGUI.Table
 {
-    public abstract class ListTableManager<ListElement, ElementData> : NonsensicalUI
+    public interface IListTableManager<T>
+    {
+        public void SetDatas(IEnumerable<T> datas);
+        public void Append(T element);
+        public bool Delete(T element);
+        public void Clear();
+        public void Clean();
+    }
+
+    public abstract class ListTableManager<ListElement, ElementData> : NonsensicalUI, IListTableManager<ElementData>
             where ListElement : ListTableElement<ElementData>
             where ElementData : class
     {
@@ -63,6 +72,33 @@ namespace NonsensicalKit.UGUI.Table
             UpdateUI(datas);
         }
 
+        public virtual void Append(ElementData appendElementData)
+        {
+            Init();
+            _elementDatas.Add(appendElementData);
+
+            ListElement crtElement = GetElement(_elementDatas.Count - 1);
+            crtElement.gameObject.SetActive(true);
+            crtElement.SetValue(this, _elementDatas.Count - 1, appendElementData);
+
+            UpdateTail();
+        }
+
+        public virtual bool Delete(ElementData deleteElementData)
+        {
+            if (!_elementDatas.Contains(deleteElementData))
+            {
+                return false;
+            }
+
+            int index = _elementDatas.IndexOf(deleteElementData);
+
+            return Delete(_elements[index]);
+        }
+
+        /// <summary>
+        /// 清空数据，隐藏所有元素
+        /// </summary>
         public void Clear()
         {
             _elementDatas.Clear();
@@ -72,6 +108,9 @@ namespace NonsensicalKit.UGUI.Table
             }
         }
 
+        /// <summary>
+        /// 清空数据并销毁元素
+        /// </summary>
         public void Clean()
         {
             foreach (var item in _elements)
@@ -119,8 +158,7 @@ namespace NonsensicalKit.UGUI.Table
             {
                 ListElement crtElement = GetElement(i);
                 crtElement.gameObject.SetActive(true);
-                crtElement.Index= i;
-                crtElement.SetValue(_elementDatas[i]);
+                crtElement.SetValue(this, i, _elementDatas[i]);
             }
 
             //隐藏剩余未使用的子物体
@@ -128,19 +166,6 @@ namespace NonsensicalKit.UGUI.Table
             {
                 _elements[i].gameObject.SetActive(false);
             }
-
-            UpdateTail();
-        }
-
-        protected virtual void Append(ElementData appendElementData)
-        {
-            Init();
-            _elementDatas.Add(appendElementData);
-
-            ListElement crtElement = GetElement(_elementDatas.Count - 1);
-            crtElement.gameObject.SetActive(true);
-            crtElement.Index = _elementDatas.Count - 1;
-            crtElement.SetValue(appendElementData);
 
             UpdateTail();
         }
@@ -176,30 +201,19 @@ namespace NonsensicalKit.UGUI.Table
 
                 for (int i = index; i < _elementDatas.Count; i++)
                 {
-                    _elements[i].Index = i;
-                    _elements[i].SetValue(_elementDatas[i]);
+                    _elements[i].SetValue(this, i, _elementDatas[i]);
                 }
                 _elements[_elementDatas.Count].gameObject.SetActive(false);
             }
             return true;
         }
 
-        protected virtual bool Delete(ElementData deleteElementData)
-        {
-            if (!_elementDatas.Contains(deleteElementData))
-            {
-                return false;
-            }
-
-            int index = _elementDatas.IndexOf(deleteElementData);
-
-            return Delete(_elements[index]);
-        }
-
         protected virtual void InitNewElement(ListElement element)
         {
 
         }
+
+        #region private method
 
         private void Init()
         {
@@ -319,5 +333,7 @@ namespace NonsensicalKit.UGUI.Table
                 return m_prefabs[index % m_prefabs.Length];
             }
         }
+
+        #endregion
     }
 }
