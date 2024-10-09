@@ -215,7 +215,7 @@ namespace NonsensicalKit.UGUI.Table
 
         #region private method
 
-        private void Init()
+        protected void Init()
         {
             if (_initFlag)
             {
@@ -284,7 +284,7 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private ListElement GetElement(int index)
+        protected ListElement GetElement(int index)
         {
             if (index < _elements.Count)
             {
@@ -302,7 +302,7 @@ namespace NonsensicalKit.UGUI.Table
         /// <summary>
         /// 更新尾部元素，将其移至最后
         /// </summary>
-        private void UpdateTail()
+        protected void UpdateTail()
         {
             foreach (var item in _tail)
             {
@@ -315,7 +315,7 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        private ListElement GetPrefab(int index)
+        protected ListElement GetPrefab(int index)
         {
             if (m_differentFirst)
             {
