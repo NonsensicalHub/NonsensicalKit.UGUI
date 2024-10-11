@@ -36,9 +36,9 @@
       "path": "Samples~/TreeNodeTable"
     },
     {
-      "displayName": "VideoManager",
+      "displayName": "MediaManager",
       "description": "\u89c6\u9891\u7ba1\u7406\u5668",
-      "path": "Samples~/VideoManager"
+      "path": "Samples~/MediaManager"
     },
     {
       "displayName": "VisualLogicFlowGraph",
