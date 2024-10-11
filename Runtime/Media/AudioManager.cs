@@ -34,6 +34,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             Init();
             m_btn_play.OnValueChanged.AddListener(ChangePlayState);
+            m_audioPogress.OnDragStateChanged.AddListener(OnDragStateChanged);
         }
 
         private void Update()
@@ -152,6 +153,24 @@ namespace NonsensicalKit.UGUI.Media
             if (url != null)
             {
                 StartCoroutine(HttpUtility.GetAudio(url, OnGetAudio));
+            }
+        }
+
+        private void OnDragStateChanged(bool dragging)
+        {
+            if (_audio!=null)
+            {
+                if (IsPlaying)
+                {
+                    if (dragging)
+                    {
+                        _audio.Pause();
+                    }
+                    else
+                    {
+                        _audio.Play();
+                    }
+                }
             }
         }
 

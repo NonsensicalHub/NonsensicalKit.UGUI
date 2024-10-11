@@ -224,6 +224,23 @@ namespace NonsensicalKit.UGUI.Media
             }
             UpdateRenderTextureSize();
         }
+        private void OnDragStateChanged(bool dragging)
+        {
+            if (_videoPlayer != null)
+            {
+                if (IsPlaying)
+                {
+                    if (dragging)
+                    {
+                        _videoPlayer.Pause();
+                    }
+                    else
+                    {
+                        _videoPlayer.Play();
+                    }
+                }
+            }
+        }
 
         #endregion
 
@@ -300,6 +317,8 @@ namespace NonsensicalKit.UGUI.Media
 
                 m_btn_fullScreen.OnValueChanged.AddListener(OnFullScreenChanged);
                 m_btn_fixControl.OnValueChanged.AddListener(OnFixedStateChanged);
+
+                m_videoProgressSlider.OnDragStateChanged.AddListener(OnDragStateChanged);
 
                 _soundVolume = m_sld_sound.value;
                 PlayStateChanged();

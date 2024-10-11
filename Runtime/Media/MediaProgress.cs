@@ -15,7 +15,7 @@ namespace NonsensicalKit.UGUI.Media
         [SerializeField] private TextMeshProUGUI m_maxTime;
         [SerializeField] private UnityEvent<bool> m_dragStateChanegd;
 
-        public UnityEvent<bool> OnDragStateChanegd => m_dragStateChanegd;
+        public UnityEvent<bool> OnDragStateChanged => m_dragStateChanegd;
 
         public float Value
         {
@@ -45,13 +45,13 @@ namespace NonsensicalKit.UGUI.Media
         public void OnBeginDrag(PointerEventData eventData)
         {
             Dragging = true;
-            OnDragStateChanegd?.Invoke(true);
+            OnDragStateChanged?.Invoke(true);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             Dragging = false;
-            OnDragStateChanegd?.Invoke(false);
+            OnDragStateChanged?.Invoke(false);
         }
     }
 }
