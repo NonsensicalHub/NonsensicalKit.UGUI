@@ -83,6 +83,14 @@ namespace NonsensicalKit.UGUI.Media
             m_fullscreenCanvas = canvas;
         }
 
+        public void ChangeUrl(string url)
+        {
+            if (_videoPlayer != null&& _videoPlayer.url!=url)
+            {
+                PlayVideo(url,true);
+            }
+        }
+
         public void PlayVideo(string url, bool needwait = true)
         {
             LogInfo("播放视频：" + url);
