@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.UGUI.Video
+namespace NonsensicalKit.UGUI.Media
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class VideoControlSpace : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class MediaControlSpace : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private float m_hideTime = 0.5f;
 

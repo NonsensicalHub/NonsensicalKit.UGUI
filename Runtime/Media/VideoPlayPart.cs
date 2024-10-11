@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.UGUI.Video
+namespace NonsensicalKit.UGUI.Media
 {
-    public class PlayPart : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler
+    public class VideoPlayPart : MonoBehaviour, IPointerEnterHandler, IPointerMoveHandler, IPointerExitHandler
     {
         [SerializeField] private Button m_btn_play;
         [SerializeField] private Button m_btn_pause;
@@ -42,12 +42,12 @@ namespace NonsensicalKit.UGUI.Video
 
         private void Play()
         {
-            _manager.PlayButton();
+            _manager.Play();
         }
 
         private void Pause()
         {
-            _manager.PauseButton();
+            _manager.Pause();
         }
 
         public void OnPlayStateChanged(bool isPlaying)
