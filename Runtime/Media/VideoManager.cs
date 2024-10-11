@@ -85,9 +85,9 @@ namespace NonsensicalKit.UGUI.Media
 
         public void ChangeUrl(string url)
         {
-            if (_videoPlayer != null&& _videoPlayer.url!=url)
+            if (_videoPlayer != null && _videoPlayer.url != url)
             {
-                PlayVideo(url,true);
+                PlayVideo(url, true);
             }
         }
 
@@ -355,7 +355,7 @@ namespace NonsensicalKit.UGUI.Media
         }
 
 
-        private void OnPlay(bool playFromTheBeginning=false)
+        private void OnPlay(bool playFromTheBeginning = false)
         {
             LogInfo("视频播放");
             if (_videoPlayer != null)

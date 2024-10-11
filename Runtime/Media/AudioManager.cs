@@ -65,6 +65,7 @@ namespace NonsensicalKit.UGUI.Media
                 else
                 {
                     _crtUrl = url;
+                    GetClip(_crtUrl);
                 }
             }
         }
@@ -82,11 +83,11 @@ namespace NonsensicalKit.UGUI.Media
             _isPlaying = true;
             if (_clipBuffer.ContainsKey(_crtUrl))
             {
-                PlayFromTheBeginning();
+                DoPlay();
             }
             else
             {
-                GetClip();
+                GetClip(_crtUrl);
             }
         }
 
@@ -105,16 +106,13 @@ namespace NonsensicalKit.UGUI.Media
         public void Replay()
         {
             _isPlaying = true;
-            PlayFromTheBeginning();
+            DoPlay();
         }
 
         public void Play()
         {
             _isPlaying = true;
-            if (_audio != null )
-            {
-                _audio.Play();
-            }
+            DoPlay(false);
         }
 
         public void Pause()
@@ -146,14 +144,14 @@ namespace NonsensicalKit.UGUI.Media
             m_btn_mute.OnValueChanged.AddListener(OnMuteChanged);
         }
 
-        private void GetClip()
+        private void GetClip(string url)
         {
             _audio.Stop();
             _audio.clip = null;
 
-            if (_crtUrl != null)
+            if (url != null)
             {
-                StartCoroutine(HttpUtility.GetAudio(_crtUrl, OnGetAudio));
+                StartCoroutine(HttpUtility.GetAudio(url, OnGetAudio));
             }
         }
 
@@ -166,9 +164,10 @@ namespace NonsensicalKit.UGUI.Media
                 if (clip != null)
                 {
                     _clipBuffer.Add(request.url, clip);
+                    _audio.clip = clip;
                     if (IsPlaying)
                     {
-                        PlayFromTheBeginning();
+                        DoPlay();
                     }
                     return;
                 }
@@ -178,12 +177,14 @@ namespace NonsensicalKit.UGUI.Media
             Pause();
         }
 
-        private void PlayFromTheBeginning()
+        private void DoPlay(bool PlayFromTheBeginning = true)
         {
             if (_audio != null && _crtUrl != null && _clipBuffer.ContainsKey(_crtUrl))
             {
-                _audio.clip = _clipBuffer[_crtUrl];
-                _audio.time = 0;
+                if (PlayFromTheBeginning)
+                {
+                    _audio.time = 0;
+                }
                 m_audioPogress.Init(_audio.clip.length);
                 _audio.Play();
             }
