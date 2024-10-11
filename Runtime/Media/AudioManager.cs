@@ -164,7 +164,6 @@ namespace NonsensicalKit.UGUI.Media
                 if (clip != null)
                 {
                     _clipBuffer.Add(request.url, clip);
-                    _audio.clip = clip;
                     if (IsPlaying)
                     {
                         DoPlay();
@@ -177,11 +176,12 @@ namespace NonsensicalKit.UGUI.Media
             Pause();
         }
 
-        private void DoPlay(bool PlayFromTheBeginning = true)
+        private void DoPlay(bool playFromTheBeginning = true)
         {
             if (_audio != null && _crtUrl != null && _clipBuffer.ContainsKey(_crtUrl))
             {
-                if (PlayFromTheBeginning)
+                _audio.clip = _clipBuffer[_crtUrl];
+                if (playFromTheBeginning)
                 {
                     _audio.time = 0;
                 }
