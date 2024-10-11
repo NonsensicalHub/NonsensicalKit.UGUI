@@ -117,6 +117,23 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
+        public void Switch()
+        {
+            if (_isPlaying)
+            {
+                Pause();
+            }
+            else
+            {
+                Play();
+            }
+        }
+
+        public void Replay()
+        {
+            OnPlay(true);
+        }
+
         public void Play()
         {
             OnPlay();
@@ -330,7 +347,7 @@ namespace NonsensicalKit.UGUI.Media
         }
 
 
-        private void OnPlay()
+        private void OnPlay(bool playFromTheBeginning=false)
         {
             LogInfo("视频播放");
             if (_videoPlayer != null)
@@ -338,6 +355,7 @@ namespace NonsensicalKit.UGUI.Media
                 _isPlaying = true;
                 PlayStateChanged();
                 m_videoProgressSlider.Init((float)_videoPlayer.length);
+                if (playFromTheBeginning) _videoPlayer.time = 0;
                 _videoPlayer.Play();
             }
         }

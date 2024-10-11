@@ -77,13 +77,12 @@ namespace NonsensicalKit.UGUI.Media
 
         public void PlayAudio()
         {
-            Debug.Log(1);
             Init();
             if (_crtUrl == null) return;
             _isPlaying = true;
             if (_clipBuffer.ContainsKey(_crtUrl))
             {
-                DoPlay();
+                PlayFromTheBeginning();
             }
             else
             {
@@ -95,7 +94,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (newState)
             {
-                Play();
+                Replay();
             }
             else
             {
@@ -103,16 +102,28 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
+        public void Replay()
+        {
+            _isPlaying = true;
+            PlayFromTheBeginning();
+        }
+
         public void Play()
         {
             _isPlaying = true;
-            DoPlay();
+            if (_audio != null )
+            {
+                _audio.Play();
+            }
         }
 
         public void Pause()
         {
             _isPlaying = false;
-            DoPause();
+            if (_audio != null)
+            {
+                _audio.Pause();
+            }
         }
 
         public void Switch()
@@ -123,7 +134,7 @@ namespace NonsensicalKit.UGUI.Media
             }
             else
             {
-                PlayAudio();
+                Play();
             }
         }
 
@@ -140,20 +151,16 @@ namespace NonsensicalKit.UGUI.Media
             _audio.Stop();
             _audio.clip = null;
 
-            Debug.Log("???");
             if (_crtUrl != null)
             {
-                Debug.Log("???！");
                 StartCoroutine(HttpUtility.GetAudio(_crtUrl, OnGetAudio));
             }
         }
 
         private void OnGetAudio(UnityWebRequest request)
         {
-            Debug.Log("???2");
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("???3");
                 var v = request.downloadHandler as DownloadHandlerAudioClip;
                 var clip = v.audioClip;
                 if (clip != null)
@@ -161,7 +168,7 @@ namespace NonsensicalKit.UGUI.Media
                     _clipBuffer.Add(request.url, clip);
                     if (IsPlaying)
                     {
-                        DoPlay();
+                        PlayFromTheBeginning();
                     }
                     return;
                 }
@@ -171,7 +178,7 @@ namespace NonsensicalKit.UGUI.Media
             Pause();
         }
 
-        private void DoPlay()
+        private void PlayFromTheBeginning()
         {
             if (_audio != null && _crtUrl != null && _clipBuffer.ContainsKey(_crtUrl))
             {
@@ -179,14 +186,6 @@ namespace NonsensicalKit.UGUI.Media
                 _audio.time = 0;
                 m_audioPogress.Init(_audio.clip.length);
                 _audio.Play();
-            }
-        }
-
-        private void DoPause()
-        {
-            if (_audio != null)
-            {
-                _audio.Pause();
             }
         }
 
