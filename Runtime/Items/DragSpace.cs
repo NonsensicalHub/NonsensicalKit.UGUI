@@ -1,5 +1,5 @@
+using NaughtyAttributes;
 using NonsensicalKit.Core.Log;
-using NonsensicalKit.Tools.EditorTool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -18,11 +18,11 @@ namespace NonsensicalKit.UGUI
         /// <summary>
         /// 限定在范围内的对象
         /// </summary>
-        [ShowIF("m_ensureInBoundary")][SerializeField] private RectTransform m_checkRect;
+        [ShowIf("m_ensureInBoundary")][SerializeField] private RectTransform m_checkRect;
         /// <summary>
         /// 确定范围的对象
         /// </summary>
-        [ShowIF("m_ensureInBoundary")][SerializeField] private RectTransform m_boundaryRect;
+        [ShowIf("m_ensureInBoundary")][SerializeField] private RectTransform m_boundaryRect;
 
         /// <summary>
         /// 开始拖拽时鼠标和拖拽对象位置点的偏移，移动时要维持此偏移不变

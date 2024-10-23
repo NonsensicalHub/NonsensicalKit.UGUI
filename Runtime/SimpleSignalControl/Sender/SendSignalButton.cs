@@ -1,5 +1,5 @@
+using NaughtyAttributes;
 using NonsensicalKit.Core;
-using NonsensicalKit.Tools.EditorTool;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,10 +15,10 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         [SerializeField] private string m_signal;
         [SerializeField] private SignalType m_signalType;
 
-        [ShowIF("m_signalType", SignalType.Bool)][SerializeField] private bool m_boolValue;
-        [ShowIF("m_signalType", SignalType.Int)][SerializeField] private int m_intValue;
-        [ShowIF("m_signalType", SignalType.Float)][SerializeField] private float m_floatValue;
-        [ShowIF("m_signalType", SignalType.String)][SerializeField] private string m_stringValue;
+        [ShowIf("m_signalType", SignalType.Bool)][SerializeField] private bool m_boolValue;
+        [ShowIf("m_signalType", SignalType.Int)][SerializeField] private int m_intValue;
+        [ShowIf("m_signalType", SignalType.Float)][SerializeField] private float m_floatValue;
+        [ShowIf("m_signalType", SignalType.String)][SerializeField] private string m_stringValue;
 
         private Button _btn_Self;
 

@@ -1,4 +1,4 @@
-using NonsensicalKit.Tools.EditorTool;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI
@@ -11,13 +11,13 @@ namespace NonsensicalKit.UGUI
     {
         [SerializeField] private RectTransform m_target;
         [SerializeField] private bool m_sameWidth;
-        [SerializeField][ShowIF("m_sameWidth")] private bool m_clampWidth;
-        [SerializeField][ShowIF("m_clampWidth")] private float m_minWidth;
-        [SerializeField][ShowIF("m_clampWidth")] private float m_maxWidth;
+        [SerializeField][ShowIf("m_sameWidth")] private bool m_clampWidth;
+        [SerializeField][ShowIf("m_clampWidth")] private float m_minWidth;
+        [SerializeField][ShowIf("m_clampWidth")] private float m_maxWidth;
         [SerializeField] private bool m_sameHeight;
-        [SerializeField][ShowIF("m_sameHeight")] private bool m_clampHeight;
-        [SerializeField][ShowIF("m_clampHeight")] private float m_minHeight;
-        [SerializeField][ShowIF("m_clampHeight")] private float m_maxHeight;
+        [SerializeField][ShowIf("m_sameHeight")] private bool m_clampHeight;
+        [SerializeField][ShowIf("m_clampHeight")] private float m_minHeight;
+        [SerializeField][ShowIf("m_clampHeight")] private float m_maxHeight;
 
         private RectTransform _self;
 
