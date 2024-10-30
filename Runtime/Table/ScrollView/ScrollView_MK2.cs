@@ -24,10 +24,10 @@ namespace NonsensicalKit.Core.Table
         public enum ItemLayoutType
         {
             // 最后一位表示滚动方向
-            Vertical = 1,                   // 0001
-            Horizontal = 2,                 // 0010
-            HorizontalThenVertical = 3,     // 0011
-            VerticalThenHorizontal = 4,     // 0100
+            Vertical = 1, // 0001
+            Horizontal = 2, // 0010
+            HorizontalThenVertical = 3, // 0011
+            VerticalThenHorizontal = 4, // 0100
         }
 
         /// <summary>
@@ -36,13 +36,13 @@ namespace NonsensicalKit.Core.Table
         /// </summary>
         protected static class CriticalItemType
         {
-            public const int FIRST_SHOW = 0;    //第一个显示的item
-            public const int LAST_SHOW = 1;     //最后一个显示的item
-            public const int FIRST_HIDE = 2;    //第一个显示的item的前一个item，即其最接近的不显示的item
-            public const int LAST_HIDE = 3;     //最后一个显示的item的后一个item，即其最接近的不显示的item
+            public const int FIRST_SHOW = 0; //第一个显示的item
+            public const int LAST_SHOW = 1; //最后一个显示的item
+            public const int FIRST_HIDE = 2; //第一个显示的item的前一个item，即其最接近的不显示的item
+            public const int LAST_HIDE = 3; //最后一个显示的item的后一个item，即其最接近的不显示的item
         }
 
-        public const int DIRECTION_FLAG = 1;  // 0001
+        public const int DIRECTION_FLAG = 1; // 0001
 
         [SerializeField] protected bool m_verticalMid;
         [SerializeField] protected float m_top;
@@ -50,30 +50,32 @@ namespace NonsensicalKit.Core.Table
         [SerializeField] protected float m_left;
         [SerializeField] protected bool m_autoResize;
         [SerializeField] protected Vector2 m_spacing;
-        [SerializeField][Tooltip("默认item尺寸")] protected Vector2 m_itemSize;
-        [SerializeField][Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
-        [SerializeField][Tooltip("忽略开头对象")] protected bool m_ignoreHead = false;
-        [SerializeField][Tooltip("忽略结尾对象")] protected bool m_ignoretail = false;
+        [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize;
+        [SerializeField] [Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
+        [SerializeField] [Tooltip("忽略开头对象")] protected bool m_ignoreHead = false;
+        [SerializeField] [Tooltip("忽略结尾对象")] protected bool m_ignoretail = false;
 
-        [SerializeField][Tooltip("是否使用默认对象池")] protected bool m_useDefaultPool = true;
-        [SerializeField][Tooltip("对象池大小")] protected int m_poolSize = 20;
-        [SerializeField][Tooltip("item模板")] protected RectTransform m_itemTemplate;
+        [SerializeField] [Tooltip("是否使用默认对象池")]
+        protected bool m_useDefaultPool = true;
+
+        [SerializeField] [Tooltip("对象池大小")] protected int m_poolSize = 20;
+        [SerializeField] [Tooltip("item模板")] protected RectTransform m_itemTemplate;
 
         public bool IsDragging { get; private set; }
 
-        protected Action<int, RectTransform> UpdateFunc;   //更新对应索引的item的Action
-        protected Func<int> ItemCountFunc;                 //item的数量获取的func,这个方法必须赋值
-        protected Func<int, RectTransform> ItemGetFunc;    //分配对应索引item的Func
-        protected Action<int, RectTransform> ItemRecycleFunc;   //回收对应索引item的Func
+        protected Action<int, RectTransform> UpdateFunc; //更新对应索引的item的Action
+        protected Func<int> ItemCountFunc; //item的数量获取的func,这个方法必须赋值
+        protected Func<int, RectTransform> ItemGetFunc; //分配对应索引item的Func
+        protected Action<int, RectTransform> ItemRecycleFunc; //回收对应索引item的Func
 
-        protected int[] _criticalItemIndex = new int[4];     // 只保存4个临界index
+        protected int[] _criticalItemIndex = new int[4]; // 只保存4个临界index
 
         private int _dataCount = 0; //缓存的当前数据数量，用于减少获取数量方法的调用次数
         private RectTransform[] _managedItems; //存储对应索引的item
         private Rect _viewRectInContent; //viewPort一开始在content坐标系中的相对rect，用于计算item是否应该被显示
-        private ComponentPool_MK2<RectTransform> _itemPool = null;   //对象池
+        private ComponentPool_MK2<RectTransform> _itemPool = null; //对象池
 
-        private bool _initialized = false;   //是否进行过初始化
+        private bool _initialized = false; //是否进行过初始化
         private bool _willUpdateData = false; //是否将要更新数据
         private bool _waitViewPortResize = false; //是否正在等待viewPort初始化
 
@@ -82,8 +84,8 @@ namespace NonsensicalKit.Core.Table
         private RectTransform _tail;
         private float _tailSize;
 
-        private int _verticalCount;    //纵向能放几个item
-        private int _horizontalCount;  //横向能放几个item
+        private int _verticalCount; //纵向能放几个item
+        private int _horizontalCount; //横向能放几个item
 
         protected override void Start()
         {
@@ -122,6 +124,7 @@ namespace NonsensicalKit.Core.Table
             base.OnBeginDrag(eventData);
             IsDragging = true;
         }
+
         public override void OnEndDrag(PointerEventData eventData)
         {
             base.OnEndDrag(eventData);
@@ -153,10 +156,13 @@ namespace NonsensicalKit.Core.Table
                         _waitViewPortResize = true;
                         StartCoroutine(WaitViewPortResize());
                     }
+
                     return;
                 }
+
                 InitScrollView();
             }
+
             if (immediately)
             {
                 _willUpdateData = true;
@@ -168,6 +174,7 @@ namespace NonsensicalKit.Core.Table
                 {
                     StartCoroutine(DelayUpdateData());
                 }
+
                 _willUpdateData = true;
             }
         }
@@ -266,6 +273,7 @@ namespace NonsensicalKit.Core.Table
             {
                 yield return null;
             }
+
             UpdateData();
         }
 
@@ -306,6 +314,7 @@ namespace NonsensicalKit.Core.Table
                                 _managedItems[i] = null;
                             }
                         }
+
                         var temp = new RectTransform[newDataCount];
                         Array.Copy(_managedItems, temp, newDataCount);
                         _managedItems = temp;
@@ -336,6 +345,7 @@ namespace NonsensicalKit.Core.Table
             {
                 _managedItems = new RectTransform[newDataCount];
             }
+
             _dataCount = newDataCount;
 
             if (((int)m_layoutType & DIRECTION_FLAG) == 1)
@@ -348,24 +358,29 @@ namespace NonsensicalKit.Core.Table
                 _head?.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, _headSize);
                 _tail?.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, _tailSize);
             }
+
             switch (m_layoutType)
             {
                 case ItemLayoutType.Vertical:
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _viewRectInContent.width);
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _headSize + _tailSize + newDataCount * m_itemSize.y + (newDataCount - 1) * m_spacing.y + m_top * 2);
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                        _headSize + _tailSize + newDataCount * m_itemSize.y + (newDataCount - 1) * m_spacing.y + m_top * 2);
                     break;
                 case ItemLayoutType.Horizontal:
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _headSize + _tailSize + newDataCount * m_itemSize.x + (newDataCount - 1) * m_spacing.x + m_left * 2);
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
+                        _headSize + _tailSize + newDataCount * m_itemSize.x + (newDataCount - 1) * m_spacing.x + m_left * 2);
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _viewRectInContent.height);
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _viewRectInContent.width);
                     var vCount = (int)((newDataCount - 1) / (float)_horizontalCount) + 1;
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _headSize + _tailSize + (vCount + 1) * m_itemSize.y + (vCount - 1) * m_spacing.y + m_top * 2);
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                        _headSize + _tailSize + (vCount + 1) * m_itemSize.y + (vCount - 1) * m_spacing.y + m_top * 2);
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
                     var hCount = (int)((newDataCount - 1) / (float)_verticalCount) + 1;
-                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _headSize + _tailSize + (hCount + 1) * m_itemSize.x + (hCount - 1) * m_spacing.x + m_left * 2);
+                    content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
+                        _headSize + _tailSize + (hCount + 1) * m_itemSize.x + (hCount - 1) * m_spacing.x + m_left * 2);
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _viewRectInContent.height);
                     break;
                 default:
@@ -399,21 +414,22 @@ namespace NonsensicalKit.Core.Table
             switch (m_layoutType)
             {
                 case ItemLayoutType.Vertical:
-                    midIndex = (int)(content.anchoredPosition.y / (m_itemSize.y + m_spacing.y));
+                    midIndex = (int)((content.anchoredPosition.y + _viewRectInContent.size.y * 0.5f) / (m_itemSize.y + m_spacing.y));
                     break;
                 case ItemLayoutType.Horizontal:
-                    midIndex = -(int)(content.anchoredPosition.x / (m_itemSize.x + m_spacing.x));
+                    midIndex = -(int)((content.anchoredPosition.x + _viewRectInContent.size.x * 0.5f) / (m_itemSize.x + m_spacing.x));
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
-                    midIndex = (int)(content.anchoredPosition.y / (m_itemSize.y + m_spacing.y)) * _horizontalCount;
+                    midIndex = (int)((content.anchoredPosition.y + _viewRectInContent.size.y * 0.5f) / (m_itemSize.y + m_spacing.y)) * _horizontalCount;
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
-                    midIndex = -(int)(content.anchoredPosition.x / (m_itemSize.x + m_spacing.x)) * _verticalCount;
+                    midIndex = -(int)((content.anchoredPosition.x + _viewRectInContent.size.x * 0.5f) / (m_itemSize.x + m_spacing.x)) * _verticalCount;
                     break;
                 default:
                     midIndex = 0;
                     break;
             }
+
             midIndex = Mathf.Clamp(midIndex, 0, _dataCount - 1);
 
             //向前找第一个看不见的元素
@@ -430,12 +446,14 @@ namespace NonsensicalKit.Core.Table
                         _managedItems[crtIndex] = item;
                     }
                 }
+
                 crtIndex--;
                 if (crtIndex < 0)
                 {
                     break;
                 }
             }
+
             _criticalItemIndex[CriticalItemType.FIRST_HIDE] = Mathf.Max(crtIndex, 0);
             _criticalItemIndex[CriticalItemType.FIRST_SHOW] = crtIndex + 1;
 
@@ -453,6 +471,7 @@ namespace NonsensicalKit.Core.Table
                         _managedItems[crtIndex] = item;
                     }
                 }
+
                 crtIndex++;
                 if (crtIndex >= _dataCount)
                 {
@@ -487,6 +506,7 @@ namespace NonsensicalKit.Core.Table
                             _managedItems[i] = null;
                         }
                     }
+
                     for (int i = _criticalItemIndex[CriticalItemType.LAST_SHOW] + 1, count = oldLast; i <= count; i++)
                     {
                         if (_managedItems[i] != null)
@@ -496,7 +516,6 @@ namespace NonsensicalKit.Core.Table
                         }
                     }
                 }
-
             }
         }
 
@@ -512,6 +531,7 @@ namespace NonsensicalKit.Core.Table
             {
                 return _managedItems[index];
             }
+
             return null;
         }
 
@@ -532,7 +552,7 @@ namespace NonsensicalKit.Core.Table
                     {
                         dirty = dirty || CheckAndHideItem(i);
                     }
-                    else  //显示进入可见区域的item
+                    else //显示进入可见区域的item
                     {
                         dirty = dirty || CheckAndShowItem(i);
                     }
@@ -567,6 +587,7 @@ namespace NonsensicalKit.Core.Table
                     _criticalItemIndex[criticalItemType + 2] = Mathf.Min(criticalIndex, _criticalItemIndex[criticalItemType + 2]);
                     _criticalItemIndex[criticalItemType]--;
                 }
+
                 //确保改变过后仍在合理范围内
                 _criticalItemIndex[criticalItemType] = Mathf.Clamp(_criticalItemIndex[criticalItemType], 0, _dataCount - 1);
                 return true;
@@ -602,9 +623,11 @@ namespace NonsensicalKit.Core.Table
                     _criticalItemIndex[criticalItemType - 2] = Mathf.Max(criticalIndex, _criticalItemIndex[criticalItemType - 2]);
                     _criticalItemIndex[criticalItemType]++;
                 }
+
                 _criticalItemIndex[criticalItemType] = Mathf.Clamp(_criticalItemIndex[criticalItemType], 0, _dataCount - 1);
                 return true;
             }
+
             return false;
         }
 
@@ -634,8 +657,8 @@ namespace NonsensicalKit.Core.Table
             }
 
             var targetRect = GetItemRectByIndex(index);
-            targetRect.x -= m_spacing.x * 0.5f;
-            targetRect.y += m_spacing.y * 0.5f;
+            //targetRect.x -= m_spacing.x * 0.5f;
+            //targetRect.y += m_spacing.y * 0.5f;
             targetRect.width += m_spacing.x;
             targetRect.height += m_spacing.y;
             return _viewableRect.Overlaps(targetRect);
@@ -643,6 +666,7 @@ namespace NonsensicalKit.Core.Table
 
         private bool _needCalculateViewableRect = true;
         private Rect _viewableRect;
+
         private IEnumerator ResetViewableRect()
         {
             yield return new WaitForEndOfFrame();
@@ -658,25 +682,23 @@ namespace NonsensicalKit.Core.Table
             {
                 Debug.LogError("未配置模板");
             }
+
             GameObject poolNode = new GameObject("POOL");
             poolNode.SetActive(false);
             poolNode.transform.SetParent(transform, false);
             _itemPool = new ComponentPool_MK2<RectTransform>(
-              m_itemTemplate,
-                (RectTransform item) =>
+                m_itemTemplate,
+                (RectTransform item) => { item.transform.SetParent(poolNode.transform, false); },
+                (rect) =>
                 {
-                    item.transform.SetParent(poolNode.transform, false);
-                },
-               (rect) =>
-               {
-                   rect.transform.SetParent(poolNode.transform, false);
+                    rect.transform.SetParent(poolNode.transform, false);
 
-                   rect.anchorMin = Vector2.up;
-                   rect.anchorMax = Vector2.up;
-                   rect.pivot = Vector2.zero;
+                    rect.anchorMin = Vector2.up;
+                    rect.anchorMax = Vector2.up;
+                    rect.pivot = Vector2.zero;
 
-                   rect.gameObject.SetActive(true);
-               });
+                    rect.gameObject.SetActive(true);
+                });
         }
 
         /// <summary>
@@ -731,6 +753,7 @@ namespace NonsensicalKit.Core.Table
             {
                 item = _itemPool.New();
             }
+
             return item;
         }
 
@@ -777,6 +800,7 @@ namespace NonsensicalKit.Core.Table
                         _headSize = dir == 1 ? _head.rect.height : _head.rect.width;
                     }
                 }
+
                 if (m_ignoretail)
                 {
                     _tail = content.GetChild(content.childCount - 1).GetComponent<RectTransform>();
@@ -797,6 +821,7 @@ namespace NonsensicalKit.Core.Table
                     {
                         m_left = (_viewRectInContent.width - m_itemSize.x) / 2;
                     }
+
                     break;
                 case ItemLayoutType.Horizontal:
                     _verticalCount = 1;
@@ -804,40 +829,43 @@ namespace NonsensicalKit.Core.Table
                     {
                         m_top = (_viewRectInContent.height - m_itemSize.y) / 2;
                     }
+
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
+                {
+                    var w = _viewRectInContent.width - (m_horizonMid ? 0 : m_left);
+                    _horizontalCount = 1;
+                    w -= m_itemSize.x;
+                    var itemW = m_itemSize.x + m_spacing.x;
+                    while (w > itemW)
                     {
-                        var w = _viewRectInContent.width - (m_horizonMid ? 0 : m_left);
-                        _horizontalCount = 1;
-                        w -= m_itemSize.x;
-                        var itemW = m_itemSize.x + m_spacing.x;
-                        while (w > itemW)
-                        {
-                            w -= itemW;
-                            _horizontalCount++;
-                        }
-                        if (m_horizonMid)
-                        {
-                            m_left = w / 2;
-                        }
+                        w -= itemW;
+                        _horizontalCount++;
                     }
+
+                    if (m_horizonMid)
+                    {
+                        m_left = w / 2;
+                    }
+                }
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
+                {
+                    var h = _viewRectInContent.height - (m_verticalMid ? 0 : m_top);
+                    _verticalCount = 1;
+                    h -= m_itemSize.y;
+                    var itemH = m_itemSize.y + m_spacing.y;
+                    while (h > itemH)
                     {
-                        var h = _viewRectInContent.height - (m_verticalMid ? 0 : m_top);
-                        _verticalCount = 1;
-                        h -= m_itemSize.y;
-                        var itemH = m_itemSize.y + m_spacing.y;
-                        while (h > itemH)
-                        {
-                            h -= itemH;
-                            _verticalCount++;
-                        }
-                        if (m_verticalMid)
-                        {
-                            m_top = h / 2;
-                        }
+                        h -= itemH;
+                        _verticalCount++;
                     }
+
+                    if (m_verticalMid)
+                    {
+                        m_top = h / 2;
+                    }
+                }
                     break;
                 default:
                     break;
@@ -849,25 +877,24 @@ namespace NonsensicalKit.Core.Table
         /// </summary>
         private void InitViewRect()
         {
-
             content.pivot = Vector2.up; //(0,1),左上角
 
             /*
              *  WorldCorners
-             * 
-             *    1 ------- 2     
+             *
+             *    1 ------- 2
              *    |         |
              *    |         |
              *    0 ------- 3
-             * 
+             *
              */
             Vector3[] viewWorldConers = new Vector3[4];
 
             viewRect.GetWorldCorners(viewWorldConers);
             Vector3[] rectCorners = new Vector3[2];
 
-            rectCorners[0] = content.transform.InverseTransformPoint(viewWorldConers[0]);   //左下角
-            rectCorners[1] = content.transform.InverseTransformPoint(viewWorldConers[2]);   //右上角
+            rectCorners[0] = content.transform.InverseTransformPoint(viewWorldConers[0]); //左下角
+            rectCorners[1] = content.transform.InverseTransformPoint(viewWorldConers[2]); //右上角
 
             _viewRectInContent = new Rect((Vector2)rectCorners[0] - content.anchoredPosition, rectCorners[1] - rectCorners[0]);
         }
@@ -886,24 +913,25 @@ namespace NonsensicalKit.Core.Table
                     pos.y = -m_itemSize.y;
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
-                    {
-                        var hCount = (int)(index / (float)_verticalCount);
-                        var vCount = index - hCount * _verticalCount;
-                        pos.x = _headSize + m_left + hCount * m_itemSize.x + hCount * m_spacing.x;
-                        pos.y = -(m_top + (vCount + 1) * m_itemSize.y + vCount * m_spacing.y);
-                    }
+                {
+                    var hCount = (int)(index / (float)_verticalCount);
+                    var vCount = index - hCount * _verticalCount;
+                    pos.x = _headSize + m_left + hCount * m_itemSize.x + hCount * m_spacing.x;
+                    pos.y = -(m_top + (vCount + 1) * m_itemSize.y + vCount * m_spacing.y);
+                }
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
-                    {
-                        var vCount = (int)((index) / (float)_horizontalCount);
-                        var hCount = index - vCount * _horizontalCount;
-                        pos.x = m_left + hCount * m_itemSize.x + hCount * m_spacing.x;
-                        pos.y = -(_headSize + m_top + (vCount + 1) * m_itemSize.y + vCount * m_spacing.y);
-                    }
+                {
+                    var vCount = (int)((index) / (float)_horizontalCount);
+                    var hCount = index - vCount * _horizontalCount;
+                    pos.x = m_left + hCount * m_itemSize.x + hCount * m_spacing.x;
+                    pos.y = -(_headSize + m_top + (vCount + 1) * m_itemSize.y + vCount * m_spacing.y);
+                }
                     break;
                 default:
                     break;
             }
+
             return new Rect(pos, m_itemSize);
         }
     }
