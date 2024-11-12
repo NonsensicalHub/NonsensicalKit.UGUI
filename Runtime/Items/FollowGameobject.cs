@@ -1,3 +1,4 @@
+using NonsensicalKit.Core;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI
@@ -22,6 +23,7 @@ namespace NonsensicalKit.UGUI
         [SerializeField] private bool m_scaleByDistance = false;
 
         [SerializeField] private float m_normalDistance = 1;
+        [SerializeField] private UpdateMethod m_updateMethod ;
 
         public bool Back { get; private set; }
         public Vector2 Offset { get; set; }
@@ -44,6 +46,30 @@ namespace NonsensicalKit.UGUI
         }
 
         private void Update()
+        {
+            if (m_updateMethod==UpdateMethod.Update)
+            {
+                Follow();
+            }
+        }
+        
+        private void FixedUpdate()
+        {
+            if (m_updateMethod==UpdateMethod.FixedUpdate)
+            {
+                Follow();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (m_updateMethod==UpdateMethod.LateUpdate)
+            {
+                Follow();
+            }
+        }
+
+        private void Follow()
         {
             if (m_mainCamera == null)
             {
