@@ -1,6 +1,7 @@
-using NonsensicalKit.Tools.NetworkTool;
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using NonsensicalKit.Core.Log;
+using NonsensicalKit.Tools.NetworkTool;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -15,18 +16,36 @@ namespace NonsensicalKit.UGUI.Media
         [SerializeField] private Slider m_sld_volume;
         [SerializeField] private ToggleButton m_btn_mute;
 
-        [SerializeField] private bool m_loop = false;
-        [SerializeField] private bool m_mute = false;
-        [SerializeField][Range(0, 1)] private float m_volume = 0.5f;
+        [SerializeField] private bool m_loop;
+        [SerializeField] private bool m_mute;
+        [SerializeField] [Range(0, 1)] private float m_volume = 0.5f;
 
-        public bool Loop { get { return m_loop; } set { m_loop = value; } }
-        public float Volume { get { return m_volume; } set { m_volume = Mathf.Clamp01(value); ; m_sld_volume.value = m_volume; } }
-        public bool Mute { get { return m_mute; } set { m_mute = value; } }
-        public bool IsPlaying { get { return _isPlaying; } set { if (_isPlaying != value) { ChangePlayState(value); } } }
+        public bool Loop { get => m_loop; set => m_loop = value; }
 
+        public float Volume
+        {
+            get => m_volume;
+            set
+            {
+                m_volume = Mathf.Clamp01(value);
+                m_sld_volume.value = m_volume;
+            }
+        }
+
+        public bool Mute { get => m_mute; set => m_mute = value; }
+
+        public bool IsPlaying
+        {
+            get => _isPlaying;
+            set
+            {
+                if (_isPlaying != value) { ChangePlayState(value); }
+            }
+        }
+
+        private readonly Dictionary<string, AudioClip> _clipBuffer = new();
         private bool _isPlaying;
         private AudioSource _audio;
-        private Dictionary<string, AudioClip> _clipBuffer = new Dictionary<string, AudioClip>();
         private string _crtUrl;
         private bool _inited;
 
@@ -39,18 +58,16 @@ namespace NonsensicalKit.UGUI.Media
 
         private void Update()
         {
-            if (_audio != null)
+            if (Time.frameCount % 5 == 0
+                && _audio is not null)
             {
-                if (Time.frameCount % 5 == 0)
+                if (m_audioPogress.Dragging)
                 {
-                    if (m_audioPogress.Dragging)
-                    {
-                        _audio.time = m_audioPogress.Value;
-                    }
-                    else
-                    {
-                        m_audioPogress.Value = (float)_audio.time;
-                    }
+                    _audio.time = m_audioPogress.Value;
+                }
+                else
+                {
+                    m_audioPogress.Value = _audio.time;
                 }
             }
         }
@@ -96,7 +113,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (newState)
             {
-                Replay();
+                Resume();
             }
             else
             {
@@ -110,16 +127,19 @@ namespace NonsensicalKit.UGUI.Media
             DoPlay();
         }
 
-        public void Play()
+        public void Resume()
         {
             _isPlaying = true;
-            DoPlay(false);
+            if (_audio is not null)
+            {
+                _audio.Play();
+            }
         }
 
         public void Pause()
         {
             _isPlaying = false;
-            if (_audio != null)
+            if (_audio is not null)
             {
                 _audio.Pause();
             }
@@ -133,12 +153,14 @@ namespace NonsensicalKit.UGUI.Media
             }
             else
             {
-                Play();
+                Resume();
             }
         }
 
         private void Init()
         {
+            if (_inited) return;
+            _inited = true;
             _audio = GetComponent<AudioSource>();
             m_btn_play.OnValueChanged.AddListener(ChangePlayState);
             m_sld_volume.onValueChanged.AddListener(OnVolumeChanged);
@@ -150,15 +172,15 @@ namespace NonsensicalKit.UGUI.Media
             _audio.Stop();
             _audio.clip = null;
 
-            if (url != null)
+            if (string.IsNullOrEmpty(url) == false)
             {
-                StartCoroutine(HttpUtility.GetAudio(url, OnGetAudio));
+                StartCoroutine(GetAudio(url));
             }
         }
 
         private void OnDragStateChanged(bool dragging)
         {
-            if (_audio!=null)
+            if (_audio != null)
             {
                 if (IsPlaying)
                 {
@@ -174,36 +196,43 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
-        private void OnGetAudio(UnityWebRequest request)
+        private IEnumerator GetAudio(string url)
         {
-            if (request.result == UnityWebRequest.Result.Success)
+            UnityWebRequest uwr = new UnityWebRequest();
+
+            yield return uwr.GetAudio(url);
+            if (uwr.result == UnityWebRequest.Result.Success)
             {
-                var v = request.downloadHandler as DownloadHandlerAudioClip;
-                var clip = v.audioClip;
-                if (clip != null)
+                if (uwr.downloadHandler is DownloadHandlerAudioClip v)
                 {
-                    _clipBuffer.Add(request.url, clip);
-                    if (IsPlaying)
+                    var clip = v.audioClip;
+                    if (clip is not null)
                     {
-                        DoPlay();
+                        _clipBuffer.Add(url, clip);
+                        if (IsPlaying)
+                        {
+                            DoPlay();
+
+                            yield break;
+                        }
                     }
-                    return;
                 }
             }
 
-            Debug.LogError("音频文件加载错误" + request.url);
+            LogCore.Error("音频文件加载错误:" + uwr.url);
             Pause();
         }
 
         private void DoPlay(bool playFromTheBeginning = true)
         {
-            if (_audio != null && _crtUrl != null && _clipBuffer.ContainsKey(_crtUrl))
+            if (_audio is not null && _clipBuffer.TryGetValue(_crtUrl, out var value))
             {
-                _audio.clip = _clipBuffer[_crtUrl];
+                _audio.clip = value;
                 if (playFromTheBeginning)
                 {
                     _audio.time = 0;
                 }
+
                 m_audioPogress.Init(_audio.clip.length);
                 _audio.Play();
             }
@@ -223,7 +252,7 @@ namespace NonsensicalKit.UGUI.Media
 
         private void UpdateSound()
         {
-            if (_audio != null)
+            if (_audio is not null)
             {
                 if (Mute)
                 {

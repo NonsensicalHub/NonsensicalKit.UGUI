@@ -10,10 +10,18 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
     public class SignalControlActive : NonsensicalMono
     {
         [SerializeField] private GameObject m_target;
-        [SerializeField] private bool m_twoSignalControl = false;
+        [SerializeField] private bool m_twoSignalControl ;
         [SerializeField] private string m_signal;
         [SerializeField] private string m_signal2;
         [SerializeField] private bool m_defaultState = true;
+
+        private void Reset()
+        {
+            if (m_target == null)
+            {
+                m_target = gameObject;
+            }
+        }
 
         private void Awake()
         {
@@ -35,14 +43,17 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         {
             m_target.SetActive(!m_target.activeSelf);
         }
+
         private void Switch(bool state)
         {
             m_target.SetActive(state);
         }
+
         private void Show()
         {
             m_target.SetActive(true);
         }
+
         private void Hide()
         {
             m_target.SetActive(false);
