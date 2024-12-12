@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Media
 {
+    /// <summary>
+    /// 使用url播放音频的UI管理类，会以url为键缓存AudioClip
+    /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class AudioManager : MonoBehaviour
     {
@@ -20,7 +23,15 @@ namespace NonsensicalKit.UGUI.Media
         [SerializeField] private bool m_mute;
         [SerializeField] [Range(0, 1)] private float m_volume = 0.5f;
 
-        public bool Loop { get => m_loop; set => m_loop = value; }
+        public bool Loop
+        {
+            get => m_loop;
+            set
+            {
+                m_loop = value;
+                UpdateLoop();
+            }
+        }
 
         public float Volume
         {
@@ -28,18 +39,38 @@ namespace NonsensicalKit.UGUI.Media
             set
             {
                 m_volume = Mathf.Clamp01(value);
-                m_sld_volume.value = m_volume;
+
+                if (m_volume != value)
+                {
+                    m_sld_volume.value = m_volume;
+                    UpdateSound();
+                }
             }
         }
 
-        public bool Mute { get => m_mute; set => m_mute = value; }
+        public bool Mute
+        {
+            get => m_mute;
+            set
+            {
+                m_btn_mute.SetState(value);
+                if (m_mute != value)
+                {
+                    m_mute = value;
+                    UpdateSound();
+                }
+            }
+        }
 
         public bool IsPlaying
         {
             get => _isPlaying;
             set
             {
-                if (_isPlaying != value) { ChangePlayState(value); }
+                if (_isPlaying != value)
+                {
+                    ChangePlayState(value);
+                }
             }
         }
 
@@ -72,6 +103,14 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
+        private void OnDestroy()
+        {
+            foreach (var clipBuffer in _clipBuffer)
+            {
+                Destroy(clipBuffer.Value);
+            }
+        }
+
         public void ChangeUrl(string url)
         {
             if (_crtUrl != url)
@@ -99,6 +138,7 @@ namespace NonsensicalKit.UGUI.Media
             Init();
             if (_crtUrl == null) return;
             _isPlaying = true;
+            m_btn_play.SetState(true);
             if (_clipBuffer.ContainsKey(_crtUrl))
             {
                 DoPlay();
@@ -111,6 +151,7 @@ namespace NonsensicalKit.UGUI.Media
 
         public void ChangePlayState(bool newState)
         {
+            m_btn_play.SetState(newState);
             if (newState)
             {
                 Resume();
@@ -132,7 +173,14 @@ namespace NonsensicalKit.UGUI.Media
             _isPlaying = true;
             if (_audio is not null)
             {
-                _audio.Play();
+                if (_audio.clip != null)
+                {
+                    _audio.UnPause();
+                }
+                else
+                {
+                    DoPlay();
+                }
             }
         }
 
@@ -262,6 +310,14 @@ namespace NonsensicalKit.UGUI.Media
                 {
                     _audio.volume = Volume;
                 }
+            }
+        }
+
+        private void UpdateLoop()
+        {
+            if (_audio is not null)
+            {
+                _audio.loop = m_loop;
             }
         }
     }
