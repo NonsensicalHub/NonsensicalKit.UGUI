@@ -5,12 +5,14 @@ using UnityEngine.UI;
 namespace NonsensicalKit.UGUI
 {
     [RequireComponent(typeof(Button),typeof(Image))]
+    
     public class ToggleButton : MonoBehaviour
     {
         [SerializeField] private GameObject m_onState;
         [SerializeField] private GameObject m_offState;
         [SerializeField] private bool m_isOn;
         [SerializeField] private ToggleButtonGroup m_group;
+        [SerializeField] private bool m_invokeOnStart = true;
 
         public bool IsOn
         {
@@ -50,7 +52,10 @@ namespace NonsensicalKit.UGUI
 
         private void Start()
         {
-            OnValueChanged?.Invoke(IsOn);
+            if (m_invokeOnStart)
+            {
+                OnValueChanged?.Invoke(IsOn);
+            }
         }
 
         public void Press()

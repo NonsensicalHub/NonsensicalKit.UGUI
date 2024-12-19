@@ -1,3 +1,4 @@
+using System;
 using NonsensicalKit.Core;
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
@@ -26,28 +27,43 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         private MessageInfo _crtConfirmInfo;
 
+
+        private float _surviceTime;
+        private float _timer;
+
+        private void Update()
+        {
+            _timer+=Time.deltaTime;
+            if (_timer>_surviceTime)
+            {
+                Close();
+            }
+        }
+
         public void SetArg(object arg)
         {
             _crtConfirmInfo = arg as MessageInfo;
             if (_crtConfirmInfo == null)
             {
                 LogCore.Warning($"传入{nameof(MessageWindow)}的参数有误");
-                Pool.Store(gameObject);
+                Close();
                 return;
             }
+
+            _timer = 0;
             OpenMessageWindow(_crtConfirmInfo);
         }
 
+        public void Close()
+        {
+            Pool.Store(gameObject);
+        }
+        
         private void OpenMessageWindow(MessageInfo messageInfo)
         {
             m_txt_message.text = messageInfo.Message;
 
-            NonsensicalInstance.Instance.DelayDoIt(messageInfo.SurviceTime, StoreSelf);
-        }
-
-        private void StoreSelf()
-        {
-            Pool.Store(gameObject);
+            _surviceTime = messageInfo.SurviceTime;
         }
     }
 }
