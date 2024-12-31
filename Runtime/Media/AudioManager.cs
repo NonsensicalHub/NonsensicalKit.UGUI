@@ -38,10 +38,9 @@ namespace NonsensicalKit.UGUI.Media
             get => m_volume;
             set
             {
-                m_volume = Mathf.Clamp01(value);
-
                 if (m_volume != value)
                 {
+                    m_volume = Mathf.Clamp01(value);
                     m_sld_volume.value = m_volume;
                     UpdateSound();
                 }
@@ -53,9 +52,9 @@ namespace NonsensicalKit.UGUI.Media
             get => m_mute;
             set
             {
-                m_btn_mute.SetState(value);
                 if (m_mute != value)
                 {
+                    m_btn_mute.SetState(value);
                     m_mute = value;
                     UpdateSound();
                 }
