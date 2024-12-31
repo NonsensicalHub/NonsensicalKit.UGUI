@@ -29,6 +29,10 @@ namespace NonsensicalKit.UGUI.Media
                 m_crtTime.text = StringTool.GetFormatTime(value);
             }
         }
+        public float MaxValue
+        {
+            set => m_sld_sound.maxValue = value;
+        }
 
         public bool Dragging { get; private set; }
 

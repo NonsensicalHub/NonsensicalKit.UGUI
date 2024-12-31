@@ -71,6 +71,7 @@ namespace NonsensicalKit.UGUI.Media
                     else
                     {
                         m_videoProgressSlider.Value = (float)_videoPlayer.time;
+                        m_videoProgressSlider.MaxValue=(float)_videoPlayer.clip.length;
                     }
                 }
             }
