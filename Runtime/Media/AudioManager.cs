@@ -259,9 +259,9 @@ namespace NonsensicalKit.UGUI.Media
                         if (IsPlaying)
                         {
                             DoPlay();
-
-                            yield break;
                         }
+
+                        yield break;
                     }
                 }
             }
