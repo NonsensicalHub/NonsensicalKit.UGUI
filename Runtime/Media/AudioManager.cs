@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NonsensicalKit.Core;
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.NetworkTool;
 using UnityEngine;
@@ -68,12 +69,14 @@ namespace NonsensicalKit.UGUI.Media
             {
                 if (_isPlaying != value)
                 {
+                    _isPlaying = value;
                     ChangePlayState(value);
                 }
             }
         }
 
         private readonly Dictionary<string, AudioClip> _clipBuffer = new();
+        private readonly HashSet<string> _clipLoading = new();
         private bool _isPlaying;
         private AudioSource _audio;
         private string _crtUrl;
@@ -114,7 +117,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (_crtUrl != url)
             {
-                if (IsPlaying)
+                if (_isPlaying)
                 {
                     PlayAudio(url);
                 }
@@ -164,12 +167,14 @@ namespace NonsensicalKit.UGUI.Media
         public void Replay()
         {
             _isPlaying = true;
+            m_btn_play.SetState(_isPlaying);
             DoPlay();
         }
 
         public void Resume()
         {
             _isPlaying = true;
+            m_btn_play.SetState(_isPlaying);
             if (_audio is not null)
             {
                 if (_audio.clip != null)
@@ -186,6 +191,7 @@ namespace NonsensicalKit.UGUI.Media
         public void Pause()
         {
             _isPlaying = false;
+            m_btn_play.SetState(_isPlaying);
             if (_audio is not null)
             {
                 _audio.Pause();
@@ -221,7 +227,7 @@ namespace NonsensicalKit.UGUI.Media
 
             if (string.IsNullOrEmpty(url) == false)
             {
-                StartCoroutine(GetAudio(url));
+                NonsensicalInstance.Instance.StartCoroutine(GetAudio(url));
             }
         }
 
@@ -229,7 +235,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (_audio != null)
             {
-                if (IsPlaying)
+                if (_isPlaying)
                 {
                     if (dragging)
                     {
@@ -245,6 +251,21 @@ namespace NonsensicalKit.UGUI.Media
 
         private IEnumerator GetAudio(string url)
         {
+            if (_clipBuffer.ContainsKey(url))
+            {
+                if (_isPlaying)
+                {
+                    DoPlay();
+                }
+
+                yield break;
+            }
+            else if (_clipLoading.Contains(url))
+            {
+                yield break;
+            }
+
+            _clipLoading.Add(url);
             UnityWebRequest uwr = new UnityWebRequest();
 
             yield return uwr.GetAudio(url);
@@ -256,7 +277,7 @@ namespace NonsensicalKit.UGUI.Media
                     if (clip is not null)
                     {
                         _clipBuffer.Add(url, clip);
-                        if (IsPlaying)
+                        if (_isPlaying)
                         {
                             DoPlay();
                         }
@@ -272,7 +293,7 @@ namespace NonsensicalKit.UGUI.Media
 
         private void DoPlay(bool playFromTheBeginning = true)
         {
-            if (_audio is not null && _clipBuffer.TryGetValue(_crtUrl, out var value))
+            if (_audio is not null && string.IsNullOrEmpty(_crtUrl) == false && _clipBuffer.TryGetValue(_crtUrl, out var value))
             {
                 _audio.clip = value;
                 if (playFromTheBeginning)
