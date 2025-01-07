@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace NonsensicalKit.UGUI.Media
 {
     [RequireComponent(typeof(Slider))]
-    public class MediaProgress : MonoBehaviour, IBeginDragHandler, IEndDragHandler
+    public class MediaProgress : MonoBehaviour,IPointerDownHandler, IBeginDragHandler, IEndDragHandler,IPointerUpHandler
     {
         [SerializeField] private Slider m_sld_sound;
         [SerializeField] private TextMeshProUGUI m_crtTime;
@@ -31,7 +31,10 @@ namespace NonsensicalKit.UGUI.Media
         }
         public float MaxValue
         {
-            set => m_sld_sound.maxValue = value;
+            set
+            {
+                m_sld_sound.maxValue = value;
+            }
         }
 
         public bool Dragging { get; private set; }
@@ -48,14 +51,38 @@ namespace NonsensicalKit.UGUI.Media
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            Dragging = true;
-            OnDragStateChanged?.Invoke(true);
+            if (Dragging == false)
+            {
+                Dragging = true;
+                OnDragStateChanged?.Invoke(true);
+            }
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            Dragging = false;
-            OnDragStateChanged?.Invoke(false);
+            if (Dragging)
+            {
+                Dragging = false;
+                OnDragStateChanged?.Invoke(false);
+            }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (Dragging == false)
+            {
+                Dragging = true;
+                OnDragStateChanged?.Invoke(true);
+            }
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (Dragging)
+            {
+                Dragging = false;
+                OnDragStateChanged?.Invoke(false);
+            }
         }
     }
 }

@@ -29,16 +29,44 @@ namespace NonsensicalKit.UGUI.Media
         [SerializeField] private bool m_mute = false;
         [SerializeField] private bool m_fixed = false;
         [SerializeField] private bool m_logInfo = false;
-        [SerializeField][Range(0, 1)] private float m_volume = 0.5f;
+        [SerializeField] [Range(0, 1)] private float m_volume = 0.5f;
         [SerializeField] private UnityEvent m_onPlayEnd;
         [SerializeField] private UnityEvent<bool> m_onPlayStateChanged;
 
         public UnityEvent<bool> OnPlayStateChanged => m_onPlayStateChanged;
         public UnityEvent OnPlayEnd => m_onPlayEnd;
-        public bool IsFullScreen { get { return _fullScreen; } set { if (_fullScreen != value) { OnFullScreenChanged(value); } } }
-        public bool IsPlaying { get { return _isPlaying; } set { if (_isPlaying != value) { OnStateChanged(value); } } }
+
+        public bool IsFullScreen
+        {
+            get => _fullScreen;
+            set
+            {
+                if (_fullScreen != value) { OnFullScreenChanged(value); }
+            }
+        }
+
+        public bool IsPlaying
+        {
+            get => _isPlaying;
+            set
+            {
+                if (_isPlaying != value) { OnStateChanged(value); }
+            }
+        }
+
         public bool Loop { get { return m_loop; } set { m_loop = value; } }
-        public float Volume { get { return m_volume; } set { m_volume = Mathf.Clamp01(value); ; m_sld_sound.value = m_volume; } }
+
+        public float Volume
+        {
+            get { return m_volume; }
+            set
+            {
+                m_volume = Mathf.Clamp01(value);
+                ;
+                m_sld_sound.value = m_volume;
+            }
+        }
+
         public bool Mute { get { return m_mute; } set { m_mute = value; } }
 
         private RectTransform _videoRect;
@@ -68,10 +96,17 @@ namespace NonsensicalKit.UGUI.Media
                     {
                         _videoPlayer.time = m_videoProgressSlider.Value;
                     }
-                    else
+                    else if(_videoPlayer.isPlaying)
                     {
                         m_videoProgressSlider.Value = (float)_videoPlayer.time;
-                        m_videoProgressSlider.MaxValue=(float)_videoPlayer.clip.length;
+                        if (_videoPlayer.clip!=null)
+                        {
+                            m_videoProgressSlider.MaxValue = (float) _videoPlayer.clip.length;
+                        }
+                        else 
+                        {
+                            m_videoProgressSlider.MaxValue =  (float) _videoPlayer.length;
+                        }
                     }
                 }
             }
@@ -140,11 +175,14 @@ namespace NonsensicalKit.UGUI.Media
 
         public void Replay()
         {
+            _needWait = false;
             OnPlay(true);
         }
 
         public void Play()
         {
+            _needWait = false;
+ 
             OnPlay();
         }
 
@@ -180,6 +218,7 @@ namespace NonsensicalKit.UGUI.Media
             {
                 transform.SetParent(_oldParent);
             }
+
             transform.localScale = Vector3.one;
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
@@ -223,8 +262,10 @@ namespace NonsensicalKit.UGUI.Media
                 playPartRect.Stretch();
                 m_controlSpace.Unfixed();
             }
+
             UpdateRenderTextureSize();
         }
+
         private void OnDragStateChanged(bool dragging)
         {
             if (_videoPlayer != null)
@@ -289,6 +330,7 @@ namespace NonsensicalKit.UGUI.Media
             {
                 return;
             }
+
             m_onPlayEnd?.Invoke();
             _videoPlayer.frame = 0;
 
@@ -309,6 +351,7 @@ namespace NonsensicalKit.UGUI.Media
                 {
                     m_fullscreenCanvas = GetComponentInParent<Canvas>();
                 }
+
                 _videoRect = m_rimg_video.GetComponent<RectTransform>();
 
                 m_btn_play.OnValueChanged.AddListener(OnStateChanged);
@@ -345,6 +388,8 @@ namespace NonsensicalKit.UGUI.Media
                 _videoPlayer = gameObject.AddComponent<VideoPlayer>();
                 _videoPlayer.playOnAwake = false;
                 _videoPlayer.sendFrameReadyEvents = true;
+                _videoPlayer.started += (v) => { 
+                    v.time = m_videoProgressSlider.Value;   };
                 _videoPlayer.frameReady += OnNewFrame;
                 _videoPlayer.loopPointReached += OnLoopPoint;
                 _videoPlayer.errorReceived += OnErrorReceived;
@@ -365,6 +410,7 @@ namespace NonsensicalKit.UGUI.Media
             {
                 _isPlaying = false;
             }
+
             PlayStateChanged();
         }
 
@@ -374,28 +420,42 @@ namespace NonsensicalKit.UGUI.Media
             m_onPlayStateChanged?.Invoke(_isPlaying);
         }
 
-
         private void OnPlay(bool playFromTheBeginning = false)
         {
             LogInfo("视频播放");
+
             if (_videoPlayer != null)
             {
-                _isPlaying = true;
-                PlayStateChanged();
-                m_videoProgressSlider.Init((float)_videoPlayer.length);
                 if (playFromTheBeginning) _videoPlayer.time = 0;
-                _videoPlayer.Play();
+                if (!_isPlaying)
+                {
+                    _isPlaying = true;
+                    PlayStateChanged();
+                    m_videoProgressSlider.Init((float)_videoPlayer.length);
+                }
+                if (_videoPlayer.isActiveAndEnabled)
+                {
+                    _videoPlayer.Play();
+                }
             }
         }
 
         private void OnPause()
         {
             LogInfo("视频暂停");
+            
             if (_videoPlayer != null)
             {
-                _isPlaying = false;
-                PlayStateChanged();
-                _videoPlayer.Pause();
+                if (_isPlaying)
+                {
+                    _isPlaying = false;
+                    PlayStateChanged();
+                }
+
+                if (_videoPlayer.isActiveAndEnabled)
+                {
+                    _videoPlayer.Pause();
+                }
             }
         }
 
@@ -423,8 +483,10 @@ namespace NonsensicalKit.UGUI.Media
                     {
                         Destroy(_renderTexture);
                     }
+
                     _renderTexture = new RenderTexture(width, height, 8);
                 }
+
                 m_rimg_video.texture = _renderTexture;
                 _videoPlayer.targetTexture = _renderTexture;
             }

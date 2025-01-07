@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using NonsensicalKit.Core;
-using NonsensicalKit.Core.Log;
-using NonsensicalKit.Tools.NetworkTool;
+using NonsensicalKit.Tools.EasyTool;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Media
@@ -19,6 +16,7 @@ namespace NonsensicalKit.UGUI.Media
         [SerializeField] private ToggleButton m_btn_play;
         [SerializeField] private Slider m_sld_volume;
         [SerializeField] private ToggleButton m_btn_mute;
+        [SerializeField] private GameObject m_downloadingMask;
 
         [SerializeField] private bool m_loop;
         [SerializeField] private bool m_mute;
@@ -75,7 +73,6 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
-        private readonly Dictionary<string, AudioClip> _clipBuffer = new();
         private readonly HashSet<string> _clipLoading = new();
         private bool _isPlaying;
         private AudioSource _audio;
@@ -101,15 +98,11 @@ namespace NonsensicalKit.UGUI.Media
                 else
                 {
                     m_audioPogress.Value = _audio.time;
+                    if (_audio.clip != null)
+                    {
+                        m_audioPogress.MaxValue = _audio.clip.length;
+                    }
                 }
-            }
-        }
-
-        private void OnDestroy()
-        {
-            foreach (var clipBuffer in _clipBuffer)
-            {
-                Destroy(clipBuffer.Value);
             }
         }
 
@@ -124,7 +117,7 @@ namespace NonsensicalKit.UGUI.Media
                 else
                 {
                     _crtUrl = url;
-                    GetClip(_crtUrl);
+                    PreheatClip(_crtUrl);
                 }
             }
         }
@@ -141,14 +134,8 @@ namespace NonsensicalKit.UGUI.Media
             if (_crtUrl == null) return;
             _isPlaying = true;
             m_btn_play.SetState(true);
-            if (_clipBuffer.ContainsKey(_crtUrl))
-            {
-                DoPlay();
-            }
-            else
-            {
-                GetClip(_crtUrl);
-            }
+
+            DoPlay();
         }
 
         public void ChangePlayState(bool newState)
@@ -179,7 +166,9 @@ namespace NonsensicalKit.UGUI.Media
             {
                 if (_audio.clip != null)
                 {
-                    _audio.UnPause();
+                    _audio.time = m_audioPogress.Value;
+                    _audio.Play();
+                    //_audio.UnPause();
                 }
                 else
                 {
@@ -220,14 +209,14 @@ namespace NonsensicalKit.UGUI.Media
             m_btn_mute.OnValueChanged.AddListener(OnMuteChanged);
         }
 
-        private void GetClip(string url)
+        private void PreheatClip(string url)
         {
             _audio.Stop();
             _audio.clip = null;
 
             if (string.IsNullOrEmpty(url) == false)
             {
-                NonsensicalInstance.Instance.StartCoroutine(GetAudio(url));
+                AudioDownloader.Instance.Get(url);
             }
         }
 
@@ -249,61 +238,31 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
-        private IEnumerator GetAudio(string url)
-        {
-            if (_clipBuffer.ContainsKey(url))
-            {
-                if (_isPlaying)
-                {
-                    DoPlay();
-                }
-
-                yield break;
-            }
-            else if (_clipLoading.Contains(url))
-            {
-                yield break;
-            }
-
-            _clipLoading.Add(url);
-            UnityWebRequest uwr = new UnityWebRequest();
-
-            yield return uwr.GetAudio(url);
-            if (uwr.result == UnityWebRequest.Result.Success)
-            {
-                if (uwr.downloadHandler is DownloadHandlerAudioClip v)
-                {
-                    var clip = v.audioClip;
-                    if (clip is not null)
-                    {
-                        _clipBuffer.Add(url, clip);
-                        if (_isPlaying)
-                        {
-                            DoPlay();
-                        }
-
-                        yield break;
-                    }
-                }
-            }
-
-            LogCore.Error("音频文件加载错误:" + uwr.url);
-            Pause();
-        }
-
         private void DoPlay(bool playFromTheBeginning = true)
         {
-            if (_audio is not null && string.IsNullOrEmpty(_crtUrl) == false && _clipBuffer.TryGetValue(_crtUrl, out var value))
+            if (_audio is not null && string.IsNullOrEmpty(_crtUrl) == false)
             {
-                _audio.clip = value;
-                if (playFromTheBeginning)
-                {
-                    _audio.time = 0;
-                }
-
-                m_audioPogress.Init(_audio.clip.length);
-                _audio.Play();
+                StartCoroutine(PlayCor(playFromTheBeginning));
             }
+        }
+
+        private IEnumerator PlayCor(bool playFromTheBeginning = true)
+        {
+            m_downloadingMask.SetActive(true);
+            var context = new DownloadContext<AudioClip>();
+            yield return AudioDownloader.Instance.Get(_crtUrl, context);
+
+            m_downloadingMask.SetActive(false);
+            if (context.Resource is null) yield break;
+
+            _audio.clip = context.Resource;
+            if (playFromTheBeginning)
+            {
+                _audio.time = 0;
+            }
+
+            m_audioPogress.Init(_audio.clip.length);
+            _audio.Play();
         }
 
         private void OnVolumeChanged(float value)
