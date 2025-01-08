@@ -288,6 +288,11 @@ namespace NonsensicalKit.UGUI.Media
 
         #region VideoPlayer Event
 
+        private void OnStarted(VideoPlayer source)
+        {
+            source.time = m_videoProgressSlider.Value; 
+        }
+        
         private void OnNewFrame(VideoPlayer source, long frameIdx)
         {
             if (_needWait)
@@ -314,6 +319,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (m_loop)
             {
+                m_videoProgressSlider.Value=0; 
                 videoPlayer.frame = 0;
                 videoPlayer.Play();
             }
@@ -388,8 +394,7 @@ namespace NonsensicalKit.UGUI.Media
                 _videoPlayer = gameObject.AddComponent<VideoPlayer>();
                 _videoPlayer.playOnAwake = false;
                 _videoPlayer.sendFrameReadyEvents = true;
-                _videoPlayer.started += (v) => { 
-                    v.time = m_videoProgressSlider.Value;   };
+                _videoPlayer.started += OnStarted;
                 _videoPlayer.frameReady += OnNewFrame;
                 _videoPlayer.loopPointReached += OnLoopPoint;
                 _videoPlayer.errorReceived += OnErrorReceived;
@@ -431,7 +436,7 @@ namespace NonsensicalKit.UGUI.Media
                 {
                     _isPlaying = true;
                     PlayStateChanged();
-                    m_videoProgressSlider.Init((float)_videoPlayer.length);
+                    //m_videoProgressSlider.Init((float)_videoPlayer.length);
                 }
                 if (_videoPlayer.isActiveAndEnabled)
                 {

@@ -167,7 +167,7 @@ namespace NonsensicalKit.UGUI.Media
                 if (_audio.clip != null)
                 {
                     _audio.time = m_audioPogress.Value;
-                    _audio.Play();
+                    _audio.UnPause();
                     //_audio.UnPause();
                 }
                 else
@@ -261,7 +261,7 @@ namespace NonsensicalKit.UGUI.Media
                 _audio.time = 0;
             }
 
-            m_audioPogress.Init(_audio.clip.length);
+            //m_audioPogress.Init(_audio.clip.length);
             _audio.Play();
         }
 

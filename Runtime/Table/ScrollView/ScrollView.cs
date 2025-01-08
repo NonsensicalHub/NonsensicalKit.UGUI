@@ -1,7 +1,7 @@
-using NonsensicalKit.Tools.ObjectPool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NonsensicalKit.Tools.ObjectPool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -22,10 +22,10 @@ namespace NonsensicalKit.Core.Table
         public enum ItemLayoutType
         {
             // 最后一位表示滚动方向
-            Vertical = 1,                   // 0001
-            Horizontal = 2,                 // 0010
-            VerticalThenHorizontal = 4,     // 0100
-            HorizontalThenVertical = 5,     // 0101
+            Vertical = 1, // 0001
+            Horizontal = 2, // 0010
+            VerticalThenHorizontal = 4, // 0100
+            HorizontalThenVertical = 5, // 0101
         }
 
         /// <summary>
@@ -34,10 +34,10 @@ namespace NonsensicalKit.Core.Table
         /// </summary>
         protected static class CriticalItemType
         {
-            public const int FIRST_SHOW = 0;    //第一个显示的item
-            public const int LAST_SHOW = 1;     //最后一个显示的item
-            public const int FIRST_HIDE = 2;    //第一个显示的item的前一个item，即其最接近的不显示的item
-            public const int LAST_HIDE = 3;     //最后一个显示的item的后一个item，即其最接近的不显示的item
+            public const int FIRST_SHOW = 0; //第一个显示的item
+            public const int LAST_SHOW = 1; //最后一个显示的item
+            public const int FIRST_HIDE = 2; //第一个显示的item的前一个item，即其最接近的不显示的item
+            public const int LAST_HIDE = 3; //最后一个显示的item的后一个item，即其最接近的不显示的item
         }
 
         /// <summary>
@@ -55,45 +55,48 @@ namespace NonsensicalKit.Core.Table
             public bool IsDirty = true;
         }
 
-        public const int DIRECTION_FLAG = 1;  // 0001
+        public const int DIRECTION_FLAG = 1; // 0001
 
-        [SerializeField][Tooltip("默认item尺寸")] protected Vector2 m_defaultItemSize;
-        [SerializeField][Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
+        [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_defaultItemSize;
+        [SerializeField] [Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
 
-        [SerializeField][Tooltip("是否使用默认对象池")] protected bool m_useDefaultPool = true;
-        [SerializeField][Tooltip("对象池大小")] protected int m_poolSize = 20;
-        [SerializeField][Tooltip("item模板")] protected RectTransform m_itemTemplate;
+        [SerializeField] [Tooltip("是否使用默认对象池")]
+        protected bool m_useDefaultPool = true;
 
-        public Action<int, RectTransform> UpdateFunc;   //更新对应索引的item的Action
-        public Func<int> ItemCountFunc;                 //item的数量获取的func,这个方法必须赋值
-        public Func<int, Vector2> ItemSizeFunc;         //获取对应索引的item的尺寸的Func
-        public Func<int, RectTransform> ItemGetFunc;    //分配对应索引item的Func
-        public Action<int, RectTransform> ItemRecycleFunc;   //回收对应索引item的Func
+        [SerializeField] [Tooltip("对象池大小")] protected int m_poolSize = 20;
+        [SerializeField] [Tooltip("item模板")] protected RectTransform m_itemTemplate;
+
+        public Action<int, RectTransform> UpdateFunc; //更新对应索引的item的Action
+        public Func<int> ItemCountFunc; //item的数量获取的func,这个方法必须赋值
+        public Func<int, Vector2> ItemSizeFunc; //获取对应索引的item的尺寸的Func
+        public Func<int, RectTransform> ItemGetFunc; //分配对应索引item的Func
+        public Action<int, RectTransform> ItemRecycleFunc; //回收对应索引item的Func
 
         public bool IsDragging { get; private set; }
 
         protected ItemLayoutType LayoutType { get { return m_layoutType; } }
 
-        protected int[] _criticalItemIndex = new int[4];     // 只保存4个临界index
+        protected int[] _criticalItemIndex = new int[4]; // 只保存4个临界index
 
         private int _dataCount = 0; //缓存的当前数据数量，用于减少获取数量方法的调用次数
         private List<ScrollItemInfo> _managedItems = new List<ScrollItemInfo>(); //管理所有的信息
         private Rect _viewRectInContent; //viewPort一开始在content坐标系中的相对rect，用于计算item是否应该被显示
-        private ComponentPool_MK2<RectTransform> _itemPool = null;   //对象池
+        private ComponentPool_MK2<RectTransform> _itemPool = null; //对象池
 
-        private bool _initialized = false;   //是否进行过初始化
+        private bool _initialized = false; //是否进行过初始化
         private int _willUpdateData = 0; //是否将要更新数据
 
         protected override void Awake()
         {
             base.Awake();
         }
+
         protected override void Start()
         {
             base.Start();
-
-            content.pivot = Vector2.up; //(0,1),左上角
+            ResetState();
         }
+
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -103,11 +106,25 @@ namespace NonsensicalKit.Core.Table
             }
         }
 
+        public void ResetState()
+        {
+            _initialized = false;
+            content.pivot = Vector2.up; //(0,1),左上角
+            content.sizeDelta = Vector2.zero;
+            content.anchoredPosition = Vector2.zero;
+            _managedItems = new List<ScrollItemInfo>();
+            _itemPool?.Clear();
+        }
+
+        public virtual void SetTemplate(RectTransform itemTemplate)
+        {
+            m_itemTemplate = itemTemplate;
+        }
+
         public virtual void SetUpdateFunc(Action<int, RectTransform> func)
         {
             UpdateFunc = func;
         }
-
         public virtual void SetItemCountFunc(Func<int> func)
         {
             ItemCountFunc = func;
@@ -137,6 +154,7 @@ namespace NonsensicalKit.Core.Table
             base.OnBeginDrag(eventData);
             IsDragging = true;
         }
+
         public override void OnEndDrag(PointerEventData eventData)
         {
             base.OnEndDrag(eventData);
@@ -165,6 +183,7 @@ namespace NonsensicalKit.Core.Table
             {
                 InitScrollView();
             }
+
             if (immediately)
             {
                 _willUpdateData |= 3; // 0011
@@ -176,6 +195,7 @@ namespace NonsensicalKit.Core.Table
                 {
                     StartCoroutine(DelayUpdateData());
                 }
+
                 _willUpdateData |= 3;
             }
         }
@@ -191,6 +211,7 @@ namespace NonsensicalKit.Core.Table
             {
                 InitScrollView();
             }
+
             if (immediately)
             {
                 _willUpdateData |= 1; // 0001
@@ -202,6 +223,7 @@ namespace NonsensicalKit.Core.Table
                 {
                     StartCoroutine(DelayUpdateData());
                 }
+
                 _willUpdateData |= 1;
             }
         }
@@ -243,7 +265,7 @@ namespace NonsensicalKit.Core.Table
             }
             else
             {
-                var p = r.xMin  - pos * (_viewRectInContent.width - r.width);
+                var p = r.xMin - pos * (_viewRectInContent.width - r.width);
                 // horizontal
                 float value = p / (content.sizeDelta.x - _viewRectInContent.width);
                 value = Mathf.Clamp01(value);
@@ -258,7 +280,7 @@ namespace NonsensicalKit.Core.Table
         protected virtual void InternalScrollTo(int index, float pos)
         {
             int dir = (int)LayoutType & DIRECTION_FLAG;
-            var value = GetScrollValue(index ,pos);
+            var value = GetScrollValue(index, pos);
             SetNormalizedPosition(value, dir);
         }
 
@@ -360,13 +382,13 @@ namespace NonsensicalKit.Core.Table
             {
                 hasItem = _managedItems[i].Item != null;
                 shouldShow = ShouldItemSeenAtIndex(i);
-
                 if (shouldShow)
                 {
                     if (firstIndex == -1)
                     {
                         firstIndex = i;
                     }
+
                     lastIndex = i;
                 }
 
@@ -425,6 +447,7 @@ namespace NonsensicalKit.Core.Table
             {
                 return _managedItems[index].Item;
             }
+
             return null;
         }
 
@@ -445,7 +468,7 @@ namespace NonsensicalKit.Core.Table
                     {
                         dirty = dirty || CheckAndHideItem(i);
                     }
-                    else  //显示进入可见区域的item
+                    else //显示进入可见区域的item
                     {
                         dirty = dirty || CheckAndShowItem(i);
                     }
@@ -480,6 +503,7 @@ namespace NonsensicalKit.Core.Table
                     _criticalItemIndex[criticalItemType + 2] = Mathf.Min(criticalIndex, _criticalItemIndex[criticalItemType + 2]);
                     _criticalItemIndex[criticalItemType]--;
                 }
+
                 //确保改变过后仍在合理范围内
                 _criticalItemIndex[criticalItemType] = Mathf.Clamp(_criticalItemIndex[criticalItemType], 0, _dataCount - 1);
                 return true;
@@ -515,9 +539,11 @@ namespace NonsensicalKit.Core.Table
                     _criticalItemIndex[criticalItemType - 2] = Mathf.Max(criticalIndex, _criticalItemIndex[criticalItemType - 2]);
                     _criticalItemIndex[criticalItemType]++;
                 }
+
                 _criticalItemIndex[criticalItemType] = Mathf.Clamp(_criticalItemIndex[criticalItemType], 0, _dataCount - 1);
                 return true;
             }
+
             return false;
         }
 
@@ -532,6 +558,7 @@ namespace NonsensicalKit.Core.Table
             {
                 return false;
             }
+
             EnsureItemRect(index);
             return new Rect(_viewRectInContent.position - content.anchoredPosition, _viewRectInContent.size).Overlaps(_managedItems[index].Rect);
         }
@@ -544,26 +571,31 @@ namespace NonsensicalKit.Core.Table
             if (m_itemTemplate == null)
             {
                 Debug.LogError("未配置模板");
+                return;
             }
+
             GameObject poolNode = new GameObject("POOL");
             poolNode.SetActive(false);
             poolNode.transform.SetParent(transform, false);
             _itemPool = new ComponentPool_MK2<RectTransform>(
-              m_itemTemplate,
+                m_itemTemplate,
                 (RectTransform item) =>
                 {
-                    item.transform.SetParent(poolNode.transform, false);
+                    if (item != null)
+                    {
+                        item.transform.SetParent(poolNode.transform, false);
+                    }
                 },
-               (rect) =>
-               {
-                   rect.transform.SetParent(poolNode.transform, false);
+                (rect) =>
+                {
+                    rect.transform.SetParent(poolNode.transform, false);
 
-                   rect.anchorMin = Vector2.up;
-                   rect.anchorMax = Vector2.up;
-                   rect.pivot = Vector2.zero;
+                    rect.anchorMin = Vector2.up;
+                    rect.anchorMax = Vector2.up;
+                    rect.pivot = Vector2.zero;
 
-                   rect.gameObject.SetActive(true);
-               });
+                    rect.gameObject.SetActive(true);
+                });
         }
 
         /// <summary>
@@ -617,6 +649,7 @@ namespace NonsensicalKit.Core.Table
                     return ItemSizeFunc(index);
                 }
             }
+
             return m_defaultItemSize;
         }
 
@@ -636,6 +669,7 @@ namespace NonsensicalKit.Core.Table
             {
                 item = _itemPool.New();
             }
+
             return item;
         }
 
@@ -671,6 +705,7 @@ namespace NonsensicalKit.Core.Table
             {
                 InitPool();
             }
+
             UpdateViewRect();
         }
 
@@ -681,21 +716,20 @@ namespace NonsensicalKit.Core.Table
         {
             /*
              *  WorldCorners
-             * 
-             *    1 ------- 2     
+             *
+             *    1 ------- 2
              *    |         |
              *    |         |
              *    0 ------- 3
-             * 
+             *
              */
             Vector3[] viewWorldConers = new Vector3[4];
             Vector3[] rectCorners = new Vector3[2];
 
             viewRect.GetWorldCorners(viewWorldConers);
 
-            rectCorners[0] = content.transform.InverseTransformPoint(viewWorldConers[0]);   //左下角
-            rectCorners[1] = content.transform.InverseTransformPoint(viewWorldConers[2]);   //右上角
-
+            rectCorners[0] = content.transform.InverseTransformPoint(viewWorldConers[0]); //左下角
+            rectCorners[1] = content.transform.InverseTransformPoint(viewWorldConers[2]); //右上角
             _viewRectInContent = new Rect((Vector2)rectCorners[0] - content.anchoredPosition, rectCorners[1] - rectCorners[0]);
         }
 
@@ -723,6 +757,7 @@ namespace NonsensicalKit.Core.Table
                         pos.y = 0;
                         pos.x += size.x;
                     }
+
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
                     pos.x += size.x;
@@ -731,6 +766,7 @@ namespace NonsensicalKit.Core.Table
                         pos.x = 0;
                         pos.y -= size.y;
                     }
+
                     break;
                 default:
                     break;
@@ -802,10 +838,12 @@ namespace NonsensicalKit.Core.Table
                     {
                         range.y += size.y;
                     }
+
                     break;
                 default:
                     break;
             }
+
             content.sizeDelta = range;
         }
 
@@ -833,6 +871,7 @@ namespace NonsensicalKit.Core.Table
                 EnsureItemRect(index);
                 return _managedItems[index].Rect;
             }
+
             return new Rect();
         }
 

@@ -90,10 +90,20 @@ namespace NonsensicalKit.Core.Table
         protected override void Start()
         {
             base.Start();
+            ResetState();
             if (m_autoResize)
             {
                 StartCoroutine(CheckSize());
             }
+        }
+        
+        public void ResetState()
+        {
+            _initialized = false;
+            content.pivot = Vector2.up; //(0,1),左上角
+            content.sizeDelta = Vector2.zero;
+            content.anchoredPosition = Vector2.zero;
+            _itemPool?.Clear();
         }
 
         protected override void OnDestroy()

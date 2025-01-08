@@ -30,7 +30,7 @@ namespace NonsensicalKit.Core.Table
             base.Awake();
             onValueChanged.AddListener(OnValueChanged);
         }
-
+        
         private void Update()
         {
             if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonDown(0))

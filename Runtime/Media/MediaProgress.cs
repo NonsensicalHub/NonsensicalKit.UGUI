@@ -34,6 +34,7 @@ namespace NonsensicalKit.UGUI.Media
             set
             {
                 m_sld_sound.maxValue = value;
+                m_maxTime.text = StringTool.GetFormatTime(value);
             }
         }
 
