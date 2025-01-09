@@ -62,12 +62,11 @@ namespace NonsensicalKit.UGUI.Media
             set
             {
                 m_volume = Mathf.Clamp01(value);
-                ;
                 m_sld_sound.value = m_volume;
             }
         }
 
-        public bool Mute { get { return m_mute; } set { m_mute = value; } }
+        public bool Mute { get { return m_mute; } set { m_mute = value;m_btn_mute.SetState(value); } }
 
         private RectTransform _videoRect;
         private Transform _oldParent;
