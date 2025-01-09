@@ -211,7 +211,13 @@ namespace NonsensicalKit.UGUI.Media
             _fullScreen = value;
             if (_fullScreen)
             {
-                transform.SetParent(m_fullscreenCanvas.transform);
+                if (m_fullscreenCanvas == null)
+                {
+                    m_fullscreenCanvas = GetComponentInParent<Canvas>(true);
+ if (m_fullscreenCanvas == null)return;
+
+                }
+               transform.SetParent(m_fullscreenCanvas.transform);
             }
             else
             {
@@ -354,7 +360,7 @@ namespace NonsensicalKit.UGUI.Media
                 _oldParent = transform.parent;
                 if (m_fullscreenCanvas == null)
                 {
-                    m_fullscreenCanvas = GetComponentInParent<Canvas>();
+                    m_fullscreenCanvas = GetComponentInParent<Canvas>(true);
                 }
 
                 _videoRect = m_rimg_video.GetComponent<RectTransform>();
