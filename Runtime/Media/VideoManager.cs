@@ -131,7 +131,7 @@ namespace NonsensicalKit.UGUI.Media
             LogInfo("播放视频：" + url);
 
             PlayReady();
-
+            m_videoProgressSlider.Value=0; 
             _needWait = needwait;
             _videoPlayer.source = VideoSource.Url;
             _videoPlayer.url = url;
@@ -144,7 +144,7 @@ namespace NonsensicalKit.UGUI.Media
             LogInfo("播放视频：" + clip.name);
 
             PlayReady();
-
+            m_videoProgressSlider.Value=0; 
             _needWait = needwait;
             _videoPlayer.source = VideoSource.VideoClip;
             _videoPlayer.clip = clip;

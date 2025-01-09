@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NonsensicalKit.Core;
 using NonsensicalKit.Tools.EasyTool;
 using UnityEngine;
 using UnityEngine.UI;
@@ -216,7 +217,18 @@ namespace NonsensicalKit.UGUI.Media
 
             if (string.IsNullOrEmpty(url) == false)
             {
-                AudioDownloader.Instance.Get(url);
+                NonsensicalInstance.Instance.StartCoroutine(DoPreheat(url));
+            }
+        }
+
+
+        private IEnumerator DoPreheat(string url)
+        {
+            var v = new DownloadContext<AudioClip>();
+            yield return AudioDownloader.Instance.Get(url, v);
+            if (url == _crtUrl)
+            {
+                m_downloadingMask.SetActive(false);
             }
         }
 
