@@ -66,7 +66,15 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
-        public bool Mute { get { return m_mute; } set { m_mute = value;m_btn_mute.SetState(value); } }
+        public bool Mute
+        {
+            get { return m_mute; }
+            set
+            {
+                m_mute = value;
+                m_btn_mute.SetState(value);
+            }
+        }
 
         private RectTransform _videoRect;
         private Transform _oldParent;
@@ -95,16 +103,16 @@ namespace NonsensicalKit.UGUI.Media
                     {
                         _videoPlayer.time = m_videoProgressSlider.Value;
                     }
-                    else if(_videoPlayer.isPlaying)
+                    else if (_videoPlayer.isPlaying)
                     {
                         m_videoProgressSlider.Value = (float)_videoPlayer.time;
-                        if (_videoPlayer.clip!=null)
+                        if (_videoPlayer.clip != null)
                         {
-                            m_videoProgressSlider.MaxValue = (float) _videoPlayer.clip.length;
+                            m_videoProgressSlider.MaxValue = (float)_videoPlayer.clip.length;
                         }
-                        else 
+                        else
                         {
-                            m_videoProgressSlider.MaxValue =  (float) _videoPlayer.length;
+                            m_videoProgressSlider.MaxValue = (float)_videoPlayer.length;
                         }
                     }
                 }
@@ -131,7 +139,11 @@ namespace NonsensicalKit.UGUI.Media
             LogInfo("播放视频：" + url);
 
             PlayReady();
-            m_videoProgressSlider.Value=0; 
+            if (_videoPlayer != null)
+            {
+                _videoPlayer.time = 0;
+            }
+            m_videoProgressSlider.Value = 0;
             _needWait = needwait;
             _videoPlayer.source = VideoSource.Url;
             _videoPlayer.url = url;
@@ -144,7 +156,11 @@ namespace NonsensicalKit.UGUI.Media
             LogInfo("播放视频：" + clip.name);
 
             PlayReady();
-            m_videoProgressSlider.Value=0; 
+            if (_videoPlayer != null)
+            {
+                _videoPlayer.time = 0;
+            }
+            m_videoProgressSlider.Value = 0;
             _needWait = needwait;
             _videoPlayer.source = VideoSource.VideoClip;
             _videoPlayer.clip = clip;
@@ -181,7 +197,14 @@ namespace NonsensicalKit.UGUI.Media
         public void Play()
         {
             _needWait = false;
- 
+
+            OnPlay();
+        }
+
+        public void PlayAndWait()
+        {
+            _needWait = true;
+
             OnPlay();
         }
 
@@ -198,7 +221,6 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (newPlayState)
             {
-                _needWait = false;
                 OnPlay();
             }
             else
@@ -215,10 +237,10 @@ namespace NonsensicalKit.UGUI.Media
                 if (m_fullscreenCanvas == null)
                 {
                     m_fullscreenCanvas = GetComponentInParent<Canvas>(true);
- if (m_fullscreenCanvas == null)return;
-
+                    if (m_fullscreenCanvas == null) return;
                 }
-               transform.SetParent(m_fullscreenCanvas.transform);
+
+                transform.SetParent(m_fullscreenCanvas.transform);
             }
             else
             {
@@ -296,13 +318,14 @@ namespace NonsensicalKit.UGUI.Media
 
         private void OnStarted(VideoPlayer source)
         {
-            source.time = m_videoProgressSlider.Value; 
+            source.time = m_videoProgressSlider.Value;
         }
-        
+
         private void OnNewFrame(VideoPlayer source, long frameIdx)
         {
             if (_needWait)
             {
+             m_videoProgressSlider.Value=  (float)  source.time ;
                 if (_waitFlag == false)
                 {
                     _waitFlag = true;
@@ -325,7 +348,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (m_loop)
             {
-                m_videoProgressSlider.Value=0; 
+                m_videoProgressSlider.Value = 0;
                 videoPlayer.frame = 0;
                 videoPlayer.Play();
             }
@@ -444,6 +467,7 @@ namespace NonsensicalKit.UGUI.Media
                     PlayStateChanged();
                     //m_videoProgressSlider.Init((float)_videoPlayer.length);
                 }
+
                 if (_videoPlayer.isActiveAndEnabled)
                 {
                     _videoPlayer.Play();
@@ -454,7 +478,7 @@ namespace NonsensicalKit.UGUI.Media
         private void OnPause()
         {
             LogInfo("视频暂停");
-            
+
             if (_videoPlayer != null)
             {
                 if (_isPlaying)

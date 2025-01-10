@@ -181,11 +181,11 @@ namespace NonsensicalKit.UGUI.Media
         public void Pause()
         {
             _isPlaying = false;
-            m_btn_play.SetState(_isPlaying);
             if (_audio is not null)
             {
                 _audio.Pause();
             }
+            m_btn_play.SetState(false);
         }
 
         public void Switch()
@@ -274,7 +274,10 @@ namespace NonsensicalKit.UGUI.Media
             }
 
             //m_audioPogress.Init(_audio.clip.length);
-            _audio.Play();
+            if (_isPlaying)
+            {
+                _audio.Play();
+            }
         }
 
         private void OnVolumeChanged(float value)

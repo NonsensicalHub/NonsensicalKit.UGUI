@@ -4,8 +4,7 @@ using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI
 {
-    [RequireComponent(typeof(Button),typeof(Image))]
-    
+    [RequireComponent(typeof(Button), typeof(Image))]
     public class ToggleButton : MonoBehaviour
     {
         [SerializeField] private GameObject m_onState;
@@ -31,6 +30,7 @@ namespace NonsensicalKit.UGUI
                             return;
                         }
                     }
+
                     m_isOn = value;
                     OnValueChanged?.Invoke(m_isOn);
                     UpdateUI();
