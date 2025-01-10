@@ -228,7 +228,7 @@ namespace NonsensicalKit.UGUI.Media
             yield return AudioDownloader.Instance.Get(url, v);
             if (url == _crtUrl)
             {
-                m_downloadingMask.SetActive(false);
+                m_downloadingMask?.SetActive(false);
             }
         }
 

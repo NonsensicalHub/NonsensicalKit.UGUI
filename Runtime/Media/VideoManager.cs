@@ -198,6 +198,7 @@ namespace NonsensicalKit.UGUI.Media
         {
             if (newPlayState)
             {
+                _needWait = false;
                 OnPlay();
             }
             else
