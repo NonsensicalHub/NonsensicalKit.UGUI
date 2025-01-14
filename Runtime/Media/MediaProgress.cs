@@ -3,88 +3,87 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Media
 {
-    [RequireComponent(typeof(Slider))]
-    public class MediaProgress : MonoBehaviour,IPointerDownHandler, IBeginDragHandler, IEndDragHandler,IPointerUpHandler
+    public class MediaProgressState
     {
-        [FormerlySerializedAs("m_sld_sound")] [SerializeField] private Slider m_sld_progress;
+        public float CurrentProgress;
+        public float TotalProgress;
+    }
+
+    [RequireComponent(typeof(Slider))]
+    public class MediaProgress : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IPointerUpHandler
+    {
+        [SerializeField] private Slider m_sld_progress;
         [SerializeField] private TextMeshProUGUI m_crtTime;
         [SerializeField] private TextMeshProUGUI m_maxTime;
-        [SerializeField] private UnityEvent<bool> m_dragStateChanegd;
+        [SerializeField] private UnityEvent<bool> m_dragStateChanged;
 
-        public UnityEvent<bool> OnDragStateChanged => m_dragStateChanegd;
+        public UnityEvent<bool> OnDragStateChanged => m_dragStateChanged;
+
+        public MediaProgressState State
+        {
+            set
+            {
+                Value = value.CurrentProgress;
+                MaxValue = value.TotalProgress;
+            }
+        }
 
         public float Value
         {
-            get
-            {
-                return m_sld_progress.value;
-            }
+            get => m_sld_progress.value;
             set
             {
+                if (Mathf.Approximately(m_sld_progress.value, value)) return;
                 m_sld_progress.value = value;
                 m_crtTime.text = StringTool.GetFormatTime(value);
             }
         }
+
         public float MaxValue
         {
             set
             {
+                if (Mathf.Approximately(m_sld_progress.maxValue, value)) return;
                 m_sld_progress.maxValue = value;
                 m_maxTime.text = StringTool.GetFormatTime(value);
             }
         }
 
-        public bool Dragging { get; private set; }
+        public bool Dragging
+        {
+            get => _dragging;
+            private set
+            {
+                if (_dragging == value) return;
+                _dragging = value;
+                OnDragStateChanged?.Invoke(value);
+            }
+        }
 
         private bool _dragging;
 
-        public void Init(float second)
-        {
-            m_sld_progress.maxValue = second;
-            m_sld_progress.value = 0;
-            m_crtTime.text = "00:00";
-            m_maxTime.text = StringTool.GetFormatTime(second);
-        }
-
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (Dragging == false)
-            {
-                Dragging = true;
-                OnDragStateChanged?.Invoke(true);
-            }
+            Dragging = true;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (Dragging)
-            {
-                Dragging = false;
-                OnDragStateChanged?.Invoke(false);
-            }
+            Dragging = false;
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (Dragging == false)
-            {
-                Dragging = true;
-                OnDragStateChanged?.Invoke(true);
-            }
+            Dragging = true;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (Dragging)
-            {
-                Dragging = false;
-                OnDragStateChanged?.Invoke(false);
-            }
+            Dragging = false;
         }
     }
 }

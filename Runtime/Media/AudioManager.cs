@@ -1,35 +1,76 @@
 using System.Collections;
-using System.Collections.Generic;
-using NonsensicalKit.Core;
 using NonsensicalKit.Tools.EasyTool;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace NonsensicalKit.UGUI.Media
 {
-    /// <summary>
-    /// 使用url播放音频的UI管理类，会以url为键缓存AudioClip
-    /// </summary>
+    public class AudioPlayState
+    {
+        public bool Playing;
+        public bool Loop;
+        public bool Mute;
+        public float Volume;
+        public bool Loading;
+    }
+
     [RequireComponent(typeof(AudioSource))]
     public class AudioManager : MonoBehaviour
     {
-        [SerializeField] private MediaProgress m_audioPogress;
-        [SerializeField] private ToggleButton m_btn_play;
-        [SerializeField] private Slider m_sld_volume;
-        [SerializeField] private ToggleButton m_btn_mute;
-        [SerializeField] private GameObject m_downloadingMask;
-
         [SerializeField] private bool m_loop;
         [SerializeField] private bool m_mute;
         [SerializeField] [Range(0, 1)] private float m_volume = 0.5f;
+        [SerializeField] private UnityEvent<AudioPlayState> m_onPlayStateChanged;
+        [SerializeField] private UnityEvent<MediaProgressState> m_onPlayProgressChanged;
+        [SerializeField] private bool m_initOnAwake;
+
+        public UnityEvent<AudioPlayState> OnPlayStateChanged => m_onPlayStateChanged;
+        public UnityEvent<MediaProgressState> OnPlayProgressChanged => m_onPlayProgressChanged;
+
+        #region public get set property
+
+        public float PlayTime
+        {
+            get
+            {
+                if (!_audio)
+                {
+                    return 0;
+                }
+
+                return _audio.time;
+            }
+            set
+            {
+                if (!_audio) return;
+                _audio.time = value;
+                InvokeProgressChanged();
+            }
+        }
+
+        public bool Manual
+        {
+            get => _manual;
+            set
+            {
+                if (_manual == value) return;
+                Init();
+                _manual = value;
+                UpdatePlayingState();
+                InvokePlayStateChanged();
+            }
+        }
 
         public bool Loop
         {
             get => m_loop;
             set
             {
+                if (m_loop == value) return;
+                Init();
                 m_loop = value;
-                UpdateLoop();
+                SetLoop();
+                InvokePlayStateChanged();
             }
         }
 
@@ -38,12 +79,11 @@ namespace NonsensicalKit.UGUI.Media
             get => m_volume;
             set
             {
-                if (m_volume != value)
-                {
-                    m_volume = Mathf.Clamp01(value);
-                    m_sld_volume.value = m_volume;
-                    UpdateSound();
-                }
+                if (Mathf.Approximately(m_volume, value)) return;
+                Init();
+                m_volume = Mathf.Clamp01(value);
+                SetSound();
+                InvokePlayStateChanged();
             }
         }
 
@@ -52,145 +92,125 @@ namespace NonsensicalKit.UGUI.Media
             get => m_mute;
             set
             {
-                if (m_mute != value)
-                {
-                    m_btn_mute.SetState(value);
-                    m_mute = value;
-                    UpdateSound();
-                }
+                if (m_mute == value) return;
+                Init();
+                m_mute = value;
+                SetMute();
+                InvokePlayStateChanged();
             }
         }
 
-        public bool IsPlaying
+        public bool Playing
         {
-            get => _isPlaying;
+            get => _playing;
             set
             {
-                if (_isPlaying != value)
-                {
-                    _isPlaying = value;
-                    ChangePlayState(value);
-                }
+                if (_playing == value) return;
+                Init();
+                _playing = value;
+                UpdatePlayingState();
+                InvokePlayStateChanged();
             }
         }
 
-        private readonly HashSet<string> _clipLoading = new();
-        private bool _isPlaying;
+        #endregion
+
+        private bool _playing;
+        private bool _inited;
         private AudioSource _audio;
         private string _crtUrl;
-        private bool _inited;
+        private bool _loading;
+        private AudioPlayState _state;
+        private MediaProgressState _progress;
+        private bool _manual;
+
+        private bool _fromUrl;
 
         private void Awake()
         {
-            Init();
-            m_btn_play.OnValueChanged.AddListener(ChangePlayState);
-            m_audioPogress.OnDragStateChanged.AddListener(OnDragStateChanged);
+            if (m_initOnAwake)
+            {
+                Init();
+            }
+        }
+
+        private void Start()
+        {
+            if (!m_initOnAwake)
+            {
+                Init();
+            }
         }
 
         private void Update()
         {
-            if (Time.frameCount % 5 == 0
-                && _audio is not null)
+            if (_audio && _audio.clip != null && _audio.isPlaying)
             {
-                if (m_audioPogress.Dragging)
-                {
-                    _audio.time = m_audioPogress.Value;
-                }
-                else
-                {
-                    m_audioPogress.Value = _audio.time;
-                    if (_audio.clip != null)
-                    {
-                        m_audioPogress.MaxValue = _audio.clip.length;
-                    }
-                }
+                InvokeProgressChanged();
             }
         }
 
+        #region public methods
+
         public void ChangeUrl(string url)
         {
-            if (_crtUrl != url)
-            {
-                if (_isPlaying)
-                {
-                    PlayAudio(url);
-                }
-                else
-                {
-                    _crtUrl = url;
-                    PreheatClip(_crtUrl);
-                }
-            }
+            if (_crtUrl == url) return;
+            Init();
+            _crtUrl = url;
+            if (string.IsNullOrEmpty(_crtUrl)) return;
+            _fromUrl = true;
+            StartCoroutine(GetClipCor(_crtUrl));
         }
 
         public void PlayAudio(string url)
         {
+            Init();
             _crtUrl = url;
-            PlayAudio();
+            if (string.IsNullOrEmpty(_crtUrl)) return;
+            _fromUrl = true;
+            _playing = true;
+            StartCoroutine(GetClipCor(_crtUrl));
         }
 
-        public void PlayAudio()
+        public void PlayAudio(AudioClip clip)
         {
             Init();
-            if (_crtUrl == null) return;
-            _isPlaying = true;
-            m_btn_play.SetState(true);
-
-            DoPlay();
-        }
-
-        public void ChangePlayState(bool newState)
-        {
-            m_btn_play.SetState(newState);
-            if (newState)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
+            if (_audio.clip == clip) return;
+            if (clip == null) return;
+            _playing = true;
+            _fromUrl = false;
+            PlayClip(clip);
         }
 
         public void Replay()
         {
-            _isPlaying = true;
-            m_btn_play.SetState(_isPlaying);
-            DoPlay();
+            Init();
+            _playing = true;
+            PlayTime = 0;
+            UpdatePlayingState();
+            InvokePlayStateChanged();
         }
 
         public void Resume()
         {
-            _isPlaying = true;
-            m_btn_play.SetState(_isPlaying);
-            if (_audio is not null)
-            {
-                if (_audio.clip != null)
-                {
-                    _audio.time = m_audioPogress.Value;
-                    _audio.UnPause();
-                    //_audio.UnPause();
-                }
-                else
-                {
-                    DoPlay();
-                }
-            }
+            Init();
+            _playing = true;
+            _audio.time = _progress.CurrentProgress;
+            UpdatePlayingState();
+            InvokePlayStateChanged();
         }
 
         public void Pause()
         {
-            _isPlaying = false;
-            if (_audio is not null)
-            {
-                _audio.Pause();
-            }
-            m_btn_play.SetState(false);
+            Init();
+            _playing = false;
+            UpdatePlayingState();
+            InvokePlayStateChanged();
         }
 
         public void Switch()
         {
-            if (_isPlaying)
+            if (_playing)
             {
                 Pause();
             }
@@ -200,119 +220,122 @@ namespace NonsensicalKit.UGUI.Media
             }
         }
 
+        #endregion
+
         private void Init()
         {
             if (_inited) return;
+            if (TryGetComponent<AudioSource>(out _audio) == false)
+            {
+                _audio = gameObject.AddComponent<AudioSource>();
+            }
+
+            _state = new AudioPlayState();
+            _progress = new MediaProgressState();
+
+            _loading = true;
+
+            SetLoop();
+            SetMute();
+            SetSound();
+            InvokePlayStateChanged();
             _inited = true;
-            _audio = GetComponent<AudioSource>();
-            m_btn_play.OnValueChanged.AddListener(ChangePlayState);
-            m_sld_volume.onValueChanged.AddListener(OnVolumeChanged);
-            m_btn_mute.OnValueChanged.AddListener(OnMuteChanged);
         }
 
-        private void PreheatClip(string url)
+        private void UpdatePlayingState()
         {
-            _audio.Stop();
-            _audio.clip = null;
-
-            if (string.IsNullOrEmpty(url) == false)
+            var needPlay = _playing && !_manual;
+            if (needPlay == _audio.isPlaying) return;
+            if (needPlay)
             {
-                NonsensicalInstance.Instance.StartCoroutine(DoPreheat(url));
+                DoPlay();
+            }
+            else
+            {
+                DoPause();
             }
         }
 
-
-        private IEnumerator DoPreheat(string url)
+        private void DoPlay()
         {
-            var v = new DownloadContext<AudioClip>();
-            yield return AudioDownloader.Instance.Get(url, v);
-            if (url == _crtUrl)
-            {
-                m_downloadingMask?.SetActive(false);
-            }
-        }
-
-        private void OnDragStateChanged(bool dragging)
-        {
-            if (_audio != null)
-            {
-                if (_isPlaying)
-                {
-                    if (dragging)
-                    {
-                        _audio.Pause();
-                    }
-                    else
-                    {
-                        _audio.Play();
-                    }
-                }
-            }
-        }
-
-        private void DoPlay(bool playFromTheBeginning = true)
-        {
-            if (_audio is not null && string.IsNullOrEmpty(_crtUrl) == false)
-            {
-                StartCoroutine(PlayCor(playFromTheBeginning));
-            }
-        }
-
-        private IEnumerator PlayCor(bool playFromTheBeginning = true)
-        {
-            m_downloadingMask.SetActive(true);
-            var context = new DownloadContext<AudioClip>();
-            yield return AudioDownloader.Instance.Get(_crtUrl, context);
-
-            m_downloadingMask.SetActive(false);
-            if (context.Resource is null) yield break;
-
-            _audio.clip = context.Resource;
-            if (playFromTheBeginning)
-            {
-                _audio.time = 0;
-            }
-
-            //m_audioPogress.Init(_audio.clip.length);
-            if (_isPlaying)
+            if (_audio.isActiveAndEnabled)
             {
                 _audio.Play();
             }
         }
 
-        private void OnVolumeChanged(float value)
+        private void DoPause()
         {
-            Volume = value;
-            UpdateSound();
-        }
-
-        private void OnMuteChanged(bool mute)
-        {
-            Mute = mute;
-            UpdateSound();
-        }
-
-        private void UpdateSound()
-        {
-            if (_audio is not null)
+            if (_audio.isActiveAndEnabled)
             {
-                if (Mute)
-                {
-                    _audio.volume = 0;
-                }
-                else
-                {
-                    _audio.volume = Volume;
-                }
+                _audio.Pause();
             }
         }
 
-        private void UpdateLoop()
+        private IEnumerator GetClipCor(string url)
         {
-            if (_audio is not null)
+            var context = new DownloadContext<AudioClip>();
+            _loading = true;
+            InvokePlayStateChanged();
+            yield return AudioDownloader.Instance.Get(url, context);
+
+            if (context.Resource is null) yield break;
+
+            if (_fromUrl && url == _crtUrl)
             {
-                _audio.loop = m_loop;
+                PlayClip(context.Resource);
             }
+        }
+
+        private void PlayClip(AudioClip clip)
+        {
+            if (clip == null) return;
+            _loading = false;
+            _audio.clip = clip;
+            _audio.time = _progress.CurrentProgress;
+            InvokeProgressChanged();
+            UpdatePlayingState();
+            InvokePlayStateChanged();
+        }
+
+        private void InvokeProgressChanged()
+        {
+            _progress.CurrentProgress = _audio.time;
+            if (_audio.clip == null)
+            {
+                _progress.TotalProgress = 0;
+            }
+            else
+            {
+                _progress.TotalProgress = _audio.clip.length;
+            }
+
+            m_onPlayProgressChanged?.Invoke(_progress);
+        }
+
+        private void InvokePlayStateChanged()
+        {
+            _state.Playing = _playing;
+            _state.Loop = m_loop;
+            _state.Mute = m_mute;
+            _state.Volume = m_volume;
+            _state.Loading = _loading;
+            m_onPlayStateChanged?.Invoke(_state);
+        }
+
+        private void SetMute()
+        {
+            _audio.mute = m_mute;
+        }
+
+        private void SetSound()
+        {
+            _audio.volume = Volume;
+        }
+
+        private void SetLoop()
+        {
+            _audio.loop = m_loop;
         }
     }
 }

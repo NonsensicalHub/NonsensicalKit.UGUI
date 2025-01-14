@@ -151,7 +151,7 @@ namespace NonsensicalKit.UGUI
         /// <param name="height"></param>
         public static void SetBottomHeight(this RectTransform rt, float height)
         {
-            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMin = Vector2.zero;
             rt.anchorMax = new Vector2(1, 0);
             rt.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, height);
         }
@@ -162,9 +162,17 @@ namespace NonsensicalKit.UGUI
         /// <param name="rt"></param>
         public static void Stretch(this RectTransform rt)
         {
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(1, 1);
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+        }
+        
+        public static void StretchWithBottomInterval(this RectTransform rt,float interval)
+        {
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = Vector2.one;;
+            rt.offsetMin =  new Vector2(0, interval);
             rt.offsetMax = Vector2.zero;
         }
 

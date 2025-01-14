@@ -73,10 +73,17 @@ namespace NonsensicalKit.UGUI
             IsOn = value;
         }
 
+        /// <summary>
+        /// 仅设置Ui状态，不会触发修改事件
+        /// </summary>
+        /// <param name="value"></param>
         public void SetState(bool value)
         {
-            m_isOn = value;
-            UpdateUI();
+            if (m_isOn!=value)
+            {
+                m_isOn = value;
+                UpdateUI();
+            }
         }
 
         private void UpdateUI()
