@@ -16,6 +16,7 @@ namespace NonsensicalKit.UGUI
         /// 用于匹配标点符号（正则表达式）
         /// </summary>
         private const string REGEX_1 = @"\p{P}";
+
         private const string REGEX_2 = "^['\"{}\\(\\)\\[\\]\\*&.?!,…:;，。、‘’“”；]+$";
 
         /// <summary>
@@ -37,91 +38,84 @@ namespace NonsensicalKit.UGUI
         /// <summary>
         /// 整理文字。确保首字母不出现标点
         /// </summary>
-        /// <param name="_component">text组件</param>
-        /// <param name="_text">需要填入text中的内容</param>
+        /// <param name="component">text组件</param>
+        /// <param name="txt">需要填入text中的内容</param>
         /// <returns></returns>
-        private IEnumerator MClearUpExplainMode(Text _component, string _text)
+        private IEnumerator MClearUpExplainMode(Text component, string txt)
         {
-            _component.text = _text;
+            component.text = txt;
 
             //如果直接执行下边方法的话，那么_component.cachedTextGenerator.lines将会获取的是之前text中的内容，而不是_text的内容，所以需要等待一下
             yield return null;
 
-            _MExpalinTextLine = _component.cachedTextGenerator.lines;
+            _MExpalinTextLine = component.cachedTextGenerator.lines;
 
             //需要改变的字符序号
-            int mChangeIndex = -1;
 
-            _MExplainText = new System.Text.StringBuilder(_component.text);
+            _MExplainText = new StringBuilder(component.text);
 
             for (int i = 1; i < _MExpalinTextLine.Count; i++)
             {
                 //首位是否有标点
-                bool _b = Regex.IsMatch(_component.text[_MExpalinTextLine[i].startCharIdx].ToString(), REGEX_1);
+                bool b = Regex.IsMatch(component.text[_MExpalinTextLine[i].startCharIdx].ToString(), REGEX_1);
 
-                if (_b)
+                if (b)
                 {
-
-                    mChangeIndex = _MExpalinTextLine[i].startCharIdx - 1;
+                    var mChangeIndex = _MExpalinTextLine[i].startCharIdx - 1;
 
                     _MExplainText.Insert(mChangeIndex, "\n");
                 }
             }
 
-            _component.text = _MExplainText.ToString();
+            component.text = _MExplainText.ToString();
 
-            //_component.text = _text;
-
+            //_component.txt = txt;
         }
 
         /// <summary>
         /// 整理文字。确保首字母不出现标点
         /// </summary>
-        /// <param name="_component">text组件</param>
-        /// <param name="_text">需要填入text中的内容</param>
+        /// <param name="component">text组件</param>
+        /// <param name="txt">需要填入text中的内容</param>
         /// <returns></returns>
-        private IEnumerator MClearUpExplainMode2(Text _component, string _text)
+        private IEnumerator MClearUpExplainMode2(Text component, string txt)
         {
-            _component.text = _text;
+            component.text = txt;
             bool flag = true;
             while (flag)
             {
                 flag = false;
-                StringBuilder MExplainText = null;
-                IList<UILineInfo> MExpalinTextLine;
 
                 //如果直接执行下边方法的话，那么_component.cachedTextGenerator.lines将会获取的是之前text中的内容，而不是_text的内容，所以需要等待一下
                 yield return null;
 
-                MExpalinTextLine = _component.cachedTextGenerator.lines;
+                var explainTextLine = component.cachedTextGenerator.lines;
 
                 //需要改变的字符序号
-                int mChangeIndex = -1;
+                var explainText = new StringBuilder(component.text);
 
-                MExplainText = new System.Text.StringBuilder(_component.text);
-
-                for (int i = 1; i < MExpalinTextLine.Count; i++)
+                for (int i = 1; i < explainTextLine.Count; i++)
                 {
-                    if (MExpalinTextLine[i].startCharIdx < _component.text.Length)
+                    if (explainTextLine[i].startCharIdx < component.text.Length)
                     {
                         //首位是否有标点
-                        bool _b = Regex.IsMatch(_component.text[MExpalinTextLine[i].startCharIdx].ToString(), REGEX_2);
+                        bool b = Regex.IsMatch(component.text[explainTextLine[i].startCharIdx].ToString(), REGEX_2);
 
-                        if (_b && MExpalinTextLine[i].startCharIdx > 0)
+                        if (b && explainTextLine[i].startCharIdx > 0)
                         {
-                            bool _bb = Regex.IsMatch(_component.text[MExpalinTextLine[i].startCharIdx - 1].ToString(), REGEX_2);
-                            if (!_bb)
+                            bool bb = Regex.IsMatch(component.text[explainTextLine[i].startCharIdx - 1].ToString(), REGEX_2);
+                            if (!bb)
                             {
                                 flag = true;
-                                mChangeIndex = MExpalinTextLine[i].startCharIdx - 1;
+                                var mChangeIndex = explainTextLine[i].startCharIdx - 1;
 
-                                MExplainText.Insert(mChangeIndex, "\n");
+                                explainText.Insert(mChangeIndex, "\n");
                             }
-
                         }
                     }
                 }
-                _component.text = MExplainText.ToString();
+
+                component.text = explainText.ToString();
             }
         }
     }

@@ -14,7 +14,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
 
         private void OnReceive(string str)
         {
-            _txt_self.text = str;
+            TxtSelf.text = str;
         }
     }
 }

@@ -1,21 +1,16 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace NonsensicalKit.UGUI.RestrictedInputField
 {
     public abstract class RestrictedInputFieldBase : InputFieldBase
     {
-        [Serializable]
-        public class EndEditEvent : UnityEvent<string> { }
-        [FormerlySerializedAs("onEndEdit")]
-        [SerializeField]
-        private EndEditEvent m_OnEndEdit = new EndEditEvent();
-        public EndEditEvent OnEndEdit
+        [SerializeField] private UnityEvent<string> m_onEndEdit;
+
+        public UnityEvent<string> OnEndEdit
         {
-            get { return m_OnEndEdit; }
-            set { m_OnEndEdit = value; }
+            get => m_onEndEdit;
+            set => m_onEndEdit = value;
         }
 
         protected override void Awake()

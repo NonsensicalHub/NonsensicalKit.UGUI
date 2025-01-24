@@ -31,6 +31,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
             {
                 root.transform.SetParent(parent.transform, false);
             }
+
             Selection.activeGameObject = root;
 
             GameObject hScrollbar = CreateScrollbar();

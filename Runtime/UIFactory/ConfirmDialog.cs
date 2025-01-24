@@ -1,6 +1,6 @@
+using System;
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 #if TEXTMESHPRO_PRESENT
@@ -25,6 +25,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             this.LeftButtonClick = leftButtonClick;
             this.RightButtonClick = rightButtonClick;
         }
+
         public ConfirmInfo(string message)
         {
             this.Message = message;
@@ -33,6 +34,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             this.LeftButtonClick = null;
             this.RightButtonClick = null;
         }
+
         public ConfirmInfo(string message, Func<bool> leftButtonClick)
         {
             this.Message = message;
@@ -41,12 +43,17 @@ namespace NonsensicalKit.UGUI.UIFactory
             this.LeftButtonClick = leftButtonClick;
             this.RightButtonClick = null;
         }
-        public ConfirmInfo(string message,Action leftButtonClick)
+
+        public ConfirmInfo(string message, Action leftButtonClick)
         {
             this.Message = message;
             this.LeftButtonText = "确认";
             this.RightButtonText = "取消";
-            this.LeftButtonClick = ()=> { leftButtonClick();return true; };
+            this.LeftButtonClick = () =>
+            {
+                leftButtonClick();
+                return true;
+            };
             this.RightButtonClick = null;
         }
     }

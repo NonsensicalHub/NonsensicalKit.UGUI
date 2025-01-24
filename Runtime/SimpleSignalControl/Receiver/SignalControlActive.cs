@@ -10,7 +10,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
     public class SignalControlActive : NonsensicalMono
     {
         [SerializeField] private GameObject m_target;
-        [SerializeField] private bool m_twoSignalControl ;
+        [SerializeField] private bool m_twoSignalControl;
         [SerializeField] private string m_signal;
         [SerializeField] private string m_signal2;
         [SerializeField] private bool m_defaultState = true;

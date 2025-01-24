@@ -11,13 +11,26 @@ namespace NonsensicalKit.UGUI
     {
         [SerializeField] private RectTransform m_target;
         [SerializeField] private bool m_sameWidth;
-        [SerializeField][ShowIf("m_sameWidth")] private bool m_clampWidth;
-        [SerializeField][ShowIf("m_clampWidth")] private float m_minWidth;
-        [SerializeField][ShowIf("m_clampWidth")] private float m_maxWidth;
+
+        [SerializeField] [ShowIf("m_sameWidth")]
+        private bool m_clampWidth;
+
+        [SerializeField] [ShowIf("m_clampWidth")]
+        private float m_minWidth;
+
+        [SerializeField] [ShowIf("m_clampWidth")]
+        private float m_maxWidth;
+
         [SerializeField] private bool m_sameHeight;
-        [SerializeField][ShowIf("m_sameHeight")] private bool m_clampHeight;
-        [SerializeField][ShowIf("m_clampHeight")] private float m_minHeight;
-        [SerializeField][ShowIf("m_clampHeight")] private float m_maxHeight;
+
+        [SerializeField] [ShowIf("m_sameHeight")]
+        private bool m_clampHeight;
+
+        [SerializeField] [ShowIf("m_clampHeight")]
+        private float m_minHeight;
+
+        [SerializeField] [ShowIf("m_clampHeight")]
+        private float m_maxHeight;
 
         private RectTransform _self;
 
@@ -39,8 +52,10 @@ namespace NonsensicalKit.UGUI
                 {
                     targetSize = m_target.rect.width;
                 }
+
                 _self.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetSize);
             }
+
             if (m_sameHeight)
             {
                 float targetSize;
@@ -52,6 +67,7 @@ namespace NonsensicalKit.UGUI
                 {
                     targetSize = m_target.rect.height;
                 }
+
                 _self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetSize);
             }
         }

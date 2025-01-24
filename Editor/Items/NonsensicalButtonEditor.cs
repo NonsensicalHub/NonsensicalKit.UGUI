@@ -7,12 +7,12 @@ namespace NonsensicalKit.UGUI.Editor
     [CanEditMultipleObjects]
     public class NonsensicalButtonEditor : ButtonEditor
     {
-        private SerializedProperty m_minimumInteractionInterval;
+        private SerializedProperty _minimumInteractionInterval;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            m_minimumInteractionInterval = serializedObject.FindProperty("m_minimumInteractionInterval");
+            _minimumInteractionInterval = serializedObject.FindProperty("m_minimumInteractionInterval");
         }
 
         public override void OnInspectorGUI()
@@ -20,7 +20,7 @@ namespace NonsensicalKit.UGUI.Editor
             base.OnInspectorGUI();
             EditorGUILayout.Space();
             serializedObject.Update();
-            EditorGUILayout.PropertyField(m_minimumInteractionInterval);
+            EditorGUILayout.PropertyField(_minimumInteractionInterval);
             serializedObject.ApplyModifiedProperties();
         }
     }

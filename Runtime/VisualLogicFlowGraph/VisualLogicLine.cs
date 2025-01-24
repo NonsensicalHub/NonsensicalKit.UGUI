@@ -10,12 +10,14 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     [RequireComponent(typeof(RectTransform))]
     public class VisualLogicLine : MonoBehaviour, IPointerClickHandler
     {
-        public VisualLogicPointBase Outputpoint => _output;
-        public VisualLogicPointBase Inputpoint => _input;
+        public VisualLogicPointBase OutputPoint => _output;
+        public VisualLogicPointBase InputPoint => _input;
+
         /// <summary>
         /// 输出点位
         /// </summary>
         private VisualLogicPointBase _output;
+
         /// <summary>
         /// 输入点位
         /// </summary>
@@ -25,10 +27,12 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 渲染相机
         /// </summary>
         private Camera _renderCamera;
+
         /// <summary>
         /// 自身的RectTransform
         /// </summary>
         private RectTransform _selfRect;
+
         /// <summary>
         /// 点击计时器，用于双击判定
         /// </summary>
@@ -54,6 +58,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 CutIt();
             }
+
             _timer = Time.time;
         }
 
@@ -79,7 +84,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         {
             _renderCamera = GetComponentInParent<Canvas>().worldCamera;
             GetComponent<CanvasGroup>().blocksRaycasts = false;
-            _output = output;   //此时的_output不一定是输出点位
+            _output = output; //此时的_output不一定是输出点位
             _input = null;
             UpdatePos();
         }
@@ -104,7 +109,6 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             _selfRect.sizeDelta = new Vector3(offseet.magnitude / transform.lossyScale.x, 5);
             _selfRect.rotation = Quaternion.Euler(new Vector3(0, 0, 180 * Mathf.Atan(offseet.y / offseet.x) / Mathf.PI));
         }
-
 
         /// <summary>
         /// 切断

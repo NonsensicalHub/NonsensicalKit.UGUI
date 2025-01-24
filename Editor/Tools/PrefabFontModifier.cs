@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -15,17 +16,18 @@ namespace NonsensicalKit.UGUI.Editor.Tools
         [MenuItem("NonsensicalKit/UGUI/预制体字体修改")]
         public static void ShowWindow()
         {
-            EditorWindow.GetWindow(typeof(PrefabFontModifier));
+            GetWindow(typeof(PrefabFontModifier));
         }
 
         private static class PrefabFontModifierPanel
         {
-            public static TMP_FontAsset font;
+            public static TMP_FontAsset Font;
         }
 
         private void OnGUI()
         {
-            PrefabFontModifierPanel.font = (TMP_FontAsset)EditorGUILayout.ObjectField("Font", PrefabFontModifierPanel.font, typeof(TMP_FontAsset), true, GUILayout.MinWidth(100f));
+            PrefabFontModifierPanel.Font = (TMP_FontAsset)EditorGUILayout.ObjectField("Font", PrefabFontModifierPanel.Font, typeof(TMP_FontAsset),
+                true, GUILayout.MinWidth(100f));
 
             if (GUILayout.Button("修改"))
             {
@@ -33,7 +35,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
 
                 List<GameObject> prefabs = new List<GameObject>();
 
-                var absolutePaths = System.IO.Directory.GetFiles(objPath, "*.prefab", System.IO.SearchOption.AllDirectories);
+                var absolutePaths = Directory.GetFiles(objPath, "*.prefab", SearchOption.AllDirectories);
 
                 for (int i = 0; i < absolutePaths.Length; i++)
                 {
@@ -51,7 +53,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
 
                 EditorUtility.ClearProgressBar();
 
-                ChangeFont(prefabs, PrefabFontModifierPanel.font);
+                ChangeFont(prefabs, PrefabFontModifierPanel.Font);
             }
         }
 
@@ -89,6 +91,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
                                         break;
                                     }
                                 }
+
                                 if (flag)
                                 {
                                     Debug.Log("修改了" + PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(text.gameObject) + "的Text组件");
@@ -101,6 +104,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
                     }
                 }
             }
+
             EditorUtility.DisplayDialog("", "设置字体完毕,共修改了" + count + "个对象", "OK");
         }
     }

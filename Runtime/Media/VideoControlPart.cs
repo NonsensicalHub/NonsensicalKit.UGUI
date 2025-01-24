@@ -42,11 +42,11 @@ namespace NonsensicalKit.UGUI.Media
 
             m_progress?.OnDragStateChanged.AddListener(OnDragStateChanged);
 
-            m_btn_play?.OnValueChanged.AddListener(OnPlayChanged);
-            m_btn_fullScreen?.OnValueChanged.AddListener(OnFullScreenChanged);
-            m_btn_loop?.OnValueChanged.AddListener(OnLoopChanged);
-            m_btn_fixControl?.OnValueChanged.AddListener(OnFixedChanged);
-            m_btn_mute?.OnValueChanged.AddListener(OnMuteStateChanged);
+            m_btn_play?.m_OnValueChanged.AddListener(OnPlayChanged);
+            m_btn_fullScreen?.m_OnValueChanged.AddListener(OnFullScreenChanged);
+            m_btn_loop?.m_OnValueChanged.AddListener(OnLoopChanged);
+            m_btn_fixControl?.m_OnValueChanged.AddListener(OnFixedChanged);
+            m_btn_mute?.m_OnValueChanged.AddListener(OnMuteStateChanged);
             m_sld_sound?.onValueChanged.AddListener(OnSoundValueChanged);
         }
 
@@ -96,7 +96,7 @@ namespace NonsensicalKit.UGUI.Media
         private void OnPlayProgressChanged(MediaProgressState progress)
         {
             if (!m_progress || m_progress.Dragging) return;
-            
+
             m_progress.State = progress;
         }
 

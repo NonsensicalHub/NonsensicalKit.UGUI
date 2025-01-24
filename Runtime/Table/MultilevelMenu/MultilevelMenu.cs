@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace NonsensicalKit.Core.Table
@@ -46,6 +45,7 @@ namespace NonsensicalKit.Core.Table
             {
                 _panel = InstantiatePanel(transform);
             }
+
             _panel.RootPanel = true;
             _panel.Init(tops, this);
         }
@@ -63,11 +63,10 @@ namespace NonsensicalKit.Core.Table
 
                 string[] paths = info.Path.Split(splitChar);
                 var crtList = tops;
-                MultilevelMenuNode next = null;
 
                 foreach (var p in paths)
                 {
-                    next = null;
+                    MultilevelMenuNode next = null;
                     foreach (var item in crtList)
                     {
                         if (string.Equals(p, item.Name))
@@ -76,12 +75,14 @@ namespace NonsensicalKit.Core.Table
                             break;
                         }
                     }
+
                     if (next == null)
                     {
                         next = new MultilevelMenuNode(p, info);
                         crtList.Add(next);
                     }
-                    crtList = next.Childs;
+
+                    crtList = next.Children;
                 }
             }
 
@@ -111,10 +112,30 @@ namespace NonsensicalKit.Core.Table
 
         private void Sort(List<MultilevelMenuNode> list)
         {
-            list.OrderBy((node) => node.MenuInfo.Priority);
+            int n = list.Count;
+            for (int i = 0; i < n - 1; i++)
+            {
+                bool swapped = false;
+                for (int j = 0; j < n - i - 1; j++)
+                {
+                    if (list[j].MenuInfo.Priority > list[j + 1].MenuInfo.Priority)
+                    {
+                        // 交换 arr[j] 和 arr[j + 1]
+                        (list[j], list[j + 1]) = (list[j + 1], list[j]);
+                        swapped = true;
+                    }
+                }
+
+                // 如果某一趟没有发生交换，说明数组已经有序
+                if (!swapped)
+                {
+                    break;
+                }
+            }
+
             foreach (var node in list)
             {
-                Sort(node.Childs);
+                Sort(node.Children);
             }
         }
     }

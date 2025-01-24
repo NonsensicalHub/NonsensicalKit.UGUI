@@ -1,6 +1,5 @@
-using NonsensicalKit.Tools.InputTool;
-using System;
 using System.Collections;
+using NonsensicalKit.Tools.InputTool;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -14,24 +13,24 @@ namespace NonsensicalKit.Core.Table
     /// </summary>
     public class StepGroup : MonoBehaviour
     {
-        private const float STEP_THRESHOLD = 0.618f;  //离当前索引多远时移动到另一个索引
+        private const float STEP_THRESHOLD = 0.618f; //离当前索引多远时移动到另一个索引
 
         [SerializeField] private ScrollRect m_scollRect;
-        [SerializeField][Range(1, 300)] private float m_speedThreshold = 100;   //开始控制运动的速度阈值，当惯性运动的速度低于此值时才会开始控制运动
-        [SerializeField][Range(0.001f, 1)] private float m_moveSpeed = 0.05f;       //校正速度
+        [SerializeField] [Range(1, 300)] private float m_speedThreshold = 100; //开始控制运动的速度阈值，当惯性运动的速度低于此值时才会开始控制运动
+        [SerializeField] [Range(0.001f, 1)] private float m_moveSpeed = 0.05f; //校正速度
 
-        [SerializeField] private Vector2Int m_startCount = new Vector2Int(1, 1);        //初始横纵方向的单位数量
-        [SerializeField] private Vector2 m_startCellSize = new Vector2(100, 100);       //初始单位尺寸
-        [SerializeField] private Vector2Int m_startIndex = new Vector2Int(0, 0);        //初始索引
-        [SerializeField] private Vector2 m_viewportAnchors = new Vector2(0.5f, 0.5f);   //ScrollRect的Viewport用于锚定点
-        [SerializeField] private Vector2 m_cellAnchors = new Vector2(0.5f, 0.5f);       //每个单位的锚定点，自动移动会试图将单位的锚定点和Viewport锚定点重合
+        [SerializeField] private Vector2Int m_startCount = new Vector2Int(1, 1); //初始横纵方向的单位数量
+        [SerializeField] private Vector2 m_startCellSize = new Vector2(100, 100); //初始单位尺寸
+        [SerializeField] private Vector2Int m_startIndex = new Vector2Int(0, 0); //初始索引
+        [SerializeField] private Vector2 m_viewportAnchors = new Vector2(0.5f, 0.5f); //ScrollRect的Viewport用于锚定点
+        [SerializeField] private Vector2 m_cellAnchors = new Vector2(0.5f, 0.5f); //每个单位的锚定点，自动移动会试图将单位的锚定点和Viewport锚定点重合
 
-        [SerializeField] private UnityEvent<Vector2Int, Vector2Int> m_onIndexChanged;   //索引改变事件
-        [SerializeField] private UnityEvent m_onControl;   //交互控制事件
-        [SerializeField] private UnityEvent<bool> m_xCanPlus;   
-        [SerializeField] private UnityEvent<bool> m_xCanMinus;   
-        [SerializeField] private UnityEvent<bool> m_yCanPlus;   
-        [SerializeField] private UnityEvent<bool> m_yCanMinus;   
+        [SerializeField] private UnityEvent<Vector2Int, Vector2Int> m_onIndexChanged; //索引改变事件
+        [SerializeField] private UnityEvent m_onControl; //交互控制事件
+        [SerializeField] private UnityEvent<bool> m_xCanPlus;
+        [SerializeField] private UnityEvent<bool> m_xCanMinus;
+        [SerializeField] private UnityEvent<bool> m_yCanPlus;
+        [SerializeField] private UnityEvent<bool> m_yCanMinus;
 
         public UnityEvent<Vector2Int, Vector2Int> OnIndexChanged => m_onIndexChanged;
         public UnityEvent OnControl => m_onControl;
@@ -78,22 +77,24 @@ namespace NonsensicalKit.Core.Table
 
         private void Update()
         {
-            if (_forceScroll) return;   //强制滚动时不进行任何处理
+            if (_forceScroll) return; //强制滚动时不进行任何处理
 
             var velocity = m_scollRect.velocity.magnitude;
-            if (_lastVelocity != velocity)
+            if (!Mathf.Approximately(_lastVelocity, velocity))
             {
                 if (_lastVelocity == 0)
                 {
                     OnControl?.Invoke();
                 }
+
                 _lastVelocity = velocity;
             }
+
             var newPos = UpdateState();
-            if (_input.IsMouseLeftButtonHold) return;    //鼠标正在操作时不进行主动运动
-            if (velocity > m_speedThreshold) return;    //惯性滑动时不进行主动运动
+            if (_input.IsMouseLeftButtonHold) return; //鼠标正在操作时不进行主动运动
+            if (velocity > m_speedThreshold) return; //惯性滑动时不进行主动运动
             _content.anchoredPosition = newPos;
-            m_scollRect.velocity = Vector2.zero;        //将速度归零防止抖动
+            m_scollRect.velocity = Vector2.zero; //将速度归零防止抖动
         }
 
         public void GoToX(int xIndex)
@@ -146,12 +147,14 @@ namespace NonsensicalKit.Core.Table
                 {
                     StopCoroutine(_scrollCoroutine);
                 }
+
                 _scrollCoroutine = StartCoroutine(CorScrollTo(index));
             }
             else
             {
                 _content.anchoredPosition = new Vector2(-GetCrtHorizontalPos(), GetCrtVerticalPos());
             }
+
             m_onIndexChanged?.Invoke(oldIndex, _crtIndex);
         }
 
@@ -249,6 +252,7 @@ namespace NonsensicalKit.Core.Table
                         xTargetInt++;
                     }
                 }
+
                 _crtIndex.x = xTargetInt;
                 crtXTarget = GetCrtHorizontalPos();
                 newX = crtX * _oneMinusMoveSpeed + crtXTarget * m_moveSpeed;
@@ -280,6 +284,7 @@ namespace NonsensicalKit.Core.Table
                         yTargetInt++;
                     }
                 }
+
                 _crtIndex.y = yTargetInt;
                 crtYTarget = GetCrtVerticalPos();
                 newY = crtY * _oneMinusMoveSpeed + crtYTarget * m_moveSpeed;
@@ -289,6 +294,7 @@ namespace NonsensicalKit.Core.Table
             {
                 m_onIndexChanged?.Invoke(oldIndex, _crtIndex);
             }
+
             _newPosBuffer.x = -newX;
             _newPosBuffer.y = newY;
             return _newPosBuffer;
@@ -303,6 +309,7 @@ namespace NonsensicalKit.Core.Table
             {
                 _crtCount.x = 1;
             }
+
             if (_crtCount.y <= 0)
             {
                 _crtCount.y = 1;
@@ -342,7 +349,7 @@ namespace NonsensicalKit.Core.Table
                 return;
             }
 
-            var zeroOne = new Vector2(0, 1);    //本组件默认从左上到右下的阅读顺序，默认锚定左上角，此时实际位置的x使用负值，y使用正值
+            var zeroOne = new Vector2(0, 1); //本组件默认从左上到右下的阅读顺序，默认锚定左上角，此时实际位置的x使用负值，y使用正值
             _content.pivot = zeroOne;
             _content.anchorMin = zeroOne;
             _content.anchorMax = zeroOne;
@@ -421,6 +428,7 @@ namespace NonsensicalKit.Core.Table
                 timer += Time.deltaTime;
                 yield return null;
             }
+
             _content.anchoredPosition = targetPos;
 
             _forceScroll = false;

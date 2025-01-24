@@ -1,10 +1,10 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using NonsensicalKit.Core;
 using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools;
 using NonsensicalKit.Tools.ObjectPool;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.VisualLogicGraph
@@ -21,26 +21,32 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 如果需要添加新的节点类型，只需要新建节点预制体，在预制体中进行配置，最后添加到此数组即可
         /// </summary>
         [SerializeField] private VisualNodePrefabsSetting[] m_nodePrefabs;
+
         /// <summary>
         /// 黑板管理类
         /// </summary>
         [SerializeField] private VisualLogicBoard m_board;
+
         /// <summary>
         /// 连接线预制体
         /// </summary>
         [SerializeField] private VisualLogicLine m_linePrefab;
+
         /// <summary>
         /// 放置生成的连接线的父物体，保证线的UI显示在其他元素前面
         /// </summary>
         [SerializeField] private Transform m_lineSpace;
+
         /// <summary>
         /// 对象池缓存父节点，应处于非激活状态，保证被回收的对象池对象休眠
         /// </summary>
         [SerializeField] private Transform m_pool;
+
         /// <summary>
         /// 多级菜单
         /// </summary>
         [SerializeField] private MultilevelMenu m_menu;
+
         /// <summary>
         /// 是否不断的检测尺寸是否改变，检测到改变时会更新黑板的可视化区域大小
         /// </summary>
@@ -50,26 +56,32 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 当前激活的逻辑节点，键为节点id
         /// </summary>
         private Dictionary<string, VisualLogicNodeBase> _nodes = new Dictionary<string, VisualLogicNodeBase>();
+
         /// <summary>
         /// 连接线对象池
         /// </summary>
         private ComponentPool_MK2<VisualLogicLine> _linePool;
+
         /// <summary>
         /// 每种逻辑节点的对象池
         /// </summary>
         private Dictionary<string, ComponentPool_MK2<VisualLogicNodeBase>> _pools = new Dictionary<string, ComponentPool_MK2<VisualLogicNodeBase>>();
+
         /// <summary>
         /// 创建新的逻辑节点信息的方法
         /// </summary>
         private Func<string, IVisualLogicNodeInfo> _createNodeInfo;
+
         /// <summary>
         /// 创建新的节点信息的方法
         /// </summary>
         private Func<string, IVisualLogicPointInfo> _createPointInfo;
+
         /// <summary>
         /// 自身的RectTransform
         /// </summary>
         private RectTransform _selfRect;
+
         /// <summary>
         /// 是否初始化过创建方法
         /// </summary>
@@ -88,6 +100,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                     Debug.LogWarning("类型重复：" + node.Type);
                     continue;
                 }
+
                 _pools.Add(node.Type, new ComponentPool_MK2<VisualLogicNodeBase>(node.Prefab, OnNodeStore, OnNodeInit));
                 menuInfos.Add(new MultilevelMenuInfo(node.CreatePath, OnCreateNew));
             }
@@ -121,6 +134,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 Debug.LogError("创建方法为空");
                 return;
             }
+
             _createNodeInfo = createNodeInfo;
             _createPointInfo = createPointInfo;
 
@@ -142,26 +156,27 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 存档，返回存储信息类
         /// </summary>
-        /// <typeparam name="Save"></typeparam>
-        /// <typeparam name="Node"></typeparam>
-        /// <typeparam name="Point"></typeparam>
-        /// <returns></returns>
-        public Save Save<Save, Node, Point>() where Save : IVisualSaveData<Node, Point>, new() where Node : class, IVisualLogicNodeInfo where Point : class, IVisualLogicPointInfo
+        public TSave Save<TSave, TNode, TPoint>() where TSave : IVisualSaveData<TNode, TPoint>, new()
+            where TNode : class, IVisualLogicNodeInfo
+            where TPoint : class, IVisualLogicPointInfo
         {
-            Save data = new Save();
-            data.NodeInfos = new List<Node>();
-            data.PointInfos = new List<Point>();
+            TSave data = new TSave
+            {
+                NodeInfos = new List<TNode>(),
+                PointInfos = new List<TPoint>()
+            };
 
             foreach (VisualLogicNodeBase node in _nodes.Values)
             {
-                data.NodeInfos.Add(node.Info.Clone() as Node);
+                data.NodeInfos.Add(node.Info.Clone() as TNode);
                 foreach (var item in node.Inputs)
                 {
-                    data.PointInfos.Add(item.Info.Clone() as Point);
+                    data.PointInfos.Add(item.Info.Clone() as TPoint);
                 }
+
                 foreach (var item in node.Outputs)
                 {
-                    data.PointInfos.Add(item.Info.Clone() as Point);
+                    data.PointInfos.Add(item.Info.Clone() as TPoint);
                 }
             }
 
@@ -174,14 +189,16 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 读档，输入存储信息类，更新黑板和逻辑节点状态
         /// </summary>
-        /// <typeparam name="Save"></typeparam>
-        /// <typeparam name="Node"></typeparam>
-        /// <typeparam name="Point"></typeparam>
+        /// <typeparam name="TSave"></typeparam>
+        /// <typeparam name="TNode"></typeparam>
+        /// <typeparam name="TPoint"></typeparam>
         /// <param name="data"></param>
-        public void Load<Save, Node, Point>(Save data) where Save : class, IVisualSaveData<Node, Point> where Node : class, IVisualLogicNodeInfo where Point : class, IVisualLogicPointInfo
+        public void Load<TSave, TNode, TPoint>(TSave data) where TSave : class, IVisualSaveData<TNode, TPoint>
+            where TNode : class, IVisualLogicNodeInfo
+            where TPoint : class, IVisualLogicPointInfo
         {
             Clear();
-            data = data.Clone() as Save;
+            data = data.Clone() as TSave;
             m_board.SetSize(data.BoardWidth, data.BoardHeight);
 
             Dictionary<string, IVisualLogicPointInfo> pointBuffer = new Dictionary<string, IVisualLogicPointInfo>();
@@ -192,6 +209,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                     Debug.LogWarning("存档点位ID重复：" + item.ID);
                     continue;
                 }
+
                 pointBuffer.Add(item.ID, item);
             }
 
@@ -202,6 +220,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                     Debug.LogWarning("存档中存在未配置的节点类型：" + item.Type);
                     continue;
                 }
+
                 var visualLogicNodeBase = _pools[item.Type].New();
                 NodeInit(visualLogicNodeBase, item);
 
@@ -209,6 +228,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 {
                     Debug.LogWarning("存档输入点位长度不匹配：" + item.Type);
                 }
+
                 int inputMin = Mathf.Min(item.InputPoints.Count, visualLogicNodeBase.Inputs.Count);
                 int inputIndex = 0;
                 for (; inputIndex < inputMin; inputIndex++)
@@ -220,6 +240,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                         NewPointInit(visualLogicNodeBase.Inputs[inputIndex]);
                         continue;
                     }
+
                     PointInit(visualLogicNodeBase.Inputs[inputIndex], pointBuffer[item.InputPoints[inputIndex]]);
                 }
 
@@ -232,6 +253,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 {
                     Debug.LogWarning("存档输出点位长度不匹配：" + item.Type);
                 }
+
                 int outputMin = Mathf.Min(item.OutputPoints.Count, visualLogicNodeBase.Outputs.Count);
                 int outputIndex = 0;
                 for (; outputIndex < outputMin; outputIndex++)
@@ -243,6 +265,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                         NewPointInit(visualLogicNodeBase.Outputs[outputIndex]);
                         continue;
                     }
+
                     PointInit(visualLogicNodeBase.Outputs[outputIndex], pointBuffer[item.OutputPoints[outputIndex]]);
                 }
 
@@ -265,6 +288,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 Debug.LogError("尚未进行初始化");
                 return null;
             }
+
             if (_pools.ContainsKey(type) == false)
             {
                 Debug.LogWarning($"未找到类型为{type}的节点");
@@ -282,10 +306,8 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <param name="id"></param>
         public void DeleteNode(string id)
         {
-            if (_nodes.ContainsKey(id))
+            if (_nodes.Remove(id, out var v))
             {
-                var v = _nodes[id];
-                _nodes.Remove(id);
                 foreach (var item in v.Inputs)
                 {
                     while (item.ConnectLines.Count > 0)
@@ -295,6 +317,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                         item.ConnectLines[0].CutIt();
                     }
                 }
+
                 foreach (var item in v.Outputs)
                 {
                     while (item.ConnectLines.Count > 0)
@@ -302,6 +325,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                         item.ConnectLines[0].CutIt();
                     }
                 }
+
                 _pools[v.Info.Type].Store(v);
             }
         }
@@ -363,6 +387,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 NewPointInit(item);
             }
+
             foreach (var item in node.Outputs)
             {
                 NewPointInit(item);
@@ -372,7 +397,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             node.UpdateState();
             _nodes.Add(node.Info.ID, node);
 
-            Vector3 temp = IOCC.Get<Vector3>(VisualLogicEnum.CreatPos);//将新生成的节点移动至鼠标位置
+            Vector3 temp = IOCC.Get<Vector3>(VisualLogicEnum.CreatPos); //将新生成的节点移动至鼠标位置
             node.transform.position = temp;
         }
 
@@ -457,13 +482,14 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     /// <summary>
     /// 配置节点类型的创建路径和预制体
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class VisualNodePrefabsSetting
     {
         /// <summary>
         /// 节点预制体
         /// </summary>
         public VisualLogicNodeBase Prefab;
+
         /// <summary>
         /// 在右键菜单里的创建路径
         /// </summary>
@@ -475,23 +501,25 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     /// <summary>
     /// 存档类接口
     /// </summary>
-    /// <typeparam name="NodeInfo"></typeparam>
-    /// <typeparam name="PointInfo"></typeparam>
-    public interface IVisualSaveData<NodeInfo, PointInfo> where NodeInfo : IVisualLogicNodeInfo where PointInfo : IVisualLogicPointInfo
+    /// <typeparam name="TNodeInfo"></typeparam>
+    /// <typeparam name="TPointInfo"></typeparam>
+    public interface IVisualSaveData<TNodeInfo, TPointInfo> where TNodeInfo : IVisualLogicNodeInfo where TPointInfo : IVisualLogicPointInfo
     {
         /// <summary>
         /// 所有节点信息类
         /// </summary>
-        public List<NodeInfo> NodeInfos { get; set; }
+        public List<TNodeInfo> NodeInfos { get; set; }
+
         /// <summary>
         /// 所有点位信息类
         /// </summary>
-        public List<PointInfo> PointInfos { get; set; }
+        public List<TPointInfo> PointInfos { get; set; }
 
         /// <summary>
         /// 黑板宽度
         /// </summary>
         public float BoardWidth { get; set; }
+
         /// <summary>
         /// 黑板高度
         /// </summary>
@@ -501,14 +529,14 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 克隆方法
         /// </summary>
         /// <returns></returns>
-        public IVisualSaveData<NodeInfo, PointInfo> Clone();
+        public IVisualSaveData<TNodeInfo, TPointInfo> Clone();
     }
 
     /// <summary>
     /// 基础存档类
     /// 用于示例
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class BasicVisualSaveData : IVisualSaveData<BasicVisualLogicNodeInfo, BasicVisualLogicPointInfo>
     {
         public List<BasicVisualLogicNodeInfo> NodeInfos { get; set; }

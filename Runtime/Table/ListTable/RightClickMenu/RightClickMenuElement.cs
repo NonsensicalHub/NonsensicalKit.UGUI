@@ -27,6 +27,7 @@ namespace NonsensicalKit.UGUI.Table
             {
                 m_img_Icon.gameObject.SetActive(false);
             }
+
             m_txt_Text.text = elementData.Text;
             m_btn_Element.onClick.RemoveAllListeners();
             m_btn_Element.onClick.AddListener(OnElementClick);

@@ -1,7 +1,7 @@
-using NonsensicalKit.Core;
-using NonsensicalKit.Tools;
 using System;
 using System.Collections.Generic;
+using NonsensicalKit.Core;
+using NonsensicalKit.Tools;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,6 +19,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 逻辑节点类型
         /// </summary>
         [SerializeField] private string m_type;
+
         /// <summary>
         /// 是否可以编辑名称
         /// </summary>
@@ -28,6 +29,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 删除按钮
         /// </summary>
         [SerializeField] private Button m_btn_delete;
+
         /// <summary>
         /// 名称输入框
         /// </summary>
@@ -37,6 +39,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 输入点位
         /// </summary>
         [SerializeField] private List<VisualLogicPointBase> m_inputs;
+
         /// <summary>
         /// 输出点位
         /// </summary>
@@ -44,14 +47,17 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
 
 
         public string Type => m_type;
+
         /// <summary>
         /// 输入点位
         /// </summary>
         public List<VisualLogicPointBase> Inputs => m_inputs;
+
         /// <summary>
         /// 输出点位
         /// </summary>
         public List<VisualLogicPointBase> Outputs => m_outputs;
+
         /// <summary>
         /// 存档信息类
         /// </summary>
@@ -61,6 +67,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 自身RectTransform
         /// </summary>
         private RectTransform _selfRect;
+
         /// <summary>
         /// 开始拖拽时鼠标和中心点的偏移量
         /// </summary>
@@ -72,6 +79,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 item.BelongNode = this;
             }
+
             foreach (var item in Outputs)
             {
                 item.BelongNode = this;
@@ -84,16 +92,14 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            Vector3 pos;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, eventData.enterEventCamera, out pos);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, eventData.enterEventCamera, out var pos);
             _startOffset = _selfRect.position - pos;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             //拖拽时移动节点位置，并更新信息类存储的位置信息
-            Vector3 pos;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, eventData.enterEventCamera, out pos);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, eventData.enterEventCamera, out var pos);
             _selfRect.position = pos + _startOffset;
             Info.X = _selfRect.anchoredPosition.x;
             Info.Y = _selfRect.anchoredPosition.y;
@@ -110,10 +116,12 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 Info.Name = "新节点";
             }
+
             if (string.IsNullOrEmpty(Info.ID))
             {
                 Info.ID = Guid.NewGuid().ToString();
             }
+
             Info.Type = m_type;
             Info.CanEditName = m_canEditName;
             Info.InputPoints = new List<string>();
@@ -121,11 +129,13 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 Info.InputPoints.Add(item.Info.ID);
             }
+
             Info.OutputPoints = new List<string>();
             foreach (var item in m_outputs)
             {
                 Info.OutputPoints.Add(item.Info.ID);
             }
+
             AfterNewInfo();
         }
 
@@ -150,6 +160,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 item.OnStore();
             }
+
             foreach (var item in m_outputs)
             {
                 item.OnStore();
@@ -161,7 +172,6 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// </summary>
         public virtual void AfterPointChanged(VisualLogicPointBase pointBase, bool isConnect)
         {
-
         }
 
         /// <summary>
@@ -169,7 +179,6 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// </summary>
         protected virtual void AfterNewInfo()
         {
-
         }
 
         /// <summary>
@@ -177,7 +186,6 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// </summary>
         protected virtual void AfterUpdateState()
         {
-
         }
 
         /// <summary>
@@ -207,30 +215,37 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 节点名称
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// 节点类型
         /// </summary>
         public string Type { get; set; }
+
         /// <summary>
         /// 节点图形的X坐标
         /// </summary>
         public float X { get; set; }
+
         /// <summary>
         /// 节点图形的Y坐标
         /// </summary>
         public float Y { get; set; }
+
         /// <summary>
         /// 是否可以编辑名称
         /// </summary>
         public bool CanEditName { get; set; }
+
         /// <summary>
         /// 节点ID
         /// </summary>
         public string ID { get; set; }
+
         /// <summary>
         /// 所有输入点位的ID
         /// </summary>
         public List<string> InputPoints { get; set; }
+
         /// <summary>
         /// 所有输出点位的ID
         /// </summary>
@@ -247,24 +262,24 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     /// 基础节点信息类
     /// 用于示例
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class BasicVisualLogicNodeInfo : IVisualLogicNodeInfo
     {
-        public string Name { get { return m_name; } set { m_name = value; } }
+        public string Name { get => m_name; set => m_name = value; }
         [SerializeField] private string m_name;
-        public string Type { get { return m_type; } set { m_type = value; } }
+        public string Type { get => m_type; set => m_type = value; }
         [SerializeField] private string m_type;
-        public float X { get { return m_x; } set { m_x = value; } }
+        public float X { get => m_x; set => m_x = value; }
         [SerializeField] private float m_x;
-        public float Y { get { return m_y; } set { m_y = value; } }
+        public float Y { get => m_y; set => m_y = value; }
         [SerializeField] private float m_y;
-        public bool CanEditName { get { return m_canEditName; } set { m_canEditName = value; } }
+        public bool CanEditName { get => m_canEditName; set => m_canEditName = value; }
         [SerializeField] private bool m_canEditName;
-        public string ID { get { return m_id; } set { m_id = value; } }
+        public string ID { get => m_id; set => m_id = value; }
         [SerializeField] private string m_id;
-        public List<string> InputPoints { get { return m_inputPoints; } set { m_inputPoints = value; } }
+        public List<string> InputPoints { get => m_inputPoints; set => m_inputPoints = value; }
         [SerializeField] private List<string> m_inputPoints;
-        public List<string> OutputPoints { get { return m_outputPoints; } set { m_outputPoints = value; } }
+        public List<string> OutputPoints { get => m_outputPoints; set => m_outputPoints = value; }
         [SerializeField] private List<string> m_outputPoints;
 
         public IVisualLogicNodeInfo Clone()

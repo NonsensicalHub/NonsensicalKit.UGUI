@@ -10,7 +10,6 @@ namespace NonsensicalKit.UGUI
     [RequireComponent(typeof(RectTransform))]
     public class AutoSizeController : MonoBehaviour
     {
-
         [SerializeField] private float m_verticalArg = -1;
         [SerializeField] private float m_horizontalArg = -1;
 
@@ -27,12 +26,17 @@ namespace NonsensicalKit.UGUI
         {
             if (m_horizontalArg > 0)
             {
-                _contentSizeFitter.horizontalFit = _rectTransform.rect.width < m_horizontalArg ? ContentSizeFitter.FitMode.Unconstrained : ContentSizeFitter.FitMode.PreferredSize;
+                _contentSizeFitter.horizontalFit = _rectTransform.rect.width < m_horizontalArg
+                    ? ContentSizeFitter.FitMode.Unconstrained
+                    : ContentSizeFitter.FitMode.PreferredSize;
                 _rectTransform.sizeDelta = new Vector2(m_horizontalArg - 1, _rectTransform.sizeDelta.y);
             }
+
             if (m_verticalArg > 0)
             {
-                _contentSizeFitter.verticalFit = _rectTransform.rect.height < m_verticalArg ? ContentSizeFitter.FitMode.Unconstrained : ContentSizeFitter.FitMode.PreferredSize;
+                _contentSizeFitter.verticalFit = _rectTransform.rect.height < m_verticalArg
+                    ? ContentSizeFitter.FitMode.Unconstrained
+                    : ContentSizeFitter.FitMode.PreferredSize;
                 _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, m_verticalArg - 1);
             }
         }

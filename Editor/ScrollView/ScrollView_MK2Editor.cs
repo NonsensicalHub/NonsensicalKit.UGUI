@@ -25,7 +25,8 @@ namespace NonsensicalKit.UGUI.Editor.Table
         private SerializedProperty _poolSize;
 
         private GUIStyle _caption;
-        private GUIStyle _Caption
+
+        private GUIStyle Caption
         {
             get
             {
@@ -34,6 +35,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
                     _caption = new GUIStyle { richText = true, alignment = TextAnchor.MiddleCenter };
                     _caption.normal.textColor = Color.green;
                 }
+
                 return _caption;
             }
         }
@@ -64,17 +66,17 @@ namespace NonsensicalKit.UGUI.Editor.Table
             serializedObject.Update();
 
             EditorGUILayout.BeginVertical("box");
-            EditorGUILayout.LabelField("<b>新增配置项</b>", _Caption);
+            EditorGUILayout.LabelField("<b>新增配置项</b>", Caption);
             EditorGUILayout.Space(5);
             DrawBaseConfig();
-            EditorGUILayout.LabelField("对象池配置", _Caption);
+            EditorGUILayout.LabelField("对象池配置", Caption);
             EditorGUILayout.Space(5);
             DrawPoolConfig();
             serializedObject.ApplyModifiedProperties();
             EditorGUILayout.EndVertical();
 
             EditorGUILayout.BeginVertical("box");
-            EditorGUILayout.LabelField("<b>ScrollRect原始配置项</b>", _Caption);
+            EditorGUILayout.LabelField("<b>ScrollRect原始配置项</b>", Caption);
             EditorGUILayout.Space(5);
             base.OnInspectorGUI();
             EditorGUILayout.EndVertical();
@@ -87,11 +89,13 @@ namespace NonsensicalKit.UGUI.Editor.Table
             {
                 EditorGUILayout.PropertyField(_top);
             }
+
             EditorGUILayout.PropertyField(_horizonMid);
             if (_horizonMid.boolValue == false)
             {
                 EditorGUILayout.PropertyField(_left);
             }
+
             EditorGUILayout.PropertyField(_spacing);
             EditorGUILayout.PropertyField(_autoResize);
 

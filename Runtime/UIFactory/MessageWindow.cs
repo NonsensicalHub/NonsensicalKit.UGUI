@@ -1,5 +1,3 @@
-using System;
-using NonsensicalKit.Core;
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
 using TMPro;
@@ -28,13 +26,13 @@ namespace NonsensicalKit.UGUI.UIFactory
         private MessageInfo _crtConfirmInfo;
 
 
-        private float _surviceTime;
+        private float _surviveTime;
         private float _timer;
 
         private void Update()
         {
-            _timer+=Time.deltaTime;
-            if (_timer>_surviceTime)
+            _timer += Time.deltaTime;
+            if (_timer > _surviveTime)
             {
                 Close();
             }
@@ -58,12 +56,12 @@ namespace NonsensicalKit.UGUI.UIFactory
         {
             Pool.Store(gameObject);
         }
-        
+
         private void OpenMessageWindow(MessageInfo messageInfo)
         {
             m_txt_message.text = messageInfo.Message;
 
-            _surviceTime = messageInfo.SurviceTime;
+            _surviveTime = messageInfo.SurviceTime;
         }
     }
 }

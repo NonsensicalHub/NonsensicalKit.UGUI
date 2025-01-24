@@ -9,7 +9,7 @@ namespace NonsensicalKit.UGUI
 
         [SerializeField] protected GameObject[] m_targets;
 
-        [SerializeField] private int m_initSelect = 0;
+        [SerializeField] private int m_initSelect;
 
         private GameObject[] _selectedImages;
 
@@ -28,6 +28,7 @@ namespace NonsensicalKit.UGUI
                     int index = i;
                     m_buttons[i].onClick.AddListener(() => { Switch(index); });
                 }
+
                 _selectedImages = new GameObject[m_targets.Length];
 
                 for (int i = 0; i < _selectedImages.Length; i++)

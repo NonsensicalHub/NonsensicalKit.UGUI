@@ -6,7 +6,7 @@ namespace NonsensicalKit.UGUI
 {
     public class NonsensicalButton : Button
     {
-        [SerializeField][Tooltip("最小交互间隔")] private float m_minimumInteractionInterval = 0.1f;
+        [SerializeField] [Tooltip("最小交互间隔")] private float m_minimumInteractionInterval = 0.1f;
 
         private float _lastPressTime;
 

@@ -8,8 +8,8 @@ namespace NonsensicalKit.UGUI.UIFactory
     {
         [SerializeField] private Toggle m_toggle;
 
-        [TextArea][SerializeField] private string m_onText = "On Tooltip";
-        [TextArea][SerializeField] private string m_offText = "Off Tooltip";
+        [TextArea] [SerializeField] private string m_onText = "On Tooltip";
+        [TextArea] [SerializeField] private string m_offText = "Off Tooltip";
 
         private TooltipRect _tooltip;
 

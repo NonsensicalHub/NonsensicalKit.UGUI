@@ -1,8 +1,8 @@
+using System;
+using System.Collections.Generic;
 using NonsensicalKit.Core;
 using NonsensicalKit.Tools;
 using NonsensicalKit.Tools.ObjectPool;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,20 +16,23 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 用于在加载存档时为连接线提供信息
         /// </summary>
-        private static Dictionary<string, VisualLogicPointBase> Points = new Dictionary<string, VisualLogicPointBase>();
+        private static readonly Dictionary<string, VisualLogicPointBase> Points = new();
+
         /// <summary>
         /// 用于缓存待连接的点位
         /// </summary>
-        private static Dictionary<string, List<VisualLogicPointBase>> Waiting = new Dictionary<string, List<VisualLogicPointBase>>();
+        private static readonly Dictionary<string, List<VisualLogicPointBase>> Waiting = new();
 
         /// <summary>
         /// 点位类型
         /// </summary>
         [SerializeField] private string m_type;
+
         /// <summary>
         /// 是否允许连接多个点位
         /// </summary>
         [SerializeField] private bool m_allowMulit;
+
         /// <summary>
         /// 是否是输入点位，为否时代表为输出点位
         /// </summary>
@@ -39,22 +42,27 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 点位信息类
         /// </summary>
         public IVisualLogicPointInfo Info { get; set; }
+
         /// <summary>
         /// 所属逻辑节点
         /// </summary>
         public VisualLogicNodeBase BelongNode { get; set; }
+
         /// <summary>
         /// 连接线对象池
         /// </summary>
         public ComponentPool_MK2<VisualLogicLine> LinePool { protected get; set; }
+
         /// <summary>
         /// 此点位的所有连接线
         /// </summary>
-        public List<VisualLogicLine> ConnectLines { get => _connectLines; set { _connectLines = value; } }
+        public List<VisualLogicLine> ConnectLines { get => _connectLines; set => _connectLines = value; }
+
         /// <summary>
         /// 此点位的所有连接线
         /// </summary>
         private List<VisualLogicLine> _connectLines = new List<VisualLogicLine>();
+
         /// <summary>
         /// 当前连接中的线
         /// </summary>
@@ -72,7 +80,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            IOCC.Set<VisualLogicPointBase>(VisualLogicEnum.ConnectingPoint, this);
+            IOCC.Set(VisualLogicEnum.ConnectingPoint, this);
 
             _flyLine = LinePool.New();
             _flyLine.SetObject(this);
@@ -128,12 +136,13 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                         }
                     }
                 }
+
                 startPoint.StoreFlyLine();
                 IOCC.Set<VisualLogicPointBase>(VisualLogicEnum.ConnectingPoint, null);
             }
             else
             {
-                IOCC.Set<VisualLogicPointBase>(VisualLogicEnum.ConnectingPoint, this);
+                IOCC.Set(VisualLogicEnum.ConnectingPoint, this);
 
                 _flyLine = LinePool.New();
                 _flyLine.SetObject(this);
@@ -151,6 +160,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 Info.ID = Guid.NewGuid().ToString();
             }
+
             Info.Type = m_type;
             Info.AllowMulit = m_allowMulit;
             Info.IsInput = m_isInput;
@@ -167,14 +177,16 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 Info.Connect = new List<string>();
             }
+
             if (Info.IsInput)
             {
-                if (Waiting.ContainsKey(Info.ID))
+                if (Waiting.TryGetValue(Info.ID, out var value))
                 {
-                    foreach (var item in Waiting[Info.ID])
+                    foreach (var item in value)
                     {
                         item.Connect(this, false);
                     }
+
                     Waiting.Remove(Info.ID);
                 }
             }
@@ -199,10 +211,12 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                     }
                 }
             }
+
             if (Points.ContainsKey(Info.ID) == false)
             {
                 Points.Add(Info.ID, this);
             }
+
             AfterUpdateState();
         }
 
@@ -223,12 +237,13 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 return;
             }
+
             if (ConnectVerification(input) == false)
             {
                 return;
             }
 
-            VisualLogicLine line = null;
+            VisualLogicLine line;
             if (_flyLine != null)
             {
                 line = _flyLine;
@@ -238,6 +253,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             {
                 line = LinePool.New();
             }
+
             _connectLines.Add(line);
             input.ConnectLines.Add(line);
             line.SetObjects(this, input);
@@ -305,13 +321,12 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// </summary>
         protected virtual void AfterNewInfo()
         {
-
         }
 
         protected virtual void AfterUpdateState()
         {
-
         }
+
         /// <summary>
         /// 校验是否能够连接
         /// </summary>
@@ -332,18 +347,22 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 点位ID
         /// </summary>
         public string ID { get; set; }
+
         /// <summary>
         /// 点位类型
         /// </summary>
         public string Type { get; set; }
+
         /// <summary>
         /// 是否允许同时连接多个点位
         /// </summary>
         public bool AllowMulit { get; set; }
+
         /// <summary>
         /// 是否时输入点位，为否时代表是输出点位
         /// </summary>
         public bool IsInput { get; set; }
+
         /// <summary>
         /// 连接的输入点位
         /// 只有输出点才需要记录连接
@@ -361,22 +380,22 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     /// 基础点位信息类
     /// 用于示例
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class BasicVisualLogicPointInfo : IVisualLogicPointInfo
     {
-        public string ID { get { return m_id; } set { m_id = value; } }
+        public string ID { get => m_id; set => m_id = value; }
 
         [SerializeField] private string m_id;
 
-        public string Type { get { return m_type; } set { m_type = value; } }
+        public string Type { get => m_type; set => m_type = value; }
         [SerializeField] private string m_type;
 
-        public bool AllowMulit { get { return m_allowMulit; } set { m_allowMulit = value; } }
+        public bool AllowMulit { get => m_allowMulit; set => m_allowMulit = value; }
         [SerializeField] private bool m_allowMulit;
-        public bool IsInput { get { return m_isInput; } set { m_isInput = value; } }
+        public bool IsInput { get => m_isInput; set => m_isInput = value; }
         [SerializeField] private bool m_isInput;
 
-        public List<string> Connect { get { return m_connect; } set { m_connect = value; } }
+        public List<string> Connect { get => m_connect; set => m_connect = value; }
         [SerializeField] private List<string> m_connect;
 
         public IVisualLogicPointInfo Clone()

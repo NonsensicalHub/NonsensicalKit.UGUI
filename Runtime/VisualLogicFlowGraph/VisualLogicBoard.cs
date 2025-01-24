@@ -16,30 +16,37 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// 点击右键后创建的菜单
         /// </summary>
         private MultilevelMenu _menu;
+
         /// <summary>
         /// 渲染相机
         /// </summary>
         private Camera _renderCamera;
+
         /// <summary>
         /// 开始拖拽时鼠标和中心点的偏移量
         /// </summary>
         private Vector3 _startOffset;
+
         /// <summary>
         /// 自身的RectTransform
         /// </summary>
         private RectTransform _selfRect;
+
         /// <summary>
         /// 鼠标是否悬浮
         /// </summary>
         private bool _mouseHover;
+
         /// <summary>
         /// 可视区域宽度的一半，用于计算
         /// </summary>
         private float _halfViewPortWidth;
+
         /// <summary>
         /// 可视区域高度的一半，用于计算
         /// </summary>
         private float _halfViewPortHeight;
+
         /// <summary>
         /// 当前缩放比例
         /// </summary>
@@ -54,7 +61,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
             _selfRect.pivot = Vector3.one * 0.5f;
             _crtScale = transform.localScale.x;
 
-            IOCC.Set<Vector3>(VisualLogicEnum.CreatPos, transform.position + (Vector3)_selfRect.rect.center);
+            IOCC.Set(VisualLogicEnum.CreatPos, transform.position + (Vector3)_selfRect.rect.center);
         }
 
         private void Start()
@@ -79,11 +86,13 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 {
                     return;
                 }
+
                 _crtScale += scroll * Time.deltaTime * 5;
                 if (_crtScale < 0.1f)
                 {
                     _crtScale = 0.1f;
                 }
+
                 transform.localScale = Vector3.one * _crtScale;
                 Resize();
             }
@@ -126,7 +135,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                 RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, _renderCamera, out var pos);
                 _menu.transform.position = pos;
                 RectTransformUtility.ScreenPointToWorldPointInRectangle(_selfRect, eventData.position, eventData.enterEventCamera, out var pos2);
-                IOCC.Set<Vector3>(VisualLogicEnum.CreatPos, pos2);
+                IOCC.Set(VisualLogicEnum.CreatPos, pos2);
                 _menu.Open();
             }
         }

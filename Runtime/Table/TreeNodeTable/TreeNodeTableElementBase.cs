@@ -4,18 +4,18 @@ using UnityEngine.UI;
 
 namespace NonsensicalKit.Core.Table
 {
-    public abstract class TreeNodeTableElementBase<ElementDataClass> : NonsensicalUI where ElementDataClass : class, ITreeNodeClass<ElementDataClass>
+    public abstract class TreeNodeTableElementBase<TElementDataClass> : NonsensicalUI where TElementDataClass : class, ITreeNodeClass<TElementDataClass>
     {
-        [SerializeField] protected Button m_btn_Collapsed;       //已经收起时显示的按钮，点击后展开
-        [SerializeField] protected Button m_btn_Expanded;        //已经展开时显示的按钮，点击后收起
+        [SerializeField] protected Button m_btn_Collapsed; //已经收起时显示的按钮，点击后展开
+        [SerializeField] protected Button m_btn_Expanded; //已经展开时显示的按钮，点击后收起
         [SerializeField] protected RectTransform m_rt_Box;
 
-        public TreeNodeTableManager<TreeNodeTableElementBase<ElementDataClass>, ElementDataClass> IManager;
+        public ITreeNodeTableManager<TElementDataClass> Manager;
 
         //每一级子节点往右移动多少距离（单位：像素）
         public int LevelDistance { get; set; }
 
-        public ElementDataClass ElementData { get; set; }
+        public TElementDataClass ElementData { get; set; }
         protected bool _IsFold { get { return ElementData.IsFold; } set { ElementData.IsFold = value; } }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace NonsensicalKit.Core.Table
             m_btn_Expanded.onClick.AddListener(OnFoldButtonClick);
         }
 
-        public virtual void SetValue(ElementDataClass elementData)
+        public virtual void SetValue(TElementDataClass elementData)
         {
             this.ElementData = elementData;
             elementData.Belong = gameObject;
@@ -43,22 +43,21 @@ namespace NonsensicalKit.Core.Table
 
         protected virtual void OnFoldButtonClick()
         {
-            IManager.DoFold(this, true);
+            Manager.DoFold(this, true);
         }
 
         protected virtual void OnUnfoldButtonClick()
         {
-            IManager.DoFold(this, false);
+            Manager.DoFold(this, false);
         }
 
         public virtual void OnFocus()
         {
-
         }
 
         public virtual void UpdateFoldUI()
         {
-            if (ElementData.Childs.Count != 0)
+            if (ElementData.Children.Count != 0)
             {
                 m_btn_Collapsed.gameObject.SetActive(_IsFold);
                 m_btn_Expanded.gameObject.SetActive(!_IsFold);

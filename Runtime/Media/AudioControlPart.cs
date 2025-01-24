@@ -22,9 +22,9 @@ namespace NonsensicalKit.UGUI.Media
 
             m_progress?.OnDragStateChanged.AddListener(OnDragStateChanged);
 
-            m_btn_play?.OnValueChanged.AddListener(OnPlayChanged);
+            m_btn_play?.m_OnValueChanged.AddListener(OnPlayChanged);
             m_sld_volume?.onValueChanged.AddListener(OnVolumeChanged);
-            m_btn_mute?.OnValueChanged.AddListener(OnMuteChanged);
+            m_btn_mute?.m_OnValueChanged.AddListener(OnMuteChanged);
         }
 
         private void Update()

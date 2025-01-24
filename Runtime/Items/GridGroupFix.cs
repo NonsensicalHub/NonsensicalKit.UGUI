@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +32,7 @@ namespace NonsensicalKit.UGUI
             var childCount = 0;
             for (int i = 0; i < transform.childCount; i++)
             {
-                if (transform.GetChild(i).gameObject.activeSelf )
+                if (transform.GetChild(i).gameObject.activeSelf)
                 {
                     childCount++;
                 }

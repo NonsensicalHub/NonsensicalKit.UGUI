@@ -31,13 +31,13 @@ namespace NonsensicalKit.UGUI.Media
         private VideoAspectRatio m_aspectRatio = VideoAspectRatio.FitInside;
 
         [SerializeField] [OnValueChanged("UpdateFixed")]
-        private bool m_fixed = false;
+        private bool m_fixed;
 
         [SerializeField] [OnValueChanged("UpdateMute")]
-        private bool m_mute = false;
+        private bool m_mute;
 
         [SerializeField] [OnValueChanged("UpdateLoop")]
-        private bool m_loop = false;
+        private bool m_loop;
 
         [SerializeField] [OnValueChanged("UpdateVolume")] [Range(0, 1)]
         private float m_volume = 0.5f;
@@ -46,7 +46,7 @@ namespace NonsensicalKit.UGUI.Media
         [SerializeField] private UnityEvent<MediaProgressState> m_onPlayProgressChanged;
         [SerializeField] private UnityEvent m_onPlayEnd;
 
-        [SerializeField] private bool m_initOnAwake = false;
+        [SerializeField] private bool m_initOnAwake;
 
         public UnityEvent<VideoPlayState> OnPlayStateChanged => m_onPlayStateChanged;
         public UnityEvent<MediaProgressState> OnPlayProgressChanged => m_onPlayProgressChanged;
@@ -70,8 +70,8 @@ namespace NonsensicalKit.UGUI.Media
             {
                 if (!_videoPlayer) return;
                 _videoPlayer.time = value;
-                
-                _progress.CurrentProgress =value;
+
+                _progress.CurrentProgress = value;
                 InvokeProgressChanged();
             }
         }
@@ -183,8 +183,8 @@ namespace NonsensicalKit.UGUI.Media
 
         private VideoPlayState _state;
         private MediaProgressState _progress;
-        
-        private bool _fakeFrameFlag=false;
+
+        private bool _fakeFrameFlag;
 
 
         private void Awake()
@@ -325,7 +325,7 @@ namespace NonsensicalKit.UGUI.Media
         private void OnStarted(VideoPlayer source)
         {
             source.time = _progress.CurrentProgress;
-            if (source.frame == 0&&_progress.CurrentProgress==0)
+            if (source.frame == 0 && _progress.CurrentProgress == 0)
             {
                 source.frame = 1;
             }
@@ -344,7 +344,7 @@ namespace NonsensicalKit.UGUI.Media
 
         private void OnNewFrame(VideoPlayer source, long frameIdx)
         {
-            if (frameIdx==0&&!_fakeFrameFlag)
+            if (frameIdx == 0 && !_fakeFrameFlag)
             {
                 _fakeFrameFlag = true;
                 return;
@@ -402,7 +402,7 @@ namespace NonsensicalKit.UGUI.Media
             InvokePlayStateChanged();
             _controlPartHeight = m_controlPart.rect.height;
 
-            if (TryGetComponent<VideoPlayer>(out _videoPlayer) == false)
+            if (TryGetComponent(out _videoPlayer) == false)
             {
                 _videoPlayer = gameObject.AddComponent<VideoPlayer>();
             }

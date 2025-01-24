@@ -32,8 +32,8 @@ namespace NonsensicalKit.UGUI
                 _crtEventSystem = EventSystem.current;
                 return;
             }
-            _notInUI = !_crtEventSystem.IsPointerOverGameObject();
 
+            _notInUI = !_crtEventSystem.IsPointerOverGameObject();
         }
     }
 }

@@ -1,15 +1,14 @@
+using NonsensicalKit.Core.Log;
+using NonsensicalKit.Tools.ObjectPool;
 using UnityEngine;
 using UnityEngine.UI;
-using NonsensicalKit.Tools.ObjectPool;
-using NonsensicalKit.Core.Log;
-
 #if TEXTMESHPRO_PRESENT
 using TMPro;
 #endif
 
 namespace NonsensicalKit.UGUI.UIFactory
 {
-    public delegate bool InputComfirmHandle(string input);
+    public delegate bool InputConfirmHandle(string input);
 
     public class InputConfirmInfo
     {
@@ -17,10 +16,11 @@ namespace NonsensicalKit.UGUI.UIFactory
         public string OldString;
         public string LeftButtonText;
         public string RightButtonText;
-        public InputComfirmHandle LeftButtonClick;
-        public InputComfirmHandle RightButtonClick;
+        public InputConfirmHandle LeftButtonClick;
+        public InputConfirmHandle RightButtonClick;
 
-        public InputConfirmInfo(string message, string oldString, string leftButtonText, string rightButtonText, InputComfirmHandle leftButtonClick, InputComfirmHandle rightButtonClick)
+        public InputConfirmInfo(string message, string oldString, string leftButtonText, string rightButtonText, InputConfirmHandle leftButtonClick,
+            InputConfirmHandle rightButtonClick)
         {
             this.Message = message;
             this.OldString = oldString;
@@ -29,7 +29,8 @@ namespace NonsensicalKit.UGUI.UIFactory
             this.LeftButtonClick = leftButtonClick;
             this.RightButtonClick = rightButtonClick;
         }
-        public InputConfirmInfo(string message, string oldString, InputComfirmHandle leftButtonClick)
+
+        public InputConfirmInfo(string message, string oldString, InputConfirmHandle leftButtonClick)
         {
             this.Message = message;
             this.OldString = oldString;
@@ -78,6 +79,7 @@ namespace NonsensicalKit.UGUI.UIFactory
                 Pool.Store(gameObject);
                 return;
             }
+
             m_ipf_input.text = _crtConfirmInfo.OldString;
             m_txt_message.text = _crtConfirmInfo.Message;
             m_txt_leftButton.text = _crtConfirmInfo.LeftButtonText;

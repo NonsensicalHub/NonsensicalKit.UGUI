@@ -13,11 +13,11 @@ namespace NonsensicalKit.Core.Table
         [SerializeField] private GameObject m_hover;
         [SerializeField] private GameObject m_rightArrow;
 
-        private MultilevelMenuNode _MultilevelMenuNode;
+        private MultilevelMenuNode _multilevelMenuNode;
 
-        private IMultilevelMenu _MultilevelMenu;
+        private IMultilevelMenu _multilevelMenu;
 
-        private MultilevelMenuPanel _childsPanel;
+        private MultilevelMenuPanel _childrenPanel;
 
         private bool _mouseHover;
 
@@ -33,29 +33,30 @@ namespace NonsensicalKit.Core.Table
             _canClick = true;
             _mouseHover = false;
             m_hover.gameObject.SetActive(false);
-            if (_childsPanel != null)
+            if (_childrenPanel != null)
             {
-                _childsPanel.gameObject.SetActive(false);
+                _childrenPanel.gameObject.SetActive(false);
             }
-            if (_MultilevelMenuNode!=null)
+
+            if (_multilevelMenuNode != null)
             {
-                m_btn_click.interactable = _MultilevelMenuNode.CanClick;
+                m_btn_click.interactable = _multilevelMenuNode.CanClick;
             }
         }
 
-        public void Init(MultilevelMenuNode MultilevelMenuNode, IMultilevelMenu MultilevelMenu)
+        public void Init(MultilevelMenuNode multilevelMenuNode, IMultilevelMenu multilevelMenu)
         {
             StopAllCoroutines();
-            m_btn_click.interactable = MultilevelMenuNode.CanClick;
-            if (_childsPanel != null)
+            m_btn_click.interactable = multilevelMenuNode.CanClick;
+            if (_childrenPanel != null)
             {
-                _childsPanel.gameObject.SetActive(false);
+                _childrenPanel.gameObject.SetActive(false);
             }
 
-            _MultilevelMenu = MultilevelMenu;
-            m_txt_describe.text = MultilevelMenuNode.Name;
-            _MultilevelMenuNode = MultilevelMenuNode;
-            m_rightArrow.SetActive(MultilevelMenuNode.Deployable);
+            _multilevelMenu = multilevelMenu;
+            m_txt_describe.text = multilevelMenuNode.Name;
+            _multilevelMenuNode = multilevelMenuNode;
+            m_rightArrow.SetActive(multilevelMenuNode.Deployable);
         }
 
         private void OnButtonClick()
@@ -64,31 +65,33 @@ namespace NonsensicalKit.Core.Table
             {
                 return;
             }
+
             _canClick = false;
             StopAllCoroutines();
             StartCoroutine(ColdDown());
-            if (!_MultilevelMenuNode.MenuInfo.AlwayCanClick && _MultilevelMenuNode.Deployable)
+            if (!_multilevelMenuNode.MenuInfo.AlwaysCanClick && _multilevelMenuNode.Deployable)
             {
                 ShowChilds();
             }
             else
             {
-                _MultilevelMenuNode.MenuInfo.ClickAction?.Invoke(_MultilevelMenuNode.Context);
-                if (_MultilevelMenuNode.MenuInfo.AutoClose)
+                _multilevelMenuNode.MenuInfo.ClickAction?.Invoke(_multilevelMenuNode.Context);
+                if (_multilevelMenuNode.MenuInfo.AutoClose)
                 {
-                    _MultilevelMenu.Close();
+                    _multilevelMenu.Close();
                 }
             }
         }
 
         private void ShowChilds()
         {
-            if (_childsPanel == null)
+            if (_childrenPanel == null)
             {
-                _childsPanel = _MultilevelMenu.InstantiatePanel(transform);
+                _childrenPanel = _multilevelMenu.InstantiatePanel(transform);
             }
-            _childsPanel.gameObject.SetActive(true);
-            _childsPanel.Init(_MultilevelMenuNode.Childs, _MultilevelMenu);
+
+            _childrenPanel.gameObject.SetActive(true);
+            _childrenPanel.Init(_multilevelMenuNode.Children, _multilevelMenu);
         }
 
         private IEnumerator ColdDown()
@@ -102,7 +105,7 @@ namespace NonsensicalKit.Core.Table
             _mouseHover = true;
             m_hover.gameObject.SetActive(true);
 
-            if (_MultilevelMenuNode.Deployable)
+            if (_multilevelMenuNode.Deployable)
             {
                 StartCoroutine(AutoDeploy());
             }
@@ -112,9 +115,9 @@ namespace NonsensicalKit.Core.Table
         {
             _mouseHover = false;
             m_hover.gameObject.SetActive(false);
-            if (_childsPanel != null)
+            if (_childrenPanel != null)
             {
-                _childsPanel.gameObject.SetActive(false);
+                _childrenPanel.gameObject.SetActive(false);
             }
         }
 

@@ -34,18 +34,14 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         public GameObjectPool Pool { get; set; }
 
-        private Vector3 _originPosition;
-
         private void Awake()
         {
             _selfRect = GetComponent<RectTransform>();
-            _originPosition = transform.position;
         }
 
         public void SetArg(object arg)
         {
-            FloatMessageInfo info = arg as FloatMessageInfo;
-            if (info == null)
+            if (arg is not FloatMessageInfo info)
             {
                 LogCore.Warning($"传入{nameof(FloatMessage)}的参数有误");
                 Pool.Store(gameObject);

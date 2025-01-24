@@ -1,9 +1,9 @@
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
 using UnityEngine;
-
 #if TEXTMESHPRO_PRESENT
 using TMPro;
+
 #else
 using UnityEngine.UI;
 #endif
@@ -78,6 +78,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             {
                 alpha = 0;
             }
+
             m_canvasGroup.alpha = alpha;
             if (alpha <= 0 && _targetAlpha == 0)
             {
@@ -105,9 +106,8 @@ namespace NonsensicalKit.UGUI.UIFactory
                 case RectTransform.Edge.Bottom:
                     m_rectTransform.SetPivot(new Vector2(0, 0));
                     break;
-                default:
-                    break;
             }
+
             m_text.text = info.Text;
             m_rectTransform.SetInsetAndSizeFromParentEdge(info.Location, -3, 0);
         }
@@ -123,6 +123,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             {
                 _delay = 0.5f;
             }
+
             _targetAlpha = 1;
         }
 

@@ -9,20 +9,20 @@ namespace NonsensicalKit.UGUI.UIPosition
     /// 通过配置文件动态修改ui位置
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
-    public class UIPostionSetter : NonsensicalMono
+    public class UIPositionSetter : NonsensicalMono
     {
         [SerializeField] private string m_configID;
 
-        private RectTransform _rt_self;
+        private RectTransform _rtSelf;
         private float _width;
         private float _height;
 
         private void Awake()
         {
-            _rt_self = GetComponent<RectTransform>();
+            _rtSelf = GetComponent<RectTransform>();
 
-            _width = _rt_self.rect.width;
-            _height = _rt_self.rect.height;
+            _width = _rtSelf.rect.width;
+            _height = _rtSelf.rect.height;
         }
 
         private void Start()
@@ -32,8 +32,7 @@ namespace NonsensicalKit.UGUI.UIPosition
 
         private void OnGetManager(ConfigService manager)
         {
-            ConfigService configmanager = manager as ConfigService;
-            if (configmanager.TryGetConfig<UIPositionData>(out var v))
+            if (manager.TryGetConfig<UIPositionData>(out var v))
             {
                 for (int i = 0; i < v.ButtonsParameter.Length; i++)
                 {
@@ -51,20 +50,20 @@ namespace NonsensicalKit.UGUI.UIPosition
             switch (bp.HorizonType)
             {
                 case HorizonType.Left:
-                    _rt_self.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, bp.DistanceHorizon, bp.ChangeSize ? bp.Width : _width);
+                    _rtSelf.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, bp.DistanceHorizon, bp.ChangeSize ? bp.Width : _width);
                     break;
                 case HorizonType.Right:
-                    _rt_self.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, -bp.DistanceHorizon, bp.ChangeSize ? bp.Width : _width);
+                    _rtSelf.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, -bp.DistanceHorizon, bp.ChangeSize ? bp.Width : _width);
                     break;
             }
 
             switch (bp.VerticalType)
             {
                 case VerticalType.Top:
-                    _rt_self.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -bp.DistanceVertical, bp.ChangeSize ? bp.Height : _height);
+                    _rtSelf.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, -bp.DistanceVertical, bp.ChangeSize ? bp.Height : _height);
                     break;
                 case VerticalType.Bottom:
-                    _rt_self.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, bp.DistanceVertical, bp.ChangeSize ? bp.Height : _height);
+                    _rtSelf.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, bp.DistanceVertical, bp.ChangeSize ? bp.Height : _height);
                     break;
             }
         }

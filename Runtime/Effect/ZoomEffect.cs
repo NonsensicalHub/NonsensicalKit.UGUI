@@ -17,7 +17,7 @@ namespace NonsensicalKit.UGUI.Effect
         {
             base.Awake();
             _originSize = m_target.localScale;
-            _originPos = _rt.anchoredPosition;
+            _originPos = RT.anchoredPosition;
         }
 
         protected override void DoEffect(string command)
@@ -25,11 +25,10 @@ namespace NonsensicalKit.UGUI.Effect
             StopAllCoroutines();
             switch (command)
             {
-                default:
                 case "0":
                     StartCoroutine(DoEnlarge());
                     break;
-                case "1":
+                default:
                     StartCoroutine(DoReduced());
                     break;
             }
@@ -51,10 +50,11 @@ namespace NonsensicalKit.UGUI.Effect
                 timer += Time.deltaTime;
 
                 m_target.localScale = _originSize * (timer / m_effectTime);
-                _rt.anchoredPosition = Vector3.Lerp(_rt.anchoredPosition, _originPos, timer / m_effectTime);
+                RT.anchoredPosition = Vector3.Lerp(RT.anchoredPosition, _originPos, timer / m_effectTime);
             }
+
             m_target.localScale = _originSize;
-            _rt.anchoredPosition = _originPos;
+            RT.anchoredPosition = _originPos;
         }
 
         /// <summary>
@@ -73,6 +73,7 @@ namespace NonsensicalKit.UGUI.Effect
 
                 m_target.localScale = _originSize * (1 - timer / m_effectTime);
             }
+
             m_target.localScale = Vector3.one * 0.001f;
         }
     }

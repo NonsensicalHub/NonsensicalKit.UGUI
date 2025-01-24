@@ -11,9 +11,9 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         [SerializeField] private RectTransform m_targetRect;
 
-        [TextArea][SerializeField] protected string m_text = "Tooltip";
+        [TextArea] [SerializeField] protected string m_text = "Tooltip";
 
-        protected Tooltip _tooltip;
+        protected Tooltip Tooltip;
 
         private void Awake()
         {
@@ -21,6 +21,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             {
                 m_targetRect = GetComponent<RectTransform>();
             }
+
             if (m_targetRect == null)
             {
                 LogCore.Warning("m_targetRect无可用对象");
@@ -29,26 +30,26 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         private void OnDisable()
         {
-            if (_tooltip != null)
+            if (Tooltip != null)
             {
-                _tooltip.Close();
+                Tooltip.Close();
             }
         }
 
         public void ChangeText(string text)
         {
             m_text = text;
-            if (_tooltip != null)
+            if (Tooltip != null)
             {
-                _tooltip.ChangeText(text);
+                Tooltip.ChangeText(text);
             }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_tooltip != null)
+            if (Tooltip != null)
             {
-                _tooltip.Show();
+                Tooltip.Show();
             }
             else
             {
@@ -58,9 +59,9 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_tooltip != null)
+            if (Tooltip != null)
             {
-                _tooltip.Hide();
+                Tooltip.Hide();
             }
         }
 
@@ -70,8 +71,8 @@ namespace NonsensicalKit.UGUI.UIFactory
             UIFactory factory = ServiceCore.Get<UIFactory>();
             if (factory != null)
             {
-                _tooltip = factory.OpenUI(nameof(Tooltip), info).GetComponent<Tooltip>();
-                _tooltip.Show();
+                Tooltip = factory.OpenUI(nameof(UGUI.UIFactory.Tooltip), info).GetComponent<Tooltip>();
+                Tooltip.Show();
             }
             else
             {

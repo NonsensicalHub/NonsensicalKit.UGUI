@@ -12,14 +12,16 @@ namespace NonsensicalKit.UGUI
         /// 场景加载时是否展示
         /// </summary>
         [SerializeField] private bool m_initShow = true;
+
         /// <summary>
         /// 当前是否展示
         /// </summary>
         public bool IsShow { get; private set; }
+
         public bool InitShow { get; set; }
 
-        protected RectTransform _rectTransform;
-        protected CanvasGroup _canvasGroup;
+        protected RectTransform RectTransform;
+        protected CanvasGroup CanvasGroup;
 
         private bool _init;
 
@@ -40,11 +42,6 @@ namespace NonsensicalKit.UGUI
             }
         }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-        }
-
         public bool CheckAlpha()
         {
             var uis = gameObject.GetComponentsInParent<NonsensicalUI>();
@@ -55,6 +52,7 @@ namespace NonsensicalKit.UGUI
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -62,8 +60,8 @@ namespace NonsensicalKit.UGUI
         {
             OpenSelf(true);
         }
-        
-        public void Appear(bool immediately = false)
+
+        public void Appear(bool immediately)
         {
             OpenSelf(immediately);
         }
@@ -73,7 +71,7 @@ namespace NonsensicalKit.UGUI
             CloseSelf(true);
         }
 
-        public void Disappear(bool immediately = false)
+        public void Disappear(bool immediately)
         {
             CloseSelf(immediately);
         }
@@ -91,19 +89,21 @@ namespace NonsensicalKit.UGUI
         protected virtual void OpenSelf(bool immediately)
         {
             Init();
-            _canvasGroup.blocksRaycasts = true;
+            CanvasGroup.blocksRaycasts = true;
 
             if (immediately)
             {
-                _canvasGroup.alpha = 1;
+                CanvasGroup.alpha = 1;
             }
             else
             {
-                _canvasGroup.DoFade(1, 0.2f);
+                CanvasGroup.DoFade(1, 0.2f);
             }
+
             IsShow = true;
             OnOpen();
         }
+
         protected virtual void CloseSelf()
         {
             CloseSelf(true);
@@ -112,16 +112,17 @@ namespace NonsensicalKit.UGUI
         protected virtual void CloseSelf(bool immediately)
         {
             Init();
-            _canvasGroup.blocksRaycasts = false;
+            CanvasGroup.blocksRaycasts = false;
 
             if (immediately)
             {
-                _canvasGroup.alpha = 0;
+                CanvasGroup.alpha = 0;
             }
             else
             {
-                _canvasGroup.DoFade(0, 0.2f);
+                CanvasGroup.DoFade(0, 0.2f);
             }
+
             IsShow = false;
             OnClose();
         }
@@ -138,12 +139,7 @@ namespace NonsensicalKit.UGUI
             }
         }
 
-        protected void SwitchSelf()
-        {
-            SwitchSelf(true);
-        }
-
-        protected void SwitchSelf(bool immediately = false)
+        protected void SwitchSelf(bool immediately = true)
         {
             if (IsShow)
             {
@@ -172,11 +168,10 @@ namespace NonsensicalKit.UGUI
 
         protected virtual void OnOpen()
         {
-
         }
+
         protected virtual void OnClose()
         {
-
         }
 
         private void Init()
@@ -184,10 +179,9 @@ namespace NonsensicalKit.UGUI
             if (!_init)
             {
                 _init = true;
-                _rectTransform = transform.GetComponent<RectTransform>();
-                _canvasGroup = transform.GetComponent<CanvasGroup>();
+                RectTransform = transform.GetComponent<RectTransform>();
+                CanvasGroup = transform.GetComponent<CanvasGroup>();
             }
         }
     }
 }
-

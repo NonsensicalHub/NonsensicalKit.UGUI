@@ -1,8 +1,8 @@
-using UnityEngine;
 using NonsensicalKit.Core;
-
+using UnityEngine;
 #if TEXTMESHPRO_PRESENT
 using TMPro;
+
 #else
 using UnityEngine.UI;
 #endif
@@ -17,18 +17,18 @@ namespace NonsensicalKit.UGUI
     public class TextBase : NonsensicalMono
     {
 #if TEXTMESHPRO_PRESENT
-        protected TextMeshProUGUI _txt_self;
-        
-        protected virtual void Awake()
-        {
-            _txt_self = GetComponent<TextMeshProUGUI>();
-        }
-#else
-        protected Text _txt_self;
+        protected TextMeshProUGUI TxtSelf;
 
         protected virtual void Awake()
         {
-            _txt_self = GetComponent<Text>();
+            TxtSelf = GetComponent<TextMeshProUGUI>();
+        }
+#else
+        protected Text TxtSelf;
+
+        protected virtual void Awake()
+        {
+            TxtSelf = GetComponent<Text>();
         }
 #endif
     }

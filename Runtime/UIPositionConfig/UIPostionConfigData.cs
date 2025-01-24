@@ -1,12 +1,14 @@
+using System;
 using NonsensicalKit.Core.Service.Config;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.UIPosition
 {
-    [CreateAssetMenu(fileName = "UIPostionConfig", menuName = "ScriptableObjects/UIPostionConfig")]
-    public class UIPostionConfig : ConfigObject
+    [CreateAssetMenu(fileName = "UIPositionConfig", menuName = "ScriptableObjects/UIPositionConfig")]
+    public class UIPositionConfig : ConfigObject
     {
         public UIPositionData ConfigData;
+
         public override ConfigData GetData()
         {
             return ConfigData;
@@ -21,7 +23,7 @@ namespace NonsensicalKit.UGUI.UIPosition
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class UIPositionData : ConfigData
     {
         public UIPostionParameter[] ButtonsParameter;
@@ -33,6 +35,7 @@ namespace NonsensicalKit.UGUI.UIPosition
         Left,
         Right
     }
+
     public enum VerticalType
     {
         None,
@@ -40,7 +43,7 @@ namespace NonsensicalKit.UGUI.UIPosition
         Bottom
     }
 
-    [System.Serializable]
+    [Serializable]
     public class UIPostionParameter
     {
         public string ID = string.Empty;

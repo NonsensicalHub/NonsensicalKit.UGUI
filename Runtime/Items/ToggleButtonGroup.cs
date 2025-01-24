@@ -9,7 +9,7 @@ namespace NonsensicalKit.UGUI
 
         public bool AllowAllOff => m_allowAllOff;
 
-        private List<ToggleButton> _toggleButtons = new List<ToggleButton>();
+        private readonly List<ToggleButton> _toggleButtons = new();
 
         private ToggleButton _crtTb;
 
@@ -20,6 +20,7 @@ namespace NonsensicalKit.UGUI
             {
                 tb.SetState(false);
             }
+
             if (!m_allowAllOff && _crtTb == null)
             {
                 tb.SetState(true);
@@ -39,6 +40,7 @@ namespace NonsensicalKit.UGUI
                         item.IsOn = false;
                     }
                 }
+
                 return true;
             }
             else

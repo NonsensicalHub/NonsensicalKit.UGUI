@@ -1,5 +1,6 @@
 using NonsensicalKit.Core;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace NonsensicalKit.UGUI
 {
@@ -17,13 +18,13 @@ namespace NonsensicalKit.UGUI
         /// <summary>
         /// 渲染ui的摄像机，当Canvas的渲染模式为Overlay时，这个值应当为null
         /// </summary>
+        [FormerlySerializedAs("m_RenderCamera")] [SerializeField]
+        private Camera m_renderCamera;
 
-        [SerializeField] private Camera m_RenderCamera;
-
-        [SerializeField] private bool m_scaleByDistance = false;
+        [SerializeField] private bool m_scaleByDistance;
 
         [SerializeField] private float m_normalDistance = 1;
-        [SerializeField] private UpdateMethod m_updateMethod ;
+        [SerializeField] private UpdateMethod m_updateMethod;
 
         public bool Back { get; private set; }
         public Vector2 Offset { get; set; }
@@ -47,15 +48,15 @@ namespace NonsensicalKit.UGUI
 
         private void Update()
         {
-            if (m_updateMethod==UpdateMethod.Update)
+            if (m_updateMethod == UpdateMethod.Update)
             {
                 Follow();
             }
         }
-        
+
         private void FixedUpdate()
         {
-            if (m_updateMethod==UpdateMethod.FixedUpdate)
+            if (m_updateMethod == UpdateMethod.FixedUpdate)
             {
                 Follow();
             }
@@ -63,7 +64,7 @@ namespace NonsensicalKit.UGUI
 
         private void LateUpdate()
         {
-            if (m_updateMethod==UpdateMethod.LateUpdate)
+            if (m_updateMethod == UpdateMethod.LateUpdate)
             {
                 Follow();
             }
@@ -75,6 +76,7 @@ namespace NonsensicalKit.UGUI
             {
                 m_mainCamera = Camera.main;
             }
+
             if (m_target != null)
             {
                 _targetPosition = m_target.position;
@@ -84,6 +86,7 @@ namespace NonsensicalKit.UGUI
                 {
                     _needRefresh = true;
                 }
+
                 if (_needRefresh)
                 {
                     if (m_scaleByDistance && m_normalDistance != 0)
@@ -91,7 +94,7 @@ namespace NonsensicalKit.UGUI
                         float dis = Vector3.Distance(m_target.position, m_mainCamera.transform.position);
                         if (dis > 1f)
                         {
-                            transform.localScale = Vector3.one * (m_normalDistance / dis) * m_scale;
+                            transform.localScale = Vector3.one * ((m_normalDistance / dis) * m_scale);
                         }
                     }
                     else
@@ -103,7 +106,7 @@ namespace NonsensicalKit.UGUI
                     Back = pos.z < 0;
                     if (!Back)
                     {
-                        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos, m_RenderCamera, out Vector3 worldPoint))
+                        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos, m_renderCamera, out Vector3 worldPoint))
                         {
                             transform.position = worldPoint;
                         }
@@ -121,21 +124,25 @@ namespace NonsensicalKit.UGUI
             _needRefresh = true;
             m_target = newTarget.transform;
         }
+
         public void SetTarget(Transform newTarget)
         {
             _needRefresh = true;
             m_target = newTarget;
         }
-        public void SetMainCamera(Camera camera)
+
+        public void SetMainCamera(Camera cam)
         {
             _needRefresh = true;
-            m_mainCamera = camera;
+            m_mainCamera = cam;
         }
-        public void SetRendererCamera(Camera camera)
+
+        public void SetRendererCamera(Camera cam)
         {
             _needRefresh = true;
-            m_RenderCamera = camera;
+            m_renderCamera = cam;
         }
+
         public Transform GetTarget()
         {
             return m_target;

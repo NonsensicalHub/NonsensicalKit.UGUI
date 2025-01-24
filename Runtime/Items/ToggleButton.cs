@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI
@@ -15,10 +16,7 @@ namespace NonsensicalKit.UGUI
 
         public bool IsOn
         {
-            get
-            {
-                return m_isOn;
-            }
+            get => m_isOn;
             set
             {
                 if (m_isOn != value)
@@ -32,13 +30,14 @@ namespace NonsensicalKit.UGUI
                     }
 
                     m_isOn = value;
-                    OnValueChanged?.Invoke(m_isOn);
+                    m_OnValueChanged?.Invoke(m_isOn);
                     UpdateUI();
                 }
             }
         }
 
-        public UnityEvent<bool> OnValueChanged;
+        [FormerlySerializedAs("OnValueChanged")]
+        public UnityEvent<bool> m_OnValueChanged;
 
         private void Awake()
         {
@@ -54,7 +53,7 @@ namespace NonsensicalKit.UGUI
         {
             if (m_invokeOnStart)
             {
-                OnValueChanged?.Invoke(IsOn);
+                m_OnValueChanged?.Invoke(IsOn);
             }
         }
 
@@ -79,7 +78,7 @@ namespace NonsensicalKit.UGUI
         /// <param name="value"></param>
         public void SetState(bool value)
         {
-            if (m_isOn!=value)
+            if (m_isOn != value)
             {
                 m_isOn = value;
                 UpdateUI();

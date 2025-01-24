@@ -15,19 +15,26 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         [SerializeField] private string m_signal;
         [SerializeField] private SignalType m_signalType;
 
-        [ShowIf("m_signalType", SignalType.Bool)][SerializeField] private bool m_boolValue;
-        [ShowIf("m_signalType", SignalType.Int)][SerializeField] private int m_intValue;
-        [ShowIf("m_signalType", SignalType.Float)][SerializeField] private float m_floatValue;
-        [ShowIf("m_signalType", SignalType.String)][SerializeField] private string m_stringValue;
+        [ShowIf("m_signalType", SignalType.Bool)] [SerializeField]
+        private bool m_boolValue;
 
-        private Button _btn_Self;
+        [ShowIf("m_signalType", SignalType.Int)] [SerializeField]
+        private int m_intValue;
+
+        [ShowIf("m_signalType", SignalType.Float)] [SerializeField]
+        private float m_floatValue;
+
+        [ShowIf("m_signalType", SignalType.String)] [SerializeField]
+        private string m_stringValue;
+
+        private Button _btnSelf;
 
         private void Awake()
         {
-            _btn_Self = GetComponent<Button>();
-            if (_btn_Self != null)
+            _btnSelf = GetComponent<Button>();
+            if (_btnSelf != null)
             {
-                _btn_Self.onClick.AddListener(SendSignal);
+                _btnSelf.onClick.AddListener(SendSignal);
             }
         }
 

@@ -1,5 +1,5 @@
-using NonsensicalKit.Tools.InputTool;
 using System.Collections.Generic;
+using NonsensicalKit.Tools.InputTool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -61,9 +61,9 @@ namespace NonsensicalKit.UGUI.Table
             CloseSelf();
         }
 
-        protected override void UpdateUI(IEnumerable<RightClickMenuItem> datas)
+        protected override void UpdateUI(IEnumerable<RightClickMenuItem> data)
         {
-            base.UpdateUI(datas);
+            base.UpdateUI(data);
             m_topNode.position = Input.mousePosition;
         }
     }

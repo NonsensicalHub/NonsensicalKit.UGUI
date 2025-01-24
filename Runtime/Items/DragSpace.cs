@@ -11,18 +11,23 @@ namespace NonsensicalKit.UGUI
         /// 需要移动的对象
         /// </summary>
         [SerializeField] private RectTransform m_controlRect;
+
         /// <summary>
         /// 是否限定范围
         /// </summary>
         [SerializeField] private bool m_ensureInBoundary;
+
         /// <summary>
         /// 限定在范围内的对象
         /// </summary>
-        [ShowIf("m_ensureInBoundary")][SerializeField] private RectTransform m_checkRect;
+        [ShowIf("m_ensureInBoundary")] [SerializeField]
+        private RectTransform m_checkRect;
+
         /// <summary>
         /// 确定范围的对象
         /// </summary>
-        [ShowIf("m_ensureInBoundary")][SerializeField] private RectTransform m_boundaryRect;
+        [ShowIf("m_ensureInBoundary")] [SerializeField]
+        private RectTransform m_boundaryRect;
 
         /// <summary>
         /// 开始拖拽时鼠标和拖拽对象位置点的偏移，移动时要维持此偏移不变
@@ -38,9 +43,10 @@ namespace NonsensicalKit.UGUI
         {
             if (m_controlRect == null)
             {
-                LogCore.Warning("未设置控制对象",gameObject);
+                LogCore.Warning("未设置控制对象", gameObject);
                 enabled = false;
             }
+
             if (m_checkRect == null)
             {
                 m_checkRect = m_controlRect;
@@ -62,16 +68,15 @@ namespace NonsensicalKit.UGUI
             {
                 m_ensureInBoundary = false;
             }
+
             _eventCamera = eventData.enterEventCamera;
-            Vector3 pos;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out pos);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out var pos);
             _startOffset = m_controlRect.position - pos;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            Vector3 pos;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out pos);
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out var pos);
             if (m_ensureInBoundary)
             {
                 m_controlRect.position = EnsureRectInBounds(m_controlRect, pos + _startOffset, m_checkRect, m_boundaryRect);
@@ -113,6 +118,7 @@ namespace NonsensicalKit.UGUI
             {
                 move.x = -maxOffset.x;
             }
+
             if (minOffset.y < 0)
             {
                 move.y = -minOffset.y;
@@ -121,6 +127,7 @@ namespace NonsensicalKit.UGUI
             {
                 move.y = -maxOffset.y;
             }
+
             var worldMove = boundaryRect.transform.TransformVector(move);
             targetPosition += worldMove;
             return targetPosition;

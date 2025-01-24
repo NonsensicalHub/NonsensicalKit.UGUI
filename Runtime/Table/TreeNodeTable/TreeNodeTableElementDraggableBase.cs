@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 namespace NonsensicalKit.Core.Table
 {
-    public abstract class TreeNodeTableElementDraggableBase<ElementData> : TreeNodeTableElementBase<ElementData>,
+    public abstract class TreeNodeTableElementDraggableBase<TElementData> : TreeNodeTableElementBase<TElementData>,
         IDropHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler
-        where ElementData : class, ITreeNodeClass<ElementData>
+        where TElementData : class, ITreeNodeClass<TElementData>
     {
         [SerializeField] private bool m_justDroppable = false;
         [SerializeField] private bool m_allowSameLevel = true;
@@ -31,7 +31,7 @@ namespace NonsensicalKit.Core.Table
         public void OnDrop(PointerEventData eventData)
         {
             //Debug.Log("OnDrop" + gameObject.GetInstanceID());
-            if (IOCC.TryGet<TreeNodeTableElementDraggableBase<ElementData>>("dragItem", out var v))
+            if (IOCC.TryGet<TreeNodeTableElementDraggableBase<TElementData>>("dragItem", out var v))
             {
                 if (IsVaild(v))
                 {
@@ -39,10 +39,10 @@ namespace NonsensicalKit.Core.Table
                     switch (i)
                     {
                         case 1:
-                            IManager.MoveSameLevel(v, this, true);
+                            Manager.MoveSameLevel(v, this, true);
                             break;
                         case 2:
-                            if (base.ElementData.Parent.Childs.Last() == base.ElementData)
+                            if (base.ElementData.Parent.Children.Last() == base.ElementData)
                             {
                                 var offset = CheckWidth(eventData.position);
                                 offset = Mathf.Min(offset, base.ElementData.Level - 1);
@@ -51,18 +51,18 @@ namespace NonsensicalKit.Core.Table
                                 {
                                     crt = crt.Parent;
                                 }
-                                IManager.MoveSameLevel(v, crt.Belong.GetComponent<TreeNodeTableElementDraggableBase<ElementData>>(), false);
+                                Manager.MoveSameLevel(v, crt.Belong.GetComponent<TreeNodeTableElementDraggableBase<TElementData>>(), false);
                             }
                             else
                             {
-                                IManager.MoveSameLevel(v, this, false);
+                                Manager.MoveSameLevel(v, this, false);
                             }
                             break;
                         default:
-                            IManager.Move(v, this);
+                            Manager.Move(v, this);
                             break;
                     }
-                    IOCC.Set<TreeNodeTableElementDraggableBase<ElementData>>("dragItem", null);
+                    IOCC.Set<TreeNodeTableElementDraggableBase<TElementData>>("dragItem", null);
                 }
             }
         }
@@ -72,14 +72,14 @@ namespace NonsensicalKit.Core.Table
             if (!m_justDroppable)
             {
                 //Debug.Log("OnBeginDrag" + gameObject.GetInstanceID());
-                IOCC.Set<TreeNodeTableElementDraggableBase<ElementData>>("dragItem", this);
+                IOCC.Set<TreeNodeTableElementDraggableBase<TElementData>>("dragItem", this);
             }
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             //Debug.Log("OnEndDrag" + gameObject.GetInstanceID());
-            IOCC.Set<TreeNodeTableElementDraggableBase<ElementData>>("dragItem", null);
+            IOCC.Set<TreeNodeTableElementDraggableBase<TElementData>>("dragItem", null);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -89,7 +89,7 @@ namespace NonsensicalKit.Core.Table
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (IOCC.TryGet<TreeNodeTableElementDraggableBase<ElementData>>("dragItem", out var dragElement))
+            if (IOCC.TryGet<TreeNodeTableElementDraggableBase<TElementData>>("dragItem", out var dragElement))
             {
                 if (IsVaild(dragElement))
                 {
@@ -107,7 +107,7 @@ namespace NonsensicalKit.Core.Table
                 ChangeHover(pos);
                 if (pos == 2)
                 {
-                    if (base.ElementData.Parent != null && base.ElementData.Parent.Childs.Last() == base.ElementData)
+                    if (base.ElementData.Parent != null && base.ElementData.Parent.Children.Last() == base.ElementData)
                     {//如果是最后一个子物体
                         var i = CheckWidth(eventData.position);
                         var targetLevel = base.ElementData.Level - i;
@@ -138,9 +138,9 @@ namespace NonsensicalKit.Core.Table
                 return 0;
             }
 
-            var scale = _rectTransform.lossyScale.y;
-            var min = _rectTransform.position.y + _rectTransform.rect.min.y * scale + _rectTransform.rect.height * scale * _topBottomAreaHeight;
-            var max = _rectTransform.position.y + _rectTransform.rect.max.y * scale - _rectTransform.rect.height * scale * _topBottomAreaHeight;
+            var scale = RectTransform.lossyScale.y;
+            var min = RectTransform.position.y + RectTransform.rect.min.y * scale + RectTransform.rect.height * scale * _topBottomAreaHeight;
+            var max = RectTransform.position.y + RectTransform.rect.max.y * scale - RectTransform.rect.height * scale * _topBottomAreaHeight;
 
             if (mousePosition.y < min)
             {
@@ -180,9 +180,9 @@ namespace NonsensicalKit.Core.Table
             }
         }
 
-        private bool IsVaild(TreeNodeTableElementDraggableBase<ElementData> target)
+        private bool IsVaild(TreeNodeTableElementDraggableBase<TElementData> target)
         {
-            Queue<ElementData> datas = new Queue<ElementData>();
+            Queue<TElementData> datas = new Queue<TElementData>();
             datas.Enqueue(target.ElementData);
             while (datas.Count > 0)
             {
@@ -191,7 +191,7 @@ namespace NonsensicalKit.Core.Table
                 {
                     return false;
                 }
-                foreach (var item in element.Childs)
+                foreach (var item in element.Children)
                 {
                     datas.Enqueue(item);
                 }

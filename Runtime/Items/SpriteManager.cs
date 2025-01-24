@@ -13,8 +13,8 @@ namespace NonsensicalKit.UGUI
     /// </summary>
     public class SpriteManager : MonoSingleton<SpriteManager>
     {
-        [SerializeField] private bool m_autoDestroy = false;
-        private Dictionary<string, SpriteInfo> _crtSprites = new Dictionary<string, SpriteInfo>();
+        [SerializeField] private bool m_autoDestroy;
+        private readonly Dictionary<string, SpriteInfo> _crtSprites = new();
 
         private void Update()
         {
@@ -24,9 +24,9 @@ namespace NonsensicalKit.UGUI
 
         public void TrySetSprite(string spriteName, GetSpriteHandle spriteCreateMethod)
         {
-            if (_crtSprites.ContainsKey(spriteName))
+            if (_crtSprites.TryGetValue(spriteName, out var sprite))
             {
-                if (_crtSprites[spriteName].CanUse)
+                if (sprite.CanUse)
                 {
                     return;
                 }
@@ -41,9 +41,9 @@ namespace NonsensicalKit.UGUI
 
         public void TrySetSprite(string spriteName, Func<Sprite> spriteCreateMethod)
         {
-            if (_crtSprites.ContainsKey(spriteName))
+            if (_crtSprites.TryGetValue(spriteName, out var sprite))
             {
-                if (_crtSprites[spriteName].CanUse)
+                if (sprite.CanUse)
                 {
                     return;
                 }
@@ -93,8 +93,10 @@ namespace NonsensicalKit.UGUI
                 yield return fallback(ref sprite);
                 if (sprite != null)
                 {
-                    _crtSprites[spriteName] = new SpriteInfo();
-                    _crtSprites[spriteName].Sprite = sprite;
+                    _crtSprites[spriteName] = new SpriteInfo
+                    {
+                        Sprite = sprite
+                    };
 
                     _crtSprites[spriteName].UseCount++;
                 }
@@ -134,8 +136,10 @@ namespace NonsensicalKit.UGUI
                 yield return fallback(ref sprite);
                 if (sprite != null)
                 {
-                    _crtSprites[spriteName] = new SpriteInfo();
-                    _crtSprites[spriteName].Sprite = sprite;
+                    _crtSprites[spriteName] = new SpriteInfo
+                    {
+                        Sprite = sprite
+                    };
 
                     _crtSprites[spriteName].UseCount++;
                 }
@@ -148,9 +152,9 @@ namespace NonsensicalKit.UGUI
             {
                 return;
             }
-            if (_crtSprites.ContainsKey(spriteName))
+            if (_crtSprites.TryGetValue(spriteName, out var sprite))
             {
-                _crtSprites[spriteName].UseCount--;
+                sprite.UseCount--;
                 if (m_autoDestroy)
                 {
                     enabled = true;

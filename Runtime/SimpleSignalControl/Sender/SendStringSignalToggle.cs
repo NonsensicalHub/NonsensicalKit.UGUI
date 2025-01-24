@@ -9,14 +9,14 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
     {
         [SerializeField] private string m_signal;
         [SerializeField] private string m_message;
-        private Toggle _tog_Self;
+        private Toggle _togSelf;
 
         private void Awake()
         {
-            _tog_Self = GetComponent<Toggle>();
-            if (_tog_Self != null)
+            _togSelf = GetComponent<Toggle>();
+            if (_togSelf != null)
             {
-                _tog_Self.onValueChanged.AddListener(SendSignal);
+                _togSelf.onValueChanged.AddListener(SendSignal);
             }
         }
 

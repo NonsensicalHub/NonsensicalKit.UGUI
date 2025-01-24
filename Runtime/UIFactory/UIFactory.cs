@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
 using NonsensicalKit.Core;
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Core.Service;
 using NonsensicalKit.Tools;
 using NonsensicalKit.Tools.ObjectPool;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.UIFactory
@@ -19,7 +19,7 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         public Action InitCompleted { get; set; }
 
-        private Dictionary<string, GameObjectPool> pools;
+        private Dictionary<string, GameObjectPool> _pools;
 
         private void Awake()
         {
@@ -29,14 +29,16 @@ namespace NonsensicalKit.UGUI.UIFactory
             IsReady = true;
             InitCompleted?.Invoke();
         }
+
         public GameObject OpenUI(string type, object arg)
         {
-            if (pools.ContainsKey(type) == false)
+            if (_pools.ContainsKey(type) == false)
             {
                 LogCore.Warning($"未配置类型为{type}的UI");
                 return null;
             }
-            var v = pools[type].New();
+
+            var v = _pools[type].New();
 
             IFactoryUI ui = v.GetComponent<IFactoryUI>();
             ui.SetArg(arg);
@@ -50,21 +52,23 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         private void Init()
         {
-            pools = new Dictionary<string, GameObjectPool>();
+            _pools = new Dictionary<string, GameObjectPool>();
             foreach (var item in m_prefabs)
             {
-                var key = string.IsNullOrEmpty(item.Alias) ? item.Type.ToString() : item.Alias;
+                var key = string.IsNullOrEmpty(item.Alias) ? item.Type : item.Alias;
 
-                if (pools.ContainsKey(key))
+                if (_pools.ContainsKey(key))
                 {
                     LogCore.Warning($"键值{key} 配置了多次");
                     return;
                 }
+
                 if (item.Prefab == null)
                 {
                     LogCore.Warning($"键值为{key}的UI未配置预制体");
                     return;
                 }
+
                 IFactoryUI ui = item.Prefab.GetComponent<IFactoryUI>();
                 if (ui == null)
                 {
@@ -74,7 +78,7 @@ namespace NonsensicalKit.UGUI.UIFactory
 
                 GameObjectPool newPool = new GameObjectPool(item.Prefab, OnUIReset, OnUIInit, OnUIFirstInit);
 
-                pools.Add(key, newPool);
+                _pools.Add(key, newPool);
             }
         }
 
@@ -93,7 +97,7 @@ namespace NonsensicalKit.UGUI.UIFactory
             go.SetActive(false);
             IFactoryUI ui = go.GetComponent<IFactoryUI>();
             ui.Pool = pool;
-            go.transform.SetParent(m_canvas.transform,false);
+            go.transform.SetParent(m_canvas.transform, false);
         }
 
         private void Reset()
@@ -112,11 +116,12 @@ namespace NonsensicalKit.UGUI.UIFactory
     /// <summary>
     /// 配置节点类型的创建路径和预制体
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class FactoryUIPrefabSetting
     {
         [TypeQualifiedString(typeof(IFactoryUI))]
         public string Type;
+
         public string Alias;
         public GameObject Prefab;
 

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.RestrictedInputField
@@ -16,7 +17,7 @@ namespace NonsensicalKit.UGUI.RestrictedInputField
                 m_maxValue = m_minValue;
             }
 #if TEXTMESHPRO_PRESENT
-            _ipf_self.contentType = TMPro.TMP_InputField.ContentType.DecimalNumber;
+            _ipf_self.contentType = TMP_InputField.ContentType.DecimalNumber;
 #else
             _ipf_self.contentType = UnityEngine.UI.InputField.ContentType.DecimalNumber;
 #endif

@@ -1,5 +1,6 @@
 using NonsensicalKit.Tools;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace NonsensicalKit.UGUI
 {
@@ -9,8 +10,13 @@ namespace NonsensicalKit.UGUI
         [SerializeField] private RectTransform m_master;
         [SerializeField] private RectTransform m_line;
         [SerializeField] private float m_strength = 5f;
-        [SerializeField] private float m_minDiastance = 50;
-        [SerializeField] private float m_maxDiastance = 100;
+
+        [FormerlySerializedAs("m_minDiastance")] [SerializeField]
+        private float m_minDistance = 50;
+
+        [FormerlySerializedAs("m_maxDiastance")] [SerializeField]
+        private float m_maxDistance = 100;
+
         [SerializeField] private float m_speed = 1000;
         [SerializeField] private float m_cd = 0.5f;
 
@@ -61,6 +67,7 @@ namespace NonsensicalKit.UGUI
             {
                 return;
             }
+
             Vector2 point = ps[0];
             m_line.position = ((Vector2)m_master.position + point) / 2;
             Vector2 offset = point - (Vector2)m_master.position;
@@ -70,13 +77,16 @@ namespace NonsensicalKit.UGUI
 
         private void UpdatePos()
         {
-            if (Vector3.Distance(m_master.position, _selfRect.position) < m_minDiastance)
+            if (Vector3.Distance(m_master.position, _selfRect.position) < m_minDistance)
             {
-                _selfRigidbody.MovePosition(transform.position + (_selfRect.position - m_master.position).normalized * m_speed * Time.fixedDeltaTime);
+                _selfRigidbody.MovePosition(
+                    transform.position + (_selfRect.position - m_master.position).normalized * (m_speed * Time.fixedDeltaTime));
             }
-            if (Vector3.Distance(m_master.position, _selfRect.position) > m_maxDiastance)
+
+            if (Vector3.Distance(m_master.position, _selfRect.position) > m_maxDistance)
             {
-                _selfRigidbody.MovePosition(transform.position + (m_master.position - _selfRect.position).normalized * m_speed * Time.fixedDeltaTime);
+                _selfRigidbody.MovePosition(
+                    transform.position + (m_master.position - _selfRect.position).normalized * (m_speed * Time.fixedDeltaTime));
             }
         }
 

@@ -1,6 +1,6 @@
-using NonsensicalKit.Tools;
 using System;
 using System.IO;
+using NonsensicalKit.Tools;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -15,23 +15,25 @@ namespace NonsensicalKit.UGUI.Editor.Tools
         {
             var crtPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             Debug.Log(Path.Combine(Application.dataPath, "..", crtPath));
-            var path = FileTool.FileSaveSelector("prefab",Path.Combine(Application.dataPath,"..", crtPath), "prefab");
+            var path = FileTool.FileSaveSelector("prefab", Path.Combine(Application.dataPath, "..", crtPath), "prefab");
             if (string.IsNullOrEmpty(path))
             {
                 Debug.Log("Unable to create ListTable because no file path has been selected.");
                 return;
             }
+
             path = path.Replace('\\', '/');
             if (path.Contains(Application.dataPath) == false)
             {
                 Debug.Log("Unable to create ListTable because the selected file path is not within the Assets folder");
                 return;
             }
+
             DoCreateListTable(path);
         }
 
         private static string ManagerTemplate =
-@"using NonsensicalKit.UGUI.Table;
+            @"using NonsensicalKit.UGUI.Table;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,7 +45,7 @@ public class #ManagerName# : ListTableManager<#ElementName#,#InfoName#>
 ";
 
         private static string ElementTemplate =
-@"using NonsensicalKit.UGUI.Table;
+            @"using NonsensicalKit.UGUI.Table;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -96,6 +98,7 @@ public class #InfoName#
             {
                 return;
             }
+
             EditorPrefs.SetString("NonsensicalKit_CreateListTablePath", string.Empty);
 
             string name = Path.GetFileNameWithoutExtension(prefabPath);
@@ -189,7 +192,7 @@ public class #InfoName#
             scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
 
             Component manager = root.AddComponent(managerType);
-            SerializedObject serializedObject = new UnityEditor.SerializedObject(manager);
+            SerializedObject serializedObject = new SerializedObject(manager);
             SerializedProperty group = serializedObject.FindProperty("m_group");
             group.objectReferenceValue = contentRect;
             serializedObject.ApplyModifiedProperties();

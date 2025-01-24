@@ -28,6 +28,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
             {
                 root.transform.SetParent(parent.transform, false);
             }
+
             Selection.activeGameObject = root;
 
             RectTransform viewportRect = viewport.GetComponent<RectTransform>();

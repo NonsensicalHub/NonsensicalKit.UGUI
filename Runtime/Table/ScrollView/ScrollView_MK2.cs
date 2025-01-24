@@ -1,6 +1,6 @@
-using NonsensicalKit.Tools.ObjectPool;
 using System;
 using System.Collections;
+using NonsensicalKit.Tools.ObjectPool;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -96,7 +96,7 @@ namespace NonsensicalKit.Core.Table
                 StartCoroutine(CheckSize());
             }
         }
-        
+
         public void ResetState()
         {
             _initialized = false;
@@ -430,10 +430,12 @@ namespace NonsensicalKit.Core.Table
                     midIndex = -(int)((content.anchoredPosition.x + _viewRectInContent.size.x * 0.5f) / (m_itemSize.x + m_spacing.x));
                     break;
                 case ItemLayoutType.HorizontalThenVertical:
-                    midIndex = (int)((content.anchoredPosition.y + _viewRectInContent.size.y * 0.5f) / (m_itemSize.y + m_spacing.y)) * _horizontalCount;
+                    midIndex = (int)((content.anchoredPosition.y + _viewRectInContent.size.y * 0.5f) / (m_itemSize.y + m_spacing.y)) *
+                               _horizontalCount;
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
-                    midIndex = -(int)((content.anchoredPosition.x + _viewRectInContent.size.x * 0.5f) / (m_itemSize.x + m_spacing.x)) * _verticalCount;
+                    midIndex = -(int)((content.anchoredPosition.x + _viewRectInContent.size.x * 0.5f) / (m_itemSize.x + m_spacing.x)) *
+                               _verticalCount;
                     break;
                 default:
                     midIndex = 0;

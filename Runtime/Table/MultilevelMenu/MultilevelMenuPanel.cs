@@ -17,7 +17,7 @@ namespace NonsensicalKit.Core.Table
             _mouseHover = false;
         }
 
-        public void Init(List<MultilevelMenuNode> nodes, IMultilevelMenu MultilevelMenu)
+        public void Init(List<MultilevelMenuNode> nodes, IMultilevelMenu multilevelMenu)
         {
             StopAllCoroutines();
             gameObject.SetActive(true);
@@ -25,6 +25,7 @@ namespace NonsensicalKit.Core.Table
             {
                 StartCoroutine(CheckInput());
             }
+
             int crtChildCount = m_group.childCount;
             int index = 0;
             for (; index < nodes.Count; index++)
@@ -36,11 +37,13 @@ namespace NonsensicalKit.Core.Table
                 }
                 else
                 {
-                    crtElement = MultilevelMenu.InstantiateElement(m_group);
+                    crtElement = multilevelMenu.InstantiateElement(m_group);
                 }
-                crtElement.Init(nodes[index], MultilevelMenu);
+
+                crtElement.Init(nodes[index], multilevelMenu);
                 crtElement.gameObject.SetActive(true);
             }
+
             for (; index < crtChildCount; index++)
             {
                 m_group.GetChild(index).gameObject.SetActive(false);

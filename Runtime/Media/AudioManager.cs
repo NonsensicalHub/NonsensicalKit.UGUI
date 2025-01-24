@@ -144,7 +144,7 @@ namespace NonsensicalKit.UGUI.Media
 
         private void Update()
         {
-            if (_audio && _audio.clip != null && _audio.isPlaying)
+            if (_audio && _audio.clip && _audio.isPlaying)
             {
                 InvokeProgressChanged();
             }
@@ -225,7 +225,7 @@ namespace NonsensicalKit.UGUI.Media
         private void Init()
         {
             if (_inited) return;
-            if (TryGetComponent<AudioSource>(out _audio) == false)
+            if (TryGetComponent(out _audio) == false)
             {
                 _audio = gameObject.AddComponent<AudioSource>();
             }

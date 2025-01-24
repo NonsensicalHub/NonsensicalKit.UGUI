@@ -1,20 +1,20 @@
 namespace NonsensicalKit.UGUI.Table
 {
-    public abstract class ListTableElement<ElementDataClass> : NonsensicalUI where ElementDataClass : class
+    public abstract class ListTableElement<TElementDataClass> : NonsensicalUI where TElementDataClass : class
     {
-        public ElementDataClass ElementData { get; private set; }
+        public TElementDataClass ElementData { get; private set; }
         public int Index { get; private set; }
 
-        private IListTableManager<ElementDataClass> _listTableManager;
+        private IListTableManager<TElementDataClass> _listTableManager;
 
-        public void SetValue(IListTableManager<ElementDataClass> listTableManager, int index, ElementDataClass elementData)
+        public void SetValue(IListTableManager<TElementDataClass> listTableManager, int index, TElementDataClass elementData)
         {
             _listTableManager = listTableManager;
             Index = index;
             SetValue(elementData);
         }
 
-        public virtual void SetValue(ElementDataClass elementData)
+        public virtual void SetValue(TElementDataClass elementData)
         {
             this.ElementData = elementData;
         }

@@ -10,7 +10,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
     public class UGUIAutoAnchor : EditorWindow
     {
         [MenuItem("NonsensicalKit/UGUI/自动自适应锚点")]
-        private static void AddComponentToCrtTargetWithChilds()
+        private static void AddComponentToCrtTargetWithChildren()
         {
             if (Selection.gameObjects.Length == 0)
             {
@@ -18,9 +18,9 @@ namespace NonsensicalKit.UGUI.Editor.Tools
             }
             else
             {
-                for (int i = 0; i < Selection.gameObjects.Length; i++)
+                foreach (var t in Selection.gameObjects)
                 {
-                    AutoSet(Selection.gameObjects[i]);
+                    AutoSet(t);
                 }
             }
         }
@@ -33,17 +33,19 @@ namespace NonsensicalKit.UGUI.Editor.Tools
                 return;
             }
 
-            if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(item)      //跳过预制体对象
-                || item.GetComponent<ContentSizeFitter>() != null             //跳过自适应尺寸对象
-                || item.parent == null || item.parent.GetComponent<LayoutGroup>() != null)    //跳过被LayoutGroup管理的对象
+            if (PrefabUtility.IsPartOfPrefabInstance(item) //跳过预制体对象
+                || item.GetComponent<ContentSizeFitter>() != null //跳过自适应尺寸对象
+                || item.parent == null || item.parent.GetComponent<LayoutGroup>() != null) //跳过被LayoutGroup管理的对象
             {
                 return;
             }
+
             var partentRT = item.parent.GetComponent<RectTransform>();
             if (partentRT == null)
             {
                 return;
             }
+
             var partentRect = partentRT.rect;
 
             var v = item.anchorMin * partentRect.size + item.offsetMin;

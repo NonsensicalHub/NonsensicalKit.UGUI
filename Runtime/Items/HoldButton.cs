@@ -17,11 +17,14 @@ namespace NonsensicalKit.UGUI
     public class HoldButton : Selectable, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [Serializable]
-        public class ButtonHoldEvent : UnityEvent { }
+        public class ButtonHoldEvent : UnityEvent
+        {
+        }
 
+        [FormerlySerializedAs("m_OnHold")]
         [FormerlySerializedAs("onHold")]
         [SerializeField]
-        private ButtonHoldEvent m_OnHold = new ButtonHoldEvent();
+        private ButtonHoldEvent m_onHold = new ButtonHoldEvent();
 
         [SerializeField]
         private float m_interval = 0.5f;
@@ -32,8 +35,8 @@ namespace NonsensicalKit.UGUI
 
         public ButtonHoldEvent OnHold
         {
-            get { return m_OnHold; }
-            set { m_OnHold = value; }
+            get => m_onHold;
+            set => m_onHold = value;
         }
 
         private void Update()
@@ -41,7 +44,7 @@ namespace NonsensicalKit.UGUI
             _timer += Time.deltaTime;
             if (_isHold && _timer > m_interval)
             {
-                m_OnHold.Invoke();
+                m_onHold.Invoke();
                 _timer = 0;
             }
         }
@@ -74,14 +77,14 @@ namespace NonsensicalKit.UGUI
     [CanEditMultipleObjects]
     public class HoldButtonEditor : SelectableEditor
     {
-        private SerializedProperty onHoldProperty;
-        private SerializedProperty interval;
+        private SerializedProperty _onHoldProperty;
+        private SerializedProperty _interval;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            onHoldProperty = serializedObject.FindProperty("m_OnHold");
-            interval = serializedObject.FindProperty("m_interval");
+            _onHoldProperty = serializedObject.FindProperty("m_OnHold");
+            _interval = serializedObject.FindProperty("m_interval");
         }
 
         public override void OnInspectorGUI()
@@ -90,8 +93,8 @@ namespace NonsensicalKit.UGUI
             EditorGUILayout.Space();
 
             serializedObject.Update();
-            EditorGUILayout.PropertyField(onHoldProperty);
-            EditorGUILayout.PropertyField(interval);
+            EditorGUILayout.PropertyField(_onHoldProperty);
+            EditorGUILayout.PropertyField(_interval);
             serializedObject.ApplyModifiedProperties();
         }
     }
