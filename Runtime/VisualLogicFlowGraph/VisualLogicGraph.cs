@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NonsensicalKit.Core;
-using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools;
 using NonsensicalKit.Tools.ObjectPool;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.VisualLogicGraph

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using NonsensicalKit.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace NonsensicalKit.Core.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public abstract class TreeNodeTableElementDraggableBase<TElementData> : TreeNodeTableElementBase<TElementData>,
         IDropHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler

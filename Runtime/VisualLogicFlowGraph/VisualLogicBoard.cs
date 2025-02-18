@@ -1,6 +1,6 @@
 using NonsensicalKit.Core;
-using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools.InputTool;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

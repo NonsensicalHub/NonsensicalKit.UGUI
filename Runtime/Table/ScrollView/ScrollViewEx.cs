@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace NonsensicalKit.Core.Table
+namespace NonsensicalKit.UGUI.Table
 {
     /// <summary>
     /// ！注意！：如果只在开头UpdateData一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好

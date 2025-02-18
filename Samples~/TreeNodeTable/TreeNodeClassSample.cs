@@ -1,5 +1,5 @@
-using NonsensicalKit.Core.Table;
 using System.Collections.Generic;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.Samples.Table
@@ -32,7 +32,7 @@ namespace NonsensicalKit.UGUI.Samples.Table
             IsVisible = true;
         }
 
-        public List<TreeNodeClassSample> Childs { get { return _children; } }
+        public List<TreeNodeClassSample> Children { get { return _children; } }
 
         public GameObject Belong { get; set; }
 

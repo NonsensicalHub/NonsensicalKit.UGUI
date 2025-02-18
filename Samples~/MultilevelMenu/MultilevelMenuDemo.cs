@@ -1,7 +1,7 @@
-using NonsensicalKit.Core;
-using NonsensicalKit.Core.Table;
-using NonsensicalKit.Tools.InputTool;
 using System.Collections.Generic;
+using NonsensicalKit.Core;
+using NonsensicalKit.Tools.InputTool;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.Samples.Table

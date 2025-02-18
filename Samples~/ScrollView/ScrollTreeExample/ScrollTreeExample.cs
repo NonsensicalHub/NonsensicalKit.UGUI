@@ -1,9 +1,10 @@
-using NonsensicalKit.Core;
-using NonsensicalKit.Core.Table;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NonsensicalKit.Core;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace NonsensicalKit.UGUI.Samples.Table
 {
@@ -94,19 +95,19 @@ namespace NonsensicalKit.UGUI.Samples.Table
             {
                 var root = new ScrollTreeNodeInfo("I_" + i + "_" + Guid.NewGuid().ToString().Substring(0, 8), 0);
                 _roots.Add(root);
-                int jLength = UnityEngine.Random.Range(2, 7);
+                int jLength = Random.Range(2, 7);
                 for (int j = 0; j < jLength; j++)
                 {
                     var jj = new ScrollTreeNodeInfo("II_" + j + "_" + Guid.NewGuid().ToString().Substring(0, 8), 1);
                     root.Childs.Add(jj);
                     jj.Parent = root;
-                    int kLength = UnityEngine.Random.Range(1, 6);
+                    int kLength = Random.Range(1, 6);
                     for (int k = 0; k < kLength; k++)
                     {
                         var kk = new ScrollTreeNodeInfo("III_" + k + "_" + Guid.NewGuid().ToString().Substring(0, 8), 2);
                         jj.Childs.Add(kk);
                         kk.Parent = jj;
-                        int lLength = UnityEngine.Random.Range(0, 5);
+                        int lLength = Random.Range(0, 5);
                         for (int l = 0; l < lLength; l++)
                         {
                             var ll = new ScrollTreeNodeInfo("IV_" + l + "_" + Guid.NewGuid().ToString().Substring(0, 8), 3);

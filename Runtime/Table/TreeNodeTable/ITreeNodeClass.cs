@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit.Core.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public interface ITreeNodeClass<TSelf>
     {

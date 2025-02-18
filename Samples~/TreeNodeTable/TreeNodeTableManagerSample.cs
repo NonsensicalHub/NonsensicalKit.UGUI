@@ -1,7 +1,7 @@
-using NonsensicalKit.Core.Table;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
 using UnityEngine.UI;
 

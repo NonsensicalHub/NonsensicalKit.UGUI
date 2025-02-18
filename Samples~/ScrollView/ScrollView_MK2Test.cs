@@ -1,11 +1,8 @@
-using DG.Tweening;
-using NonsensicalKit.Core;
-using NonsensicalKit.Core.Table;
-using NonsensicalKit.Tools;
 using System.Collections.Generic;
+using NonsensicalKit.Tools;
+using NonsensicalKit.UGUI.Table;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Samples.Table
 {

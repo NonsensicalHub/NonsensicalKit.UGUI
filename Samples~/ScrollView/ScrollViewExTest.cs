@@ -1,6 +1,6 @@
-using NonsensicalKit.Core;
-using NonsensicalKit.Core.Table;
 using System.Collections.Generic;
+using NonsensicalKit.Core;
+using NonsensicalKit.UGUI.Table;
 using TMPro;
 using UnityEngine;
 

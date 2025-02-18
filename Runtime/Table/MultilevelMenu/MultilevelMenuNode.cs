@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NonsensicalKit.Core.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public class MultilevelMenuNode
     {

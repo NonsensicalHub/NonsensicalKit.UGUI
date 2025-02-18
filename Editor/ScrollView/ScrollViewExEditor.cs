@@ -1,4 +1,4 @@
-using NonsensicalKit.Core.Table;
+using NonsensicalKit.UGUI.Table;
 using UnityEditor;
 
 namespace NonsensicalKit.UGUI.Editor.Table

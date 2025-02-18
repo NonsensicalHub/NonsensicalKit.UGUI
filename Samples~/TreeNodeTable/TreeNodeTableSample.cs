@@ -24,7 +24,7 @@ namespace NonsensicalKit.UGUI.Samples.Table
             }
 
             TreeNodeClassSample gamma = new TreeNodeClassSample("gamma");
-            root1.Childs[0].AddChild(gamma);
+            root1.Children[0].AddChild(gamma);
 
             TreeNodeClassSample root2 = new TreeNodeClassSample("root2");
             for (int i = 0; i < 120; i++)

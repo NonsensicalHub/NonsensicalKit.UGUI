@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace NonsensicalKit.Core.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public class MultilevelMenuElement : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

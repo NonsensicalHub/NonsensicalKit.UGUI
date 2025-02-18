@@ -6,7 +6,7 @@ using NonsensicalKit.UGUI;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace NonsensicalKit.Core.Table
+namespace NonsensicalKit.UGUI.Table
 {
     public interface ITreeNodeTableManager<TElementData> where TElementData : class, ITreeNodeClass<TElementData>
     {

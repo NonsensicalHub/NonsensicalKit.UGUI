@@ -1,5 +1,5 @@
-using NonsensicalKit.Core.Table;
 using NonsensicalKit.Tools;
+using NonsensicalKit.UGUI.Table;
 using UnityEngine;
 using UnityEngine.UI;
 
