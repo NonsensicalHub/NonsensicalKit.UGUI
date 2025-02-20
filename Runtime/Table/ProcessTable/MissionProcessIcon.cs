@@ -15,6 +15,12 @@ public class MissionProcessIcon : NonsensicalMono
         IOCC.AddListener<bool>("missionProcessState",OnMissionProcessStateChanged);
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        IOCC.RemoveListener<bool>("missionProcessState",OnMissionProcessStateChanged);
+    }
+
     private void OnMissionProcessStateChanged(bool state)
     {
         if (state)
