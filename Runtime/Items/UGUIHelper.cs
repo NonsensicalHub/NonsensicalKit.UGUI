@@ -129,7 +129,13 @@ namespace NonsensicalKit.UGUI
             rt.sizeDelta = size;
             rt.anchoredPosition = position;
         }
-
+        
+        public static void SetRect(this RectTransform rt, Rect rect)
+        {
+            rt.sizeDelta = new Vector2(rect.width, rect.height);
+            rt.anchoredPosition = new Vector2(rect.x, rect.y);
+        }
+        
         /// <summary>
         /// 设置成横向占满，移至底部，高度固定的样式
         /// </summary>

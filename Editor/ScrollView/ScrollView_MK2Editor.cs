@@ -18,7 +18,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
         private SerializedProperty _itemSize;
         private SerializedProperty _layoutType;
         private SerializedProperty _ignoreHead;
-        private SerializedProperty _ignoretail;
+        private SerializedProperty _ignoreTail;
 
         private SerializedProperty _useDefaultPool;
         private SerializedProperty _itemTemplate;
@@ -52,7 +52,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
             _itemSize = serializedObject.FindProperty("m_itemSize");
             _layoutType = serializedObject.FindProperty("m_layoutType");
             _ignoreHead = serializedObject.FindProperty("m_ignoreHead");
-            _ignoretail = serializedObject.FindProperty("m_ignoretail");
+            _ignoreTail = serializedObject.FindProperty("m_ignoreTail");
 
             _useDefaultPool = serializedObject.FindProperty("m_useDefaultPool");
             _itemTemplate = serializedObject.FindProperty("m_itemTemplate");
@@ -102,7 +102,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
             EditorGUILayout.PropertyField(_itemSize);
             EditorGUILayout.PropertyField(_layoutType);
             EditorGUILayout.PropertyField(_ignoreHead);
-            EditorGUILayout.PropertyField(_ignoretail);
+            EditorGUILayout.PropertyField(_ignoreTail);
         }
 
         protected virtual void DrawPoolConfig()

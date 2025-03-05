@@ -3,6 +3,7 @@ using System.Collections;
 using NonsensicalKit.Tools.ObjectPool;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Table
@@ -53,7 +54,7 @@ namespace NonsensicalKit.UGUI.Table
         [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize;
         [SerializeField] [Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
         [SerializeField] [Tooltip("忽略开头对象")] protected bool m_ignoreHead = false;
-        [SerializeField] [Tooltip("忽略结尾对象")] protected bool m_ignoretail = false;
+        [FormerlySerializedAs("m_ignoretail")] [SerializeField] [Tooltip("忽略结尾对象")] protected bool m_ignoreTail = false;
 
         [SerializeField] [Tooltip("是否使用默认对象池")]
         protected bool m_useDefaultPool = true;
@@ -449,7 +450,8 @@ namespace NonsensicalKit.UGUI.Table
             int crtIndex = midIndex;
             while (canSeen)
             {
-                if (canSeen = ShouldItemSeenAtIndex(crtIndex))
+                canSeen = ShouldItemSeenAtIndex(crtIndex);
+                if (canSeen)
                 {
                     if (_managedItems[crtIndex] == null)
                     {
@@ -474,7 +476,8 @@ namespace NonsensicalKit.UGUI.Table
             crtIndex = midIndex;
             while (canSeen)
             {
-                if (canSeen = ShouldItemSeenAtIndex(crtIndex))
+                canSeen = ShouldItemSeenAtIndex(crtIndex);
+                if (canSeen)
                 {
                     if (_managedItems[crtIndex] == null)
                     {
@@ -693,6 +696,7 @@ namespace NonsensicalKit.UGUI.Table
             if (m_itemTemplate == null)
             {
                 Debug.LogError("未配置模板");
+                return;
             }
 
             GameObject poolNode = new GameObject("POOL");
@@ -813,7 +817,7 @@ namespace NonsensicalKit.UGUI.Table
                     }
                 }
 
-                if (m_ignoretail)
+                if (m_ignoreTail)
                 {
                     _tail = content.GetChild(content.childCount - 1).GetComponent<RectTransform>();
                     if (_tail != null)
