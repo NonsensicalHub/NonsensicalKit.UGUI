@@ -51,7 +51,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 连接线对象池
         /// </summary>
-        public ComponentPool_MK2<VisualLogicLine> LinePool { protected get; set; }
+        public ComponentPoolMk2<VisualLogicLine> LinePool { protected get; set; }
 
         /// <summary>
         /// 此点位的所有连接线

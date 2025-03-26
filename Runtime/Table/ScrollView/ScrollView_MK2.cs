@@ -74,7 +74,7 @@ namespace NonsensicalKit.UGUI.Table
         private int _dataCount = 0; //缓存的当前数据数量，用于减少获取数量方法的调用次数
         private RectTransform[] _managedItems; //存储对应索引的item
         private Rect _viewRectInContent; //viewPort一开始在content坐标系中的相对rect，用于计算item是否应该被显示
-        private ComponentPool_MK2<RectTransform> _itemPool = null; //对象池
+        private ComponentPoolMk2<RectTransform> _itemPool = null; //对象池
 
         private bool _initialized = false; //是否进行过初始化
         private bool _willUpdateData = false; //是否将要更新数据
@@ -702,7 +702,7 @@ namespace NonsensicalKit.UGUI.Table
             GameObject poolNode = new GameObject("POOL");
             poolNode.SetActive(false);
             poolNode.transform.SetParent(transform, false);
-            _itemPool = new ComponentPool_MK2<RectTransform>(
+            _itemPool = new ComponentPoolMk2<RectTransform>(
                 m_itemTemplate,
                 (RectTransform item) => { item.transform.SetParent(poolNode.transform, false); },
                 (rect) =>

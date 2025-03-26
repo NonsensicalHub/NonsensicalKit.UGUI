@@ -13,7 +13,7 @@ namespace NonsensicalKit.UGUI.Table
     {
         private readonly Vector3 _farPos = new Vector3(10000, 10000, 0);
 
-        public ComponentPool_MK3<T> Pool;
+        public ComponentPoolMk3<T> Pool;
         public Action<T> OverrideReset;
         public Action<T> OverrideInit;
         public Action<T> OverrideReinit;
@@ -26,7 +26,7 @@ namespace NonsensicalKit.UGUI.Table
         {
             _parent = parent;
             _table = table;
-            Pool = new ComponentPool_MK3<T>(prefab, OnReset, OnInit, OnReinit, OnFirstInit);
+            Pool = new ComponentPoolMk3<T>(prefab, OnReset, OnInit, OnReinit, OnFirstInit);
 
             if (prefab != null && parent != null && prefab.transform.parent == parent)
             {
@@ -63,7 +63,7 @@ namespace NonsensicalKit.UGUI.Table
             }
         }
 
-        public void OnFirstInit(ComponentPool_MK3<T> pool, T obj)
+        public void OnFirstInit(ComponentPoolMk3<T> pool, T obj)
         {
             obj.transform.SetParent(_parent, false);
             obj.gameObject.SetActive(true);

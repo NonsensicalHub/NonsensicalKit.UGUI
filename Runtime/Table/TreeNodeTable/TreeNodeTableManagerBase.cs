@@ -39,7 +39,7 @@ namespace NonsensicalKit.UGUI.Table
         [SerializeField] protected bool m_updateWidth; //是否在没有改变节点时也不停的更新宽度
         [SerializeField] protected bool m_fixedWidth; //是否固定宽度（会导致_updateWidth选项完全无效）
 
-        protected GameObjectPool_MK2[] _pools; //对象池组
+        protected GameObjectPoolMk2[] _pools; //对象池组
 
         protected List<TElementData> _topNode; //顶节点
         protected List<int> _levels; //当前所有节点的层级，用于计算宽度
@@ -52,14 +52,14 @@ namespace NonsensicalKit.UGUI.Table
             base.Awake();
 
             m_pool.gameObject.SetActive(false);
-            _pools = new GameObjectPool_MK2[m_prefabs.Length];
+            _pools = new GameObjectPoolMk2[m_prefabs.Length];
             if (m_childPrefab)
             {
                 for (int i = 0; i < m_prefabs.Length; i++)
                 {
                     m_prefabs[i] = m_group.GetChild(i).GetComponent<TreeNodeTableElementBase<TElementData>>();
                     m_prefabs[i].gameObject.SetActive(false);
-                    _pools[i] = new GameObjectPool_MK2(m_prefabs[i].gameObject, OnReset, OnInit, OnFirstInit);
+                    _pools[i] = new GameObjectPoolMk2(m_prefabs[i].gameObject, OnReset, OnInit, OnFirstInit);
                 }
             }
 
@@ -95,7 +95,7 @@ namespace NonsensicalKit.UGUI.Table
             go.transform.SetParent(m_group);
         }
 
-        protected virtual void OnFirstInit(GameObjectPool_MK2 pool, GameObject go)
+        protected virtual void OnFirstInit(GameObjectPoolMk2 pool, GameObject go)
         {
             go.GetComponent<TreeNodeTableElementBase<TElementData>>().LevelDistance = m_levelDistance;
             go.GetComponent<TreeNodeTableElementBase<TElementData>>().Manager = this;

@@ -60,12 +60,12 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
         /// <summary>
         /// 连接线对象池
         /// </summary>
-        private ComponentPool_MK2<VisualLogicLine> _linePool;
+        private ComponentPoolMk2<VisualLogicLine> _linePool;
 
         /// <summary>
         /// 每种逻辑节点的对象池
         /// </summary>
-        private Dictionary<string, ComponentPool_MK2<VisualLogicNodeBase>> _pools = new Dictionary<string, ComponentPool_MK2<VisualLogicNodeBase>>();
+        private Dictionary<string, ComponentPoolMk2<VisualLogicNodeBase>> _pools = new Dictionary<string, ComponentPoolMk2<VisualLogicNodeBase>>();
 
         /// <summary>
         /// 创建新的逻辑节点信息的方法
@@ -101,11 +101,11 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
                     continue;
                 }
 
-                _pools.Add(node.Type, new ComponentPool_MK2<VisualLogicNodeBase>(node.Prefab, OnNodeStore, OnNodeInit));
+                _pools.Add(node.Type, new ComponentPoolMk2<VisualLogicNodeBase>(node.Prefab, OnNodeStore, OnNodeInit));
                 menuInfos.Add(new MultilevelMenuInfo(node.CreatePath, OnCreateNew));
             }
 
-            _linePool = new ComponentPool_MK2<VisualLogicLine>(m_linePrefab, OnLineStore, OnLineInit);
+            _linePool = new ComponentPoolMk2<VisualLogicLine>(m_linePrefab, OnLineStore, OnLineInit);
 
             m_menu.Init(menuInfos);
 
