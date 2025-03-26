@@ -21,6 +21,11 @@
       "path": "Samples~/ScrollView"
     },
     {
+      "displayName": "ScrollTable",
+      "description": "滚动表格示例",
+      "path": "Samples~/ScrollTable"
+    },
+    {
       "displayName": "SquarePuppy",
       "description": "\u8ddf\u968fUI",
       "path": "Samples~/SquarePuppy"

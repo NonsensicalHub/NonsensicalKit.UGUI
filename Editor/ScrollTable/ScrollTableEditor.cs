@@ -11,6 +11,11 @@ namespace NonsensicalKit.UGUI.Editor.Table
         private SerializedProperty m_columnWidth;
         private SerializedProperty m_rowHeight;
         private SerializedProperty m_cellPrefab;
+        private SerializedProperty m_columnImagePrefabs;
+        private SerializedProperty m_rowImagePrefabs;
+        private SerializedProperty m_cellParent;
+        private SerializedProperty m_rowParent;
+        private SerializedProperty m_columnParent;
         private SerializedProperty m_defaultWidth;
         private SerializedProperty m_defaultHeight;
         private SerializedProperty m_borderSize;
@@ -38,6 +43,11 @@ namespace NonsensicalKit.UGUI.Editor.Table
             m_columnWidth = serializedObject.FindProperty("m_columnWidth");
             m_rowHeight = serializedObject.FindProperty("m_rowHeight");
             m_cellPrefab = serializedObject.FindProperty("m_cellPrefab");
+            m_columnImagePrefabs = serializedObject.FindProperty("m_columnImagePrefabs");
+            m_rowImagePrefabs = serializedObject.FindProperty("m_rowImagePrefabs");
+            m_cellParent = serializedObject.FindProperty("m_cellParent");
+            m_rowParent = serializedObject.FindProperty("m_rowParent");
+            m_columnParent = serializedObject.FindProperty("m_columnParent");
             m_defaultWidth = serializedObject.FindProperty("m_defaultWidth");
             m_defaultHeight = serializedObject.FindProperty("m_defaultHeight");
             m_borderSize = serializedObject.FindProperty("m_borderSize");
@@ -67,11 +77,15 @@ namespace NonsensicalKit.UGUI.Editor.Table
 
         protected virtual void DrawBaseConfig()
         {
-
             EditorGUILayout.PropertyField(m_columnWidth);
             EditorGUILayout.PropertyField(m_rowHeight);
 
             EditorGUILayout.PropertyField(m_cellPrefab);
+            EditorGUILayout.PropertyField(m_columnImagePrefabs);
+            EditorGUILayout.PropertyField(m_rowImagePrefabs);
+            EditorGUILayout.PropertyField(m_cellParent);
+            EditorGUILayout.PropertyField(m_rowParent);
+            EditorGUILayout.PropertyField(m_columnParent);
             EditorGUILayout.PropertyField(m_defaultWidth);
             EditorGUILayout.PropertyField(m_defaultHeight);
             EditorGUILayout.PropertyField(m_borderSize);

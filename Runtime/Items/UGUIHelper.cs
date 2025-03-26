@@ -133,7 +133,7 @@ namespace NonsensicalKit.UGUI
         public static void SetRect(this RectTransform rt, Rect rect)
         {
             rt.sizeDelta = new Vector2(rect.width, rect.height);
-            rt.anchoredPosition = new Vector2(rect.x, rect.y);
+            rt.anchoredPosition3D = new Vector3(rect.x, rect.y,0);
         }
         
         /// <summary>

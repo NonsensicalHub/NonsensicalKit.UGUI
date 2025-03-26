@@ -26,7 +26,10 @@ namespace NonsensicalKit.UGUI.Editor.Table
             GameObject root = CreateUIElementRoot(typeof(T).Name, new Vector2(200, 200));
             GameObject viewport = CreateUIObject("Viewport", root);
             GameObject content = CreateUIObject("Content", viewport);
-            GameObject borderLine = CreateUIObject("borderLine", content);
+            GameObject borderLine = CreateUIObject("BorderLine", content);
+            GameObject CellParent = CreateUIObject("CellParent", content);
+            GameObject RowParent = CreateUIObject("RowParent", content);
+            GameObject ColumnParent = CreateUIObject("ColumnParent", content);
 
             GameObject parent = menuCommand.context as GameObject;
             if (parent != null)
@@ -62,11 +65,13 @@ namespace NonsensicalKit.UGUI.Editor.Table
             viewportRect.pivot = Vector2.up;
 
             RectTransform contentRect = content.GetComponent<RectTransform>();
-            contentRect.SetTopLeft(Vector2.zero,new Vector2(200,200));
-            
-            RectTransform borderLineRect = borderLine.GetComponent<RectTransform>();
-            borderLineRect.Stretch();
-            
+            contentRect.SetTopLeft(Vector2.zero, new Vector2(200, 200));
+
+            borderLine.GetComponent<RectTransform>().Stretch();
+            CellParent.GetComponent<RectTransform>().Stretch();
+            RowParent.GetComponent<RectTransform>().Stretch();
+            ColumnParent.GetComponent<RectTransform>().Stretch();
+
             Image borderLineImage = borderLine.AddComponent<Image>();
             borderLineImage.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>(BG_PATH);
             borderLineImage.type = Image.Type.Sliced;
@@ -81,7 +86,10 @@ namespace NonsensicalKit.UGUI.Editor.Table
             scrollTable.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
             scrollTable.horizontalScrollbarSpacing = -3;
             scrollTable.verticalScrollbarSpacing = -3;
-            scrollTable.BorderLineRect = borderLineRect;
+            scrollTable.BorderLineRect = borderLine.GetComponent<RectTransform>();
+            scrollTable.CellParent = CellParent.transform;  
+            scrollTable.RowParent = RowParent.transform;
+            scrollTable.ColumnParent = ColumnParent.transform;
 
             Image rootImage = root.AddComponent<Image>();
             rootImage.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>(BG_PATH);
