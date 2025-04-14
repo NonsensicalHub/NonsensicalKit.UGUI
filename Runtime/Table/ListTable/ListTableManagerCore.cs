@@ -67,7 +67,7 @@ namespace NonsensicalKit.UGUI.Table
             UpdateUI(data);
         }
 
-        public virtual void Append(TElementData appendElementData)
+        public virtual TListElement Append(TElementData appendElementData)
         {
             Init();
             ElementData.Add(appendElementData);
@@ -76,8 +76,9 @@ namespace NonsensicalKit.UGUI.Table
             crtElement.gameObject.SetActive(true);
             SetValue(crtElement, appendElementData, ElementData.Count - 1);
             UpdateTail();
+            return crtElement;
         }
-
+        
         public virtual bool Delete(TElementData deleteElementData)
         {
             if (!ElementData.Contains(deleteElementData))

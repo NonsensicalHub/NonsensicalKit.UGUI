@@ -142,7 +142,7 @@ namespace NonsensicalKit.UGUI.Table
         /// <returns></returns>
         public Array2<string> GetTableData()
         {
-            return _tableData.CopyToNewArray(_tableData.Length0, _tableData.Length1);
+            return _tableData.CopyToNewArray(_tableData.m_Length0, _tableData.m_Length1);
         }
 
         /// <summary>
@@ -154,9 +154,9 @@ namespace NonsensicalKit.UGUI.Table
             ClearTable();
             _tableData = tableData;
             m_columnWidth = new List<float>();
-            m_columnWidth.Add(m_defaultWidth, tableData.Length0);
+            m_columnWidth.Add(m_defaultWidth, tableData.m_Length0);
             m_rowHeight = new List<float>();
-            m_rowHeight.Add(m_defaultHeight, tableData.Length1);
+            m_rowHeight.Add(m_defaultHeight, tableData.m_Length1);
             ReSize();
         }
 
@@ -167,10 +167,10 @@ namespace NonsensicalKit.UGUI.Table
         /// <param name="cellText"></param>
         public void AddRow(float height = 0, string cellText = "new cell")
         {
-            _tableData = _tableData.CopyToNewArray(_tableData.Length0, _tableData.Length1 + 1);
-            for (int i = 0; i < _tableData.Length0; i++)
+            _tableData = _tableData.CopyToNewArray(_tableData.m_Length0, _tableData.m_Length1 + 1);
+            for (int i = 0; i < _tableData.m_Length0; i++)
             {
-                _tableData[i, _tableData.Length1 - 1] = cellText;
+                _tableData[i, _tableData.m_Length1 - 1] = cellText;
             }
 
             if (height <= 0)
@@ -189,10 +189,10 @@ namespace NonsensicalKit.UGUI.Table
         /// <param name="cellText"></param>
         public void AddColumn(float width = 0, string cellText = "new cell")
         {
-            _tableData = _tableData.CopyToNewArray(_tableData.Length0 + 1, _tableData.Length1);
-            for (int i = 0; i < _tableData.Length1; i++)
+            _tableData = _tableData.CopyToNewArray(_tableData.m_Length0 + 1, _tableData.m_Length1);
+            for (int i = 0; i < _tableData.m_Length1; i++)
             {
-                _tableData[_tableData.Length0 - 1, i] = cellText;
+                _tableData[_tableData.m_Length0 - 1, i] = cellText;
             }
 
             if (width <= 0)
@@ -288,6 +288,9 @@ namespace NonsensicalKit.UGUI.Table
             {
                 rowPool.Pool.Clear();
             }
+            _cells.Reset();
+            _columns.Reset();
+            _rows.Reset();
         }
 
         /// <summary>

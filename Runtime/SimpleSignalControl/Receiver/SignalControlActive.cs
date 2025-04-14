@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using NonsensicalKit.Core;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         [SerializeField] private GameObject m_target;
         [SerializeField] private bool m_twoSignalControl;
         [SerializeField] private string m_signal;
-        [SerializeField] private string m_signal2;
+        [SerializeField][ShowIf("m_twoSignalControl")] private string m_signal2;
         [SerializeField] private bool m_defaultState = true;
 
         private void Reset()

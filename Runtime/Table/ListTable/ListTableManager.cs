@@ -5,7 +5,6 @@ namespace NonsensicalKit.UGUI.Table
     public interface IListTableManager<in T>
     {
         public void SetData(IEnumerable<T> data);
-        public void Append(T element);
         public bool Delete(T element);
         public void Clear();
         public void Clean();

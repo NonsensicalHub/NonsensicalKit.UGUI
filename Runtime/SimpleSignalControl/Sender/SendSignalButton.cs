@@ -7,7 +7,6 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     /// <summary>
     /// 发送信号按钮
-    /// TODO：根据信号类型隐藏未选择部分
     /// </summary>
     [RequireComponent(typeof(Button))]
     public class SendSignalButton : NonsensicalMono
