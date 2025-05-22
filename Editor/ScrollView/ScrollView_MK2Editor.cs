@@ -20,7 +20,6 @@ namespace NonsensicalKit.UGUI.Editor.Table
         private SerializedProperty _ignoreHead;
         private SerializedProperty _ignoreTail;
 
-        private SerializedProperty _useDefaultPool;
         private SerializedProperty _itemTemplate;
         private SerializedProperty _poolSize;
 
@@ -54,7 +53,6 @@ namespace NonsensicalKit.UGUI.Editor.Table
             _ignoreHead = serializedObject.FindProperty("m_ignoreHead");
             _ignoreTail = serializedObject.FindProperty("m_ignoreTail");
 
-            _useDefaultPool = serializedObject.FindProperty("m_useDefaultPool");
             _itemTemplate = serializedObject.FindProperty("m_itemTemplate");
             _poolSize = serializedObject.FindProperty("m_poolSize");
 
@@ -107,12 +105,8 @@ namespace NonsensicalKit.UGUI.Editor.Table
 
         protected virtual void DrawPoolConfig()
         {
-            EditorGUILayout.PropertyField(_useDefaultPool);
-            if (_useDefaultPool.boolValue)
-            {
-                EditorGUILayout.PropertyField(_itemTemplate);
-                EditorGUILayout.PropertyField(_poolSize);
-            }
+            EditorGUILayout.PropertyField(_itemTemplate);
+            EditorGUILayout.PropertyField(_poolSize);
         }
     }
 }

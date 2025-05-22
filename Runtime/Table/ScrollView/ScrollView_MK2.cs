@@ -9,13 +9,12 @@ using UnityEngine.UI;
 namespace NonsensicalKit.UGUI.Table
 {
     /// <summary>
-    /// ！注意！：如果只在开头UpdateData一次，则需要等待至少一帧使ScrollRect将ViewPort和Content的Rect配置好
     /// 参考： 
     /// https://github.com/aillieo/UnityDynamicScrollView
     /// https://blog.csdn.net/linxinfa/article/details/122019054
     /// 
     /// 如果使用分页，则会导致滚动条无法正常使用
-    /// 故使用固定大小来优化计算性能，可通过忽略开头第一个对象和结尾最后一个对象来自定义开头和结尾的尺寸非标准部分
+    /// 故使用固定大小来优化计算性能，可通过忽略开头第一个对象以及结尾最后一个对象来自定义开头和结尾的尺寸非标准部分
     /// </summary>
     public class ScrollView_MK2 : ScrollRect
     {
@@ -54,10 +53,9 @@ namespace NonsensicalKit.UGUI.Table
         [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize;
         [SerializeField] [Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
         [SerializeField] [Tooltip("忽略开头对象")] protected bool m_ignoreHead = false;
-        [FormerlySerializedAs("m_ignoretail")] [SerializeField] [Tooltip("忽略结尾对象")] protected bool m_ignoreTail = false;
 
-        [SerializeField] [Tooltip("是否使用默认对象池")]
-        protected bool m_useDefaultPool = true;
+        [FormerlySerializedAs("m_ignoretail")] [SerializeField] [Tooltip("忽略结尾对象")]
+        protected bool m_ignoreTail = false;
 
         [SerializeField] [Tooltip("对象池大小")] protected int m_poolSize = 20;
         [SerializeField] [Tooltip("item模板")] protected RectTransform m_itemTemplate;
@@ -91,14 +89,15 @@ namespace NonsensicalKit.UGUI.Table
         protected override void Start()
         {
             base.Start();
-            ResetState();
+            InitState();
             if (m_autoResize)
             {
                 StartCoroutine(CheckSize());
             }
         }
 
-        public void ResetState()
+        
+        private void InitState()
         {
             _initialized = false;
             content.pivot = Vector2.up; //(0,1),左上角
@@ -152,6 +151,7 @@ namespace NonsensicalKit.UGUI.Table
             }
         }
 
+
         /// <summary>
         /// 更新数据,强制更新所有item的rect
         /// </summary>
@@ -190,8 +190,18 @@ namespace NonsensicalKit.UGUI.Table
             }
         }
 
-        public void Resize()
+        /// <summary>
+        /// 清空并重置状态
+        /// </summary>
+        public void ResetView()
         {
+            StartCoroutine(UpdateLate());
+        }
+
+        private IEnumerator UpdateLate()
+        {
+            yield return new WaitForEndOfFrame();
+
             _initialized = false;
             UpdateData();
         }
@@ -254,7 +264,6 @@ namespace NonsensicalKit.UGUI.Table
         /// <summary>
         /// 滚动至目标item具体实现
         /// </summary>
-        /// <param name="index"></param>
         protected virtual void InternalScrollTo(int index, float pos)
         {
             int dir = (int)m_layoutType & DIRECTION_FLAG;
@@ -267,11 +276,11 @@ namespace NonsensicalKit.UGUI.Table
             var viewportSize = viewport.rect.size;
             while (true)
             {
-                if ((viewportSize.x != viewport.rect.width)
-                    || (viewportSize.y != viewport.rect.height))
+                if ((!Mathf.Approximately(viewportSize.x, viewport.rect.width))
+                    || (!Mathf.Approximately(viewportSize.y, viewport.rect.height)))
                 {
                     viewportSize = viewport.rect.size;
-                    Resize();
+                    ResetView();
                 }
 
                 yield return null;
@@ -393,8 +402,6 @@ namespace NonsensicalKit.UGUI.Table
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
                         _headSize + _tailSize + (hCount + 1) * m_itemSize.x + (hCount - 1) * m_spacing.x + m_left * 2);
                     content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _viewRectInContent.height);
-                    break;
-                default:
                     break;
             }
 
@@ -688,6 +695,21 @@ namespace NonsensicalKit.UGUI.Table
             _needCalculateViewableRect = true;
         }
 
+        private void ResetState()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                _criticalItemIndex[i] = 0;
+            }
+            
+            _initialized = false;
+            content.pivot = Vector2.up; //(0,1),左上角
+            content.sizeDelta = Vector2.zero;
+            content.anchoredPosition = Vector2.zero;
+            _managedItems = null;
+            _itemPool.Clear();
+        }
+        
         /// <summary>
         /// 初始化对象池
         /// </summary>
@@ -704,7 +726,7 @@ namespace NonsensicalKit.UGUI.Table
             poolNode.transform.SetParent(transform, false);
             _itemPool = new ComponentPoolMk2<RectTransform>(
                 m_itemTemplate,
-                (RectTransform item) => { item.transform.SetParent(poolNode.transform, false); },
+                item => { item.transform.SetParent(poolNode.transform, false); },
                 (rect) =>
                 {
                     rect.transform.SetParent(poolNode.transform, false);
@@ -760,15 +782,7 @@ namespace NonsensicalKit.UGUI.Table
         /// <returns></returns>
         private RectTransform GetNewItem(int index)
         {
-            RectTransform item;
-            if (ItemGetFunc != null)
-            {
-                item = ItemGetFunc(index);
-            }
-            else
-            {
-                item = _itemPool.New();
-            }
+            var item = ItemGetFunc != null ? ItemGetFunc(index) : _itemPool.New();
 
             return item;
         }
@@ -801,8 +815,11 @@ namespace NonsensicalKit.UGUI.Table
             int dir = (int)m_layoutType & DIRECTION_FLAG;
             vertical = (dir == 1);
             horizontal = (dir == 0);
-
-            if (m_useDefaultPool)
+            if (_itemPool != null)
+            {
+                ResetState();
+            }
+            else
             {
                 InitPool();
             }
@@ -884,8 +901,6 @@ namespace NonsensicalKit.UGUI.Table
                     }
                 }
                     break;
-                default:
-                    break;
             }
         }
 
@@ -905,13 +920,13 @@ namespace NonsensicalKit.UGUI.Table
              *    0 ------- 3
              *
              */
-            Vector3[] viewWorldConers = new Vector3[4];
+            Vector3[] viewWorldCorners = new Vector3[4];
 
-            viewRect.GetWorldCorners(viewWorldConers);
+            viewRect.GetWorldCorners(viewWorldCorners);
             Vector3[] rectCorners = new Vector3[2];
 
-            rectCorners[0] = content.transform.InverseTransformPoint(viewWorldConers[0]); //左下角
-            rectCorners[1] = content.transform.InverseTransformPoint(viewWorldConers[2]); //右上角
+            rectCorners[0] = content.transform.InverseTransformPoint(viewWorldCorners[0]); //左下角
+            rectCorners[1] = content.transform.InverseTransformPoint(viewWorldCorners[2]); //右上角
 
             _viewRectInContent = new Rect((Vector2)rectCorners[0] - content.anchoredPosition, rectCorners[1] - rectCorners[0]);
         }
@@ -944,8 +959,6 @@ namespace NonsensicalKit.UGUI.Table
                     pos.x = m_left + hCount * m_itemSize.x + hCount * m_spacing.x;
                     pos.y = -(_headSize + m_top + (vCount + 1) * m_itemSize.y + vCount * m_spacing.y);
                 }
-                    break;
-                default:
                     break;
             }
 

@@ -1,26 +1,36 @@
 using System.Collections;
+using NaughtyAttributes;
 using NonsensicalKit.Tools.InputTool;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace NonsensicalKit.UGUI.Table
 {
     /// <summary>
     /// 让滚动栏自动固定在规律的位置
-    /// m_scollRect.content必须挂载unity内置的三种LayoutGroup组件之一
+    /// m_scrollRect.content必须挂载unity内置的三种LayoutGroup组件之一
     /// 可使用默认UI预制体ScrollView
     /// </summary>
     public class StepGroup : MonoBehaviour
     {
         private const float STEP_THRESHOLD = 0.618f; //离当前索引多远时移动到另一个索引
 
-        [SerializeField] private ScrollRect m_scollRect;
+        [FormerlySerializedAs("m_scollRect")] [SerializeField]
+        private ScrollRect m_scrollRect;
+
         [SerializeField] [Range(1, 300)] private float m_speedThreshold = 100; //开始控制运动的速度阈值，当惯性运动的速度低于此值时才会开始控制运动
         [SerializeField] [Range(0.001f, 1)] private float m_moveSpeed = 0.05f; //校正速度
 
+
         [SerializeField] private Vector2Int m_startCount = new Vector2Int(1, 1); //初始横纵方向的单位数量
-        [SerializeField] private Vector2 m_startCellSize = new Vector2(100, 100); //初始单位尺寸
+
+        [SerializeField] private bool m_autoCheckCellSize = false;
+
+        [SerializeField] [HideIf("m_autoCheckCellSize")]
+        private Vector2 m_startCellSize = new Vector2(100, 100); //初始单位尺寸
+
         [SerializeField] private Vector2Int m_startIndex = new Vector2Int(0, 0); //初始索引
         [SerializeField] private Vector2 m_viewportAnchors = new Vector2(0.5f, 0.5f); //ScrollRect的Viewport用于锚定点
         [SerializeField] private Vector2 m_cellAnchors = new Vector2(0.5f, 0.5f); //每个单位的锚定点，自动移动会试图将单位的锚定点和Viewport锚定点重合
@@ -64,22 +74,43 @@ namespace NonsensicalKit.UGUI.Table
             _oneMinusStepThreshold = 1 - STEP_THRESHOLD;
 
             _crtIndex = m_startIndex;
-            _content = m_scollRect.content;
+            _content = m_scrollRect.content;
         }
 
         private void Start()
         {
             CheckIndex();
-            Init();
-            Recount(m_startCount);
-            Resize(m_startCellSize);
+            if (m_autoCheckCellSize)
+            {
+                StartCoroutine(CheckSizeCor());
+            }
+            else
+            {
+                Recount(m_startCount);
+                Resize(m_startCellSize);
+            }
+        }
+
+        private IEnumerator CheckSizeCor()
+        {
+            yield return new WaitForEndOfFrame();
+            if (m_scrollRect.content != null && m_scrollRect.content.childCount > 1)
+            {
+                Recount(m_startCount);
+                Resize(m_scrollRect.content.GetChild(0).GetComponent<RectTransform>().sizeDelta);
+            }
+            else
+            {
+                Recount(m_startCount);
+                Resize(m_startCellSize);
+            }
         }
 
         private void Update()
         {
             if (_forceScroll) return; //强制滚动时不进行任何处理
 
-            var velocity = m_scollRect.velocity.magnitude;
+            var velocity = m_scrollRect.velocity.magnitude;
             if (!Mathf.Approximately(_lastVelocity, velocity))
             {
                 if (_lastVelocity == 0)
@@ -94,7 +125,7 @@ namespace NonsensicalKit.UGUI.Table
             if (_input.IsMouseLeftButtonHold) return; //鼠标正在操作时不进行主动运动
             if (velocity > m_speedThreshold) return; //惯性滑动时不进行主动运动
             _content.anchoredPosition = newPos;
-            m_scollRect.velocity = Vector2.zero; //将速度归零防止抖动
+            m_scrollRect.velocity = Vector2.zero; //将速度归零防止抖动
         }
 
         public void GoToX(int xIndex)
@@ -205,8 +236,8 @@ namespace NonsensicalKit.UGUI.Table
 
         public void Recount(Vector2Int newCount)
         {
-            m_scollRect.horizontal = newCount.x != 1;
-            m_scollRect.vertical = newCount.y != 1;
+            m_scrollRect.horizontal = newCount.x != 1;
+            m_scrollRect.vertical = newCount.y != 1;
             _crtCount = newCount;
             CheckIndex();
             Init();
@@ -339,16 +370,28 @@ namespace NonsensicalKit.UGUI.Table
             m_yCanMinus.Invoke(_crtIndex.y > 0);
         }
 
+        private bool _initFlag;
+
         private void Init()
+        {
+            if (!_initFlag)
+            {
+                _initFlag = true;
+                StartCoroutine(InitCor());
+            }
+        }
+
+        private IEnumerator InitCor()
         {
             LayoutGroup group = _content.GetComponent<LayoutGroup>();
             if (group == null)
             {
                 Debug.LogError("未挂载布局组组件");
                 enabled = false;
-                return;
+                yield break;
             }
 
+            yield return new WaitForEndOfFrame();
             var zeroOne = new Vector2(0, 1); //本组件默认从左上到右下的阅读顺序，默认锚定左上角，此时实际位置的x使用负值，y使用正值
             _content.pivot = zeroOne;
             _content.anchorMin = zeroOne;
@@ -379,7 +422,7 @@ namespace NonsensicalKit.UGUI.Table
                     {
                         Debug.LogError("未挂载内置的布局组组件");
                         enabled = false;
-                        return;
+                        yield break;
                     }
                 }
             }
@@ -388,8 +431,8 @@ namespace NonsensicalKit.UGUI.Table
             float mainWidth = _crtCellSize.x * _crtCount.x + _spacing.x * (_crtCount.x - 1);
             float mainHeight = _crtCellSize.y * _crtCount.y + _spacing.y * (_crtCount.y - 1);
 
-            float viewportWidth = m_scollRect.viewport.rect.width;
-            float viewportHeight = m_scollRect.viewport.rect.height;
+            float viewportWidth = m_scrollRect.viewport.rect.width;
+            float viewportHeight = m_scrollRect.viewport.rect.height;
 
             float newLeft = m_viewportAnchors.x * viewportWidth - m_cellAnchors.x * _crtCellSize.x;
             float newTop = m_viewportAnchors.y * viewportHeight - m_cellAnchors.y * _crtCellSize.y;
@@ -412,6 +455,8 @@ namespace NonsensicalKit.UGUI.Table
             //计算新的位置
             _content.anchoredPosition = new Vector2(-GetCrtHorizontalPos(), GetCrtVerticalPos());
             CheckIndex();
+            
+            _initFlag = false;
         }
 
         private IEnumerator CorScrollTo(Vector2Int index)

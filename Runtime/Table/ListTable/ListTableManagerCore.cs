@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NonsensicalKit.Core.Log;
 using UnityEngine;
@@ -59,7 +60,7 @@ namespace NonsensicalKit.UGUI.Table
         protected override void Awake()
         {
             base.Awake();
-            Init();
+            InitListTable();
         }
 
         public void SetData(IEnumerable<TElementData> data)
@@ -69,7 +70,7 @@ namespace NonsensicalKit.UGUI.Table
 
         public virtual TListElement Append(TElementData appendElementData)
         {
-            Init();
+            InitListTable();
             ElementData.Add(appendElementData);
 
             TListElement crtElement = GetElement(ElementData.Count - 1);
@@ -105,7 +106,7 @@ namespace NonsensicalKit.UGUI.Table
 
         public virtual bool Delete(int index)
         {
-            Init();
+            InitListTable();
 
             var deleteElement = Elements[index];
             if (!Elements.Contains(deleteElement))
@@ -183,6 +184,10 @@ namespace NonsensicalKit.UGUI.Table
             UpdateUI();
         }
 
+        /// <summary>
+        /// 直接使用链表时不会克隆，引用关系需注意
+        /// </summary>
+        /// <param name="data"></param>
         protected virtual void UpdateUI(List<TElementData> data)
         {
             if (data == null)
@@ -199,7 +204,7 @@ namespace NonsensicalKit.UGUI.Table
 
         protected virtual void UpdateUI()
         {
-            Init();
+            InitListTable();
             int dataCount = ElementData.Count;
 
             //应用数据链表
@@ -227,7 +232,13 @@ namespace NonsensicalKit.UGUI.Table
             
         }
 
+        [Obsolete("use InitListTable")]
         protected void Init()
+        {
+            InitListTable();
+        }
+        
+        protected void InitListTable()
         {
             if (InitFlag)
             {

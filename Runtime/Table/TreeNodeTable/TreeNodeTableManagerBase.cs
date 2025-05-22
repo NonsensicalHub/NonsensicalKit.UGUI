@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NonsensicalKit.Tools.ObjectPool;
-using NonsensicalKit.UGUI;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -15,12 +14,6 @@ namespace NonsensicalKit.UGUI.Table
         public void MoveSameLevel(TreeNodeTableElementBase<TElementData> ne, TreeNodeTableElementBase<TElementData> newParent, bool isTop);
     }
 
-    /// <summary>
-    /// 默认使用Group的第一个子物体作为预制体
-    /// 当勾选_specialTop时，使用第一个子物体作为顶节点预制体，第二个子物体作为其余节点预制体
-    /// </summary>
-    /// <typeparam name="TNodeElement"></typeparam>
-    /// <typeparam name="TElementData"></typeparam>
     public abstract class TreeNodeTableManagerBase<TNodeElement, TElementData> : NonsensicalUI, ITreeNodeTableManager<TElementData>
         where TNodeElement : TreeNodeTableElementBase<TElementData>
         where TElementData : class, ITreeNodeClass<TElementData>
@@ -183,7 +176,7 @@ namespace NonsensicalKit.UGUI.Table
 
         protected virtual void Fold(TNodeElement ne, bool check)
         {
-            if (check && ne.ElementData.IsFold == true)
+            if (check && ne.ElementData.IsFold)
             {
                 return;
             }
@@ -197,9 +190,9 @@ namespace NonsensicalKit.UGUI.Table
 
             while (elements.Count > 0)
             {
-                TElementData crtED = elements.Pop();
+                TElementData crtData = elements.Pop();
 
-                var childs = crtED.Children;
+                var childs = crtData.Children;
                 foreach (var item in childs)
                 {
                     _levels.Remove(item.Level);
@@ -235,15 +228,15 @@ namespace NonsensicalKit.UGUI.Table
 
             while (elements.Count > 0)
             {
-                TElementData crtED = elements.Pop();
+                TElementData crtData = elements.Pop();
 
-                int setIndex = crtED.Belong.transform.GetSiblingIndex();
-                foreach (var item in crtED.Children)
+                int setIndex = crtData.Belong.transform.GetSiblingIndex();
+                foreach (var item in crtData.Children)
                 {
                     GameObject crtChild = NewElement(item.Level);
                     crtChild.transform.SetSiblingIndex(++setIndex);
-                    TNodeElement childNE = crtChild.GetComponent<TNodeElement>();
-                    childNE.SetValue(item);
+                    TNodeElement childNode = crtChild.GetComponent<TNodeElement>();
+                    childNode.SetValue(item);
                     _levels.Add(item.Level);
                     if (item.IsFold == false)
                     {

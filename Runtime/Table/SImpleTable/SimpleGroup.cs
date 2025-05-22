@@ -42,15 +42,7 @@ namespace NonsensicalKit.UGUI.Table
             int baseNum = _activeObjects.Count;
             for (int i = 0; i < count; i++)
             {
-                GameObject newObj;
-                if (_inactiveObjects.Count > 0)
-                {
-                    newObj = _inactiveObjects.Dequeue();
-                }
-                else
-                {
-                    newObj = Instantiate(m_prefab, m_group.transform, false);
-                }
+                var newObj = _inactiveObjects.Count > 0 ? _inactiveObjects.Dequeue() : Instantiate(m_prefab, m_group.transform, false);
 
                 newObj.SetActive(true);
                 _activeObjects.Enqueue(newObj);

@@ -76,6 +76,9 @@ namespace NonsensicalKit.UGUI.Table
         }
     }
 
+    /// <summary>
+    /// 表格行主序
+    /// </summary>
     public class ScrollTable : ScrollRect
     {
         [SerializeField] private List<float> m_columnWidth;
