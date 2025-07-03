@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using NonsensicalKit.Core.Log;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI
@@ -16,15 +18,28 @@ namespace NonsensicalKit.UGUI
         public void AddToGroup(ToggleButton tb)
         {
             _toggleButtons.Add(tb);
-            if (_crtTb != null)
-            {
-                tb.SetState(false);
-            }
 
-            if (!m_allowAllOff && _crtTb == null)
+            if (tb.IsOn)
             {
-                tb.SetState(true);
-                _crtTb = tb;
+                if (_crtTb == null)
+                {
+                    _crtTb = tb;
+                }
+                else
+                {
+                    tb.SetState(false);
+                }
+            }
+        }
+
+        private void Start()
+        {
+            if (_toggleButtons.Count != 0)
+            {
+                if (!m_allowAllOff && _crtTb == null)
+                {
+                    Switch(_toggleButtons[0], true);
+                }
             }
         }
 
@@ -37,7 +52,14 @@ namespace NonsensicalKit.UGUI
                 {
                     if (item != tb)
                     {
-                        item.IsOn = false;
+                        try
+                        {
+                            item.IsOn = false;
+                        }
+                        catch (Exception e)
+                        {
+                            LogCore.Warning("ToggleButtonGroup Switch Error" + e.Message);
+                        }
                     }
                 }
 

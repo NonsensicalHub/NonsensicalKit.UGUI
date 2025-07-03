@@ -10,7 +10,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
 {
     public class CreateListTable : EditorWindow
     {
-        [MenuItem("Assets/Create/NonsensicalKit/UGUI/CreateListTable", false, 100)]
+        [MenuItem("Assets/Create/NonsensicalKit/UGUI/CreateListTable", false, -100)]
         public static void ShowWindow()
         {
             var crtPath = AssetDatabase.GetAssetPath(Selection.activeObject);

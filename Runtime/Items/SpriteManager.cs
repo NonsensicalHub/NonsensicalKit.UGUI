@@ -16,12 +16,6 @@ namespace NonsensicalKit.UGUI
         [SerializeField] private bool m_autoDestroy;
         private readonly Dictionary<string, SpriteInfo> _crtSprites = new();
 
-        private void Update()
-        {
-            UnloadUnused();
-            enabled = false;
-        }
-
         public void TrySetSprite(string spriteName, GetSpriteHandle spriteCreateMethod)
         {
             if (_crtSprites.TryGetValue(spriteName, out var sprite))
@@ -157,7 +151,7 @@ namespace NonsensicalKit.UGUI
                 sprite.UseCount--;
                 if (m_autoDestroy)
                 {
-                    enabled = true;
+                    UnloadUnused();
                 }
             }
         }
