@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using NaughtyAttributes;
 using NonsensicalKit.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,10 +9,12 @@ using UnityEngine.UI;
 namespace NonsensicalKit.UGUI.SimpleSignalControl
 {
     [RequireComponent(typeof(Toggle))]
-    public class SendStringSignalToggle : NonsensicalMono
+    public class SendSignalToggle : NonsensicalMono
     {
         [SerializeField] private string m_signal;
-        [SerializeField] private string m_message;
+        [SerializeField] private string m_valueName;
+        [SerializeField] private bool m_sendOnStart;
+
         private Toggle _togSelf;
 
         private void Awake()
@@ -21,10 +26,10 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
             }
         }
 
-        public void SetSignalAndMessage(string newSignal, string newMessage)
+        private void Start()
         {
-            m_signal = newSignal;
-            m_message = newMessage;
+            Publish(m_signal, _togSelf.isOn);
+            IOCC.Set(m_valueName,_togSelf.isOn);
         }
 
         public void SetSignal(string newSignal)
@@ -32,18 +37,10 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
             m_signal = newSignal;
         }
 
-        public void SetMessage(string newMessage)
+        private void SendSignal(bool value)
         {
-            m_message = newMessage;
-        }
-
-        private void SendSignal(bool isOn)
-        {
-            if (isOn)
-            {
-                Publish(m_signal, m_message);
-                PublishWithID(m_signal, m_message);
-            }
+            Publish(m_signal, value);
+            IOCC.Set(m_valueName,value);
         }
     }
 }
