@@ -50,7 +50,7 @@ namespace NonsensicalKit.UGUI.Table
         [SerializeField] protected float m_left;
         [SerializeField] protected bool m_autoResize;
         [SerializeField] protected Vector2 m_spacing;
-        [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize;
+        [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize=new Vector2(100,100);
         [SerializeField] [Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
         [SerializeField] [Tooltip("忽略开头对象")] protected bool m_ignoreHead = false;
 
@@ -312,6 +312,11 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         private void InternalUpdateData()
         {
+            if (this==null||ItemCountFunc==null)
+            {
+                //代表已经被销毁仍然在协程中试图执行更新
+                return;
+            }
             int newDataCount = ItemCountFunc();
 
             if (_managedItems != null)

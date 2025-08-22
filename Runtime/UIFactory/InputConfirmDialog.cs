@@ -66,8 +66,8 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         private void Awake()
         {
-            m_btn_leftButton.onClick.AddListener(LeftButtonClick);
-            m_btn_rightButton.onClick.AddListener(RightButtonClick);
+            m_btn_leftButton?.onClick.AddListener(LeftButtonClick);
+            m_btn_rightButton?.onClick.AddListener(RightButtonClick);
         }
 
         public void SetArg(object arg)
@@ -81,9 +81,20 @@ namespace NonsensicalKit.UGUI.UIFactory
             }
 
             m_ipf_input.text = _crtConfirmInfo.OldString;
-            m_txt_message.text = _crtConfirmInfo.Message;
-            m_txt_leftButton.text = _crtConfirmInfo.LeftButtonText;
-            m_txt_rightButton.text = _crtConfirmInfo.RightButtonText;
+            if (m_txt_message != null)
+            {
+                m_txt_message.text = _crtConfirmInfo.Message;
+            }
+
+            if (m_txt_leftButton != null)
+            {
+                m_txt_leftButton.text = _crtConfirmInfo.LeftButtonText;
+            }
+
+            if (m_txt_rightButton != null)
+            {
+                m_txt_rightButton.text = _crtConfirmInfo.RightButtonText;
+            }
         }
 
         private void LeftButtonClick()

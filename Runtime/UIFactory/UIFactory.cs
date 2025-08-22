@@ -15,7 +15,7 @@ namespace NonsensicalKit.UGUI.UIFactory
         [SerializeField] private FactoryUIPrefabSetting[] m_prefabs;
         [SerializeField] private Canvas m_canvas;
 
-        public bool IsReady { get; set; }
+        public bool IsReady { get; private set; }
 
         public Action InitCompleted { get; set; }
 
@@ -53,6 +53,11 @@ namespace NonsensicalKit.UGUI.UIFactory
         private void Init()
         {
             _pools = new Dictionary<string, GameObjectPool>();
+            if (m_prefabs==null)
+            {
+                //自动生成时为null
+                return;
+            }
             foreach (var item in m_prefabs)
             {
                 var key = string.IsNullOrEmpty(item.Alias) ? item.Type : item.Alias;
