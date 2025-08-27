@@ -549,7 +549,7 @@ namespace NonsensicalKit.UGUI.Table
 
                     for (int i = _criticalItemIndex[CriticalItemType.LAST_SHOW] + 1, count = oldLast; i <= count; i++)
                     {
-                        if (_managedItems[i] != null)
+                        if (i>=0&&i<_managedItems.Length&& _managedItems[i] != null)
                         {
                             RecycleOldItem(i, _managedItems[i]);
                             _managedItems[i] = null;

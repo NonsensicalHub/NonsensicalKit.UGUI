@@ -125,6 +125,7 @@ namespace NonsensicalKit.UGUI.Table
         {
             UpdateFunc = func;
         }
+
         public virtual void SetItemCountFunc(Func<int> func)
         {
             ItemCountFunc = func;
@@ -367,13 +368,13 @@ namespace NonsensicalKit.UGUI.Table
             _dataCount = newDataCount;
 
             ResetCriticalItems();
-            
+
             //手动更新时需要刷新现在显示的对象
             for (int i = _criticalItemIndex[CriticalItemType.FIRST_SHOW], count = _criticalItemIndex[CriticalItemType.LAST_SHOW];
                  i <= count;
                  i++)
             {
-                if (_managedItems[i].Item!=null)
+                if (i >= 0 && i < _managedItems.Count && _managedItems[i].Item != null)
                 {
                     UpdateFunc(i, _managedItems[i].Item);
                 }
