@@ -1,4 +1,5 @@
 using System;
+using NonsensicalKit.Core;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -14,6 +15,7 @@ namespace NonsensicalKit.UGUI
         [SerializeField] private bool m_isOn;
         [SerializeField] private ToggleButtonGroup m_group;
         [SerializeField] private bool m_invokeOnStart = true;
+        [SerializeField] private string m_signal;
 
         public bool IsOn
         {
@@ -32,6 +34,7 @@ namespace NonsensicalKit.UGUI
 
                     m_isOn = value;
                     m_OnValueChanged?.Invoke(m_isOn);
+                    IOCC.Publish(m_signal, m_isOn);
                     UpdateUI();
                 }
             }

@@ -50,7 +50,7 @@ namespace NonsensicalKit.UGUI.Table
         [SerializeField] protected float m_left;
         [SerializeField] protected bool m_autoResize;
         [SerializeField] protected Vector2 m_spacing;
-        [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize=new Vector2(100,100);
+        [SerializeField] [Tooltip("默认item尺寸")] protected Vector2 m_itemSize = new Vector2(100, 100);
         [SerializeField] [Tooltip("方向")] protected ItemLayoutType m_layoutType = ItemLayoutType.Vertical;
         [SerializeField] [Tooltip("忽略开头对象")] protected bool m_ignoreHead = false;
 
@@ -96,7 +96,7 @@ namespace NonsensicalKit.UGUI.Table
             }
         }
 
-        
+
         private void InitState()
         {
             _initialized = false;
@@ -150,7 +150,6 @@ namespace NonsensicalKit.UGUI.Table
                 ItemRecycleFunc = recycleFunc;
             }
         }
-
 
         /// <summary>
         /// 更新数据,强制更新所有item的rect
@@ -312,11 +311,12 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         private void InternalUpdateData()
         {
-            if (this==null||ItemCountFunc==null)
+            if (this == null || ItemCountFunc == null)
             {
                 //代表已经被销毁仍然在协程中试图执行更新
                 return;
             }
+
             int newDataCount = ItemCountFunc();
 
             if (_managedItems != null)
@@ -410,7 +410,19 @@ namespace NonsensicalKit.UGUI.Table
                     break;
             }
 
+
             ResetCriticalItems();
+
+            //手动更新时需要刷新现在显示的对象
+            for (int i = _criticalItemIndex[CriticalItemType.FIRST_SHOW], count = _criticalItemIndex[CriticalItemType.LAST_SHOW];
+                 i <= count;
+                 i++)
+            {
+                if (_managedItems[i]!=null)
+                {
+                    UpdateFunc(i, _managedItems[i]);
+                }
+            }
 
             _willUpdateData = false;
         }
@@ -429,7 +441,6 @@ namespace NonsensicalKit.UGUI.Table
 
             var oldFirst = _criticalItemIndex[CriticalItemType.FIRST_SHOW];
             var oldLast = _criticalItemIndex[CriticalItemType.LAST_SHOW];
-
 
             //算出当前中心的index,之后向两侧依次判断是否能显示
             int midIndex;
@@ -514,6 +525,7 @@ namespace NonsensicalKit.UGUI.Table
                 //清理之前显示但现在不显示的部分
                 if (oldFirst > _criticalItemIndex[CriticalItemType.LAST_SHOW] || oldLast < _criticalItemIndex[CriticalItemType.FIRST_SHOW])
                 {
+                    //完全不重叠
                     for (int i = oldFirst, count = oldLast; i <= count; i++)
                     {
                         if (_managedItems[i] != null)
@@ -525,6 +537,7 @@ namespace NonsensicalKit.UGUI.Table
                 }
                 else
                 {
+                    //部分重叠
                     for (int i = oldFirst, count = _criticalItemIndex[CriticalItemType.FIRST_SHOW] - 1; i <= count; i++)
                     {
                         if (_managedItems[i] != null)
@@ -706,7 +719,7 @@ namespace NonsensicalKit.UGUI.Table
             {
                 _criticalItemIndex[i] = 0;
             }
-            
+
             _initialized = false;
             content.pivot = Vector2.up; //(0,1),左上角
             content.sizeDelta = Vector2.zero;
@@ -714,7 +727,7 @@ namespace NonsensicalKit.UGUI.Table
             _managedItems = null;
             _itemPool.Clear();
         }
-        
+
         /// <summary>
         /// 初始化对象池
         /// </summary>

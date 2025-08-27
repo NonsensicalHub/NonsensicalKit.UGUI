@@ -97,6 +97,11 @@ namespace NonsensicalKit.UGUI.UIFactory
             }
         }
 
+        public void Close()
+        {
+            Pool.Store(gameObject);
+        }
+
         private void LeftButtonClick()
         {
             if (_crtConfirmInfo.LeftButtonClick == null)
