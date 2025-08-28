@@ -30,14 +30,14 @@ namespace NonsensicalKit.UGUI.UIFactory
             this.RightButtonClick = rightButtonClick;
         }
 
-        public InputConfirmInfo(string message, string oldString, InputConfirmHandle leftButtonClick)
+        public InputConfirmInfo(string message, string oldString, InputConfirmHandle rightButtonClick)
         {
             this.Message = message;
             this.OldString = oldString;
-            this.LeftButtonText = "确认";
-            this.RightButtonText = "取消";
-            this.LeftButtonClick = leftButtonClick;
-            this.RightButtonClick = null;
+            this.LeftButtonText = "取消";
+            this.RightButtonText = "确认";
+            this.LeftButtonClick = null;
+            this.RightButtonClick = rightButtonClick;
         }
     }
 
