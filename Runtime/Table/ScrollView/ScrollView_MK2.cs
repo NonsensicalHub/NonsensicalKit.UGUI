@@ -44,6 +44,7 @@ namespace NonsensicalKit.UGUI.Table
 
         public const int DIRECTION_FLAG = 1; // 0001
 
+        [SerializeField] protected bool m_fullMode;
         [SerializeField] protected bool m_verticalMid;
         [SerializeField] protected float m_top;
         [SerializeField] protected bool m_horizonMid;
@@ -140,7 +141,6 @@ namespace NonsensicalKit.UGUI.Table
             base.OnEndDrag(eventData);
             IsDragging = false;
         }
-
 
         public void SetItemGetAndRecycleFunc(Func<int, RectTransform> getFunc, Action<int, RectTransform> recycleFunc)
         {
@@ -418,7 +418,7 @@ namespace NonsensicalKit.UGUI.Table
                  i <= count;
                  i++)
             {
-                if (_managedItems[i]!=null)
+                if (i >= 0 && i < _managedItems.Length && _managedItems[i] != null)
                 {
                     UpdateFunc(i, _managedItems[i]);
                 }
@@ -540,7 +540,7 @@ namespace NonsensicalKit.UGUI.Table
                     //部分重叠
                     for (int i = oldFirst, count = _criticalItemIndex[CriticalItemType.FIRST_SHOW] - 1; i <= count; i++)
                     {
-                        if (_managedItems[i] != null)
+                        if (i >= 0 && i < _managedItems.Length && _managedItems[i] != null)
                         {
                             RecycleOldItem(i, _managedItems[i]);
                             _managedItems[i] = null;
@@ -549,7 +549,7 @@ namespace NonsensicalKit.UGUI.Table
 
                     for (int i = _criticalItemIndex[CriticalItemType.LAST_SHOW] + 1, count = oldLast; i <= count; i++)
                     {
-                        if (i>=0&&i<_managedItems.Length&& _managedItems[i] != null)
+                        if (i >= 0 && i < _managedItems.Length && _managedItems[i] != null)
                         {
                             RecycleOldItem(i, _managedItems[i]);
                             _managedItems[i] = null;
@@ -938,9 +938,10 @@ namespace NonsensicalKit.UGUI.Table
              *    0 ------- 3
              *
              */
-            Vector3[] viewWorldCorners = new Vector3[4];
 
+            Vector3[] viewWorldCorners = new Vector3[4];
             viewRect.GetWorldCorners(viewWorldCorners);
+
             Vector3[] rectCorners = new Vector3[2];
 
             rectCorners[0] = content.transform.InverseTransformPoint(viewWorldCorners[0]); //左下角
@@ -952,15 +953,25 @@ namespace NonsensicalKit.UGUI.Table
         private Rect GetItemRectByIndex(int index)
         {
             Vector2 pos = Vector2.zero;
+            var itemSize = m_itemSize;
+
             switch (m_layoutType)
             {
                 case ItemLayoutType.Vertical:
+                    if (m_fullMode)
+                    {
+                        itemSize.x=viewport.rect.width;
+                    }
                     pos.x = 0;
                     pos.y = -(_headSize + m_top + (index + 1) * m_itemSize.y + index * m_spacing.y);
                     break;
                 case ItemLayoutType.Horizontal:
+                    if (m_fullMode)
+                    {
+                        itemSize.y=viewport.rect.height;
+                    }
                     pos.x = _headSize + m_left + (index + 1) * m_itemSize.x + index * m_itemSize.x;
-                    pos.y = -m_itemSize.y;
+                    pos.y = -itemSize.y;
                     break;
                 case ItemLayoutType.VerticalThenHorizontal:
                 {
@@ -980,7 +991,7 @@ namespace NonsensicalKit.UGUI.Table
                     break;
             }
 
-            return new Rect(pos, m_itemSize);
+            return new Rect(pos, itemSize);
         }
     }
 }

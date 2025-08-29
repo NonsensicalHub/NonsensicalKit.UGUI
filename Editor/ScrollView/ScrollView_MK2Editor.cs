@@ -8,6 +8,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
     [CustomEditor(typeof(ScrollView_MK2))]
     public class ScrollView_MK2Editor : ScrollRectEditor
     {
+        private SerializedProperty _fullMode;
         private SerializedProperty _verticalMid;
         private SerializedProperty _top;
         private SerializedProperty _horizonMid;
@@ -41,6 +42,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
 
         protected override void OnEnable()
         {
+            _fullMode = serializedObject.FindProperty("m_fullMode");
             _verticalMid = serializedObject.FindProperty("m_verticalMid");
             _top = serializedObject.FindProperty("m_top");
             _horizonMid = serializedObject.FindProperty("m_horizonMid");
@@ -82,6 +84,7 @@ namespace NonsensicalKit.UGUI.Editor.Table
 
         protected virtual void DrawBaseConfig()
         {
+            EditorGUILayout.PropertyField(_fullMode);
             EditorGUILayout.PropertyField(_verticalMid);
             if (_verticalMid.boolValue == false)
             {
