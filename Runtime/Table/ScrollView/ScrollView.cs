@@ -77,7 +77,8 @@ namespace NonsensicalKit.UGUI.Table
         protected ItemLayoutType LayoutType { get { return m_layoutType; } }
 
         protected int[] _criticalItemIndex = new int[4]; // 只保存4个临界index
-
+        
+        private bool _waitViewPortResize = false; //是否正在等待viewPort初始化
         private int _dataCount = 0; //缓存的当前数据数量，用于减少获取数量方法的调用次数
         private List<ScrollItemInfo> _managedItems = new List<ScrollItemInfo>(); //管理所有的信息
         private Rect _viewRectInContent; //viewPort一开始在content坐标系中的相对rect，用于计算item是否应该被显示
@@ -85,18 +86,7 @@ namespace NonsensicalKit.UGUI.Table
 
         private bool _initialized = false; //是否进行过初始化
         private int _willUpdateData = 0; //是否将要更新数据
-
-        protected override void Awake()
-        {
-            base.Awake();
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            ResetState();
-        }
-
+        
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -109,11 +99,6 @@ namespace NonsensicalKit.UGUI.Table
         public void ResetState()
         {
             _initialized = false;
-            content.pivot = Vector2.up; //(0,1),左上角
-            content.sizeDelta = Vector2.zero;
-            content.anchoredPosition = Vector2.zero;
-            _managedItems = new List<ScrollItemInfo>();
-            _itemPool?.Clear();
         }
 
         public virtual void SetTemplate(RectTransform itemTemplate)
@@ -182,6 +167,17 @@ namespace NonsensicalKit.UGUI.Table
         {
             if (!_initialized)
             {
+                if (viewRect.rect.width == 0)
+                {
+                    if (!_waitViewPortResize)
+                    {
+                        _waitViewPortResize = true;
+                        StartCoroutine(WaitViewPortResize());
+                    }
+
+                    return;
+                }
+
                 InitScrollView();
             }
 
@@ -252,6 +248,10 @@ namespace NonsensicalKit.UGUI.Table
         /// <returns></returns>
         public float GetScrollValue(int index, float pos)
         {
+            if (!_initialized)
+            {
+                return 0;
+            }
             index = Mathf.Clamp(index, 0, _dataCount - 1);
             EnsureItemRect(index);
             Rect r = _managedItems[index].Rect;
@@ -283,6 +283,15 @@ namespace NonsensicalKit.UGUI.Table
             int dir = (int)LayoutType & DIRECTION_FLAG;
             var value = GetScrollValue(index, pos);
             SetNormalizedPosition(value, dir);
+        }
+        private IEnumerator WaitViewPortResize()
+        {
+            while (viewRect.rect.width == 0)
+            {
+                yield return null;
+            }
+
+            UpdateData();
         }
 
         /// <summary>
@@ -707,6 +716,12 @@ namespace NonsensicalKit.UGUI.Table
         private void InitScrollView()
         {
             _initialized = true;
+
+            _managedItems.Clear();
+            _itemPool?.Clear();
+             content.pivot = Vector2.up; //(0,1),左上角
+             content.sizeDelta = Vector2.zero;
+             content.anchoredPosition = Vector2.zero;
 
             // 根据设置来控制原ScrollRect的滚动方向
             int dir = (int)LayoutType & DIRECTION_FLAG;
