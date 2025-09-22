@@ -88,7 +88,7 @@ namespace NonsensicalKit.UGUI.Table
             go.transform.SetParent(m_group);
         }
 
-        protected virtual void OnFirstInit(GameObjectPoolMk2 pool, GameObject go)
+        protected virtual void OnFirstInit(GameObjectPool pool, GameObject go)
         {
             go.GetComponent<TreeNodeTableElementBase<TElementData>>().LevelDistance = m_levelDistance;
             go.GetComponent<TreeNodeTableElementBase<TElementData>>().Manager = this;

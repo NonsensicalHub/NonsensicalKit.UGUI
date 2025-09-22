@@ -1,4 +1,4 @@
-using NonsensicalKit.Core;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -7,7 +7,7 @@ namespace NonsensicalKit.UGUI
     /// <summary>
     /// 使UI跟随目标对象移动
     /// </summary>
-    public class FollowGameobject : MonoBehaviour
+    public class FollowGameObject : MonoBehaviour
     {
         [SerializeField] private Transform m_target;
 
@@ -23,8 +23,8 @@ namespace NonsensicalKit.UGUI
 
         [SerializeField] private bool m_scaleByDistance;
 
-        [SerializeField] private float m_normalDistance = 1;
-        [SerializeField] private UpdateMethod m_updateMethod;
+        [SerializeField] [ShowIf(nameof(m_scaleByDistance))]
+        private float m_normalDistance = 1;
 
         public bool Back { get; private set; }
         public Vector2 Offset { get; set; }
@@ -46,28 +46,14 @@ namespace NonsensicalKit.UGUI
             _rectTransformSelf = transform.GetComponent<RectTransform>();
         }
 
-        private void Update()
+        private void OnEnable()
         {
-            if (m_updateMethod == UpdateMethod.Update)
-            {
-                Follow();
-            }
+            Canvas.willRenderCanvases += Follow;
         }
 
-        private void FixedUpdate()
+        private void OnDisable()
         {
-            if (m_updateMethod == UpdateMethod.FixedUpdate)
-            {
-                Follow();
-            }
-        }
-
-        private void LateUpdate()
-        {
-            if (m_updateMethod == UpdateMethod.LateUpdate)
-            {
-                Follow();
-            }
+            Canvas.willRenderCanvases -= Follow;
         }
 
         private void Follow()
@@ -82,7 +68,8 @@ namespace NonsensicalKit.UGUI
                 _targetPosition = m_target.position;
                 _cameraPosition = m_mainCamera.transform.position;
                 _cameraRotation = m_mainCamera.transform.rotation;
-                if (_targetPosition != _lastTargetPostion || _cameraPosition != _lastCameraPostion || _cameraRotation != _lastCameraRotation)
+                if (_targetPosition != _lastTargetPostion || _cameraPosition != _lastCameraPostion ||
+                    _cameraRotation != _lastCameraRotation)
                 {
                     _needRefresh = true;
                 }
@@ -102,11 +89,13 @@ namespace NonsensicalKit.UGUI
                         transform.localScale = Vector3.one * m_scale;
                     }
 
-                    Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position) + new Vector3(Offset.x, Offset.y, 0);
+                    Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position) +
+                                  new Vector3(Offset.x, Offset.y, 0);
                     Back = pos.z < 0;
                     if (!Back)
                     {
-                        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos, m_renderCamera, out Vector3 worldPoint))
+                        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos,
+                                m_renderCamera, out Vector3 worldPoint))
                         {
                             transform.position = worldPoint;
                         }
@@ -115,6 +104,8 @@ namespace NonsensicalKit.UGUI
                     _lastTargetPostion = _targetPosition;
                     _lastCameraPostion = _cameraPosition;
                     _lastCameraRotation = _cameraRotation;
+
+                    _needRefresh = false;
                 }
             }
         }

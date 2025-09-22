@@ -63,7 +63,7 @@ namespace NonsensicalKit.UGUI.Table
             }
         }
 
-        public void OnFirstInit(ComponentPoolMk3<T> pool, T obj)
+        public void OnFirstInit(ComponentPool<T> pool, T obj)
         {
             obj.transform.SetParent(_parent, false);
             obj.gameObject.SetActive(true);
