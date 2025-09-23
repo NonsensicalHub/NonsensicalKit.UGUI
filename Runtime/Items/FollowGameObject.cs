@@ -40,6 +40,7 @@ namespace NonsensicalKit.UGUI
         private Quaternion _cameraRotation;
 
         private bool _needRefresh;
+        private int _skip=6;
 
         private void Awake()
         {
@@ -58,6 +59,12 @@ namespace NonsensicalKit.UGUI
 
         private void Follow()
         {
+            if (_skip>0)
+            {
+                //一开始有可能遇到Canvas在初始化，等待数帧后再跟随
+                _skip--;
+                return;
+            }
             if (m_mainCamera == null)
             {
                 m_mainCamera = Camera.main;
