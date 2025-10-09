@@ -139,7 +139,19 @@ namespace NonsensicalKit.UGUI
             }
         }
 
-        protected void SwitchSelf(bool immediately = true)
+        protected void SwitchSelf()
+        {
+            if (IsShow)
+            {
+                CloseSelf(true);
+            }
+            else
+            {
+                OpenSelf(true);
+            }
+        }
+
+        protected void SwitchSelf(bool immediately)
         {
             if (IsShow)
             {
