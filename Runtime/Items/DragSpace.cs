@@ -7,6 +7,8 @@ namespace NonsensicalKit.UGUI
 {
     public class DragSpace : MonoBehaviour, IBeginDragHandler, IDragHandler
     {
+        [SerializeField] private PointerEventData.InputButton m_specifyButton = PointerEventData.InputButton.Left;
+
         /// <summary>
         /// 需要移动的对象
         /// </summary>
@@ -64,6 +66,8 @@ namespace NonsensicalKit.UGUI
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != m_specifyButton) return;
+            
             if (m_boundaryRect == null)
             {
                 m_ensureInBoundary = false;
@@ -76,6 +80,7 @@ namespace NonsensicalKit.UGUI
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != m_specifyButton) return;
             RectTransformUtility.ScreenPointToWorldPointInRectangle(m_controlRect, eventData.position, _eventCamera, out var pos);
             if (m_ensureInBoundary)
             {
