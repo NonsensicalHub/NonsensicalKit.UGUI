@@ -37,6 +37,7 @@ namespace NonsensicalKit.UGUI.Setting
         {
             _service = service;
             _service.AddSettingListener(m_settingName, OnSettingChanged);
+            OnSettingChanged(_service.GetSettingValue(m_settingName));
         }
 
         private void OnDropDownChanged(int index)
