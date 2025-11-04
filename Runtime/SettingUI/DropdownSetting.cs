@@ -50,6 +50,7 @@ namespace NonsensicalKit.UGUI.Setting
             else
             {
                 _service.SetSetting(m_settingName, index.ToString());
+                _service.Save();
             }
         }
 
@@ -59,7 +60,7 @@ namespace NonsensicalKit.UGUI.Setting
             {
                 if (i >= 0 && i <= m_values.Length && i != m_dropdown.value)
                 {
-                    _dontInvokeFlag = true;
+                    //_dontInvokeFlag = true;
                     m_dropdown.value = i;
                 }
             }

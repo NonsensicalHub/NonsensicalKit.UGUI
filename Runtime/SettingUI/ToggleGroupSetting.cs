@@ -53,6 +53,7 @@ namespace NonsensicalKit.UGUI.Setting
             {
                 _currentIndex = index;
                 _service.SetSetting(m_settingName, index.ToString());
+                _service.Save();
             }
         }
 
@@ -69,7 +70,7 @@ namespace NonsensicalKit.UGUI.Setting
             {
                 if (i >= 0 && i <= m_values.Length && i != _currentIndex)
                 {
-                    _dontInvokeFlag = true;
+                    //_dontInvokeFlag = true;//测试是不会触发OnToggleOn
                     for (int j = 0; j < m_toggles.Length; j++)
                     {
                         m_toggles[j].isOn = i == j;
