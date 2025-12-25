@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using NonsensicalKit.Core.Service.Config;
-using Unity.Plastic.Newtonsoft.Json;
+using System;
+using Newtonsoft.Json;
 using UnityEngine;
 
-
-[System.Serializable]
+[Serializable]
 public class Icon
 {
     public string Type;
@@ -13,7 +11,7 @@ public class Icon
 }
 
 
-[System.Serializable]
+[Serializable]
 public class IconItemConfig
 {
     public string m_ID;
