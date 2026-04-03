@@ -102,7 +102,7 @@ namespace NonsensicalKit.UGUI.Table
         public Transform CellParent { set => m_cellParent = value; }
         public Transform RowParent { set => m_rowParent = value; }
         public Transform ColumnParent { set => m_columnParent = value; }
-        public Vector2 BorderSize { set => m_borderSize = value; }
+        public Vector2 BorderSize { set => m_borderSize = value; get => m_borderSize;}
 
         public PoolSetting<ScrollTableCell> CellPoolSetting;
         public List<PoolSetting<ScrollTableImage>> ColumnImagePoolSetting;
@@ -152,15 +152,26 @@ namespace NonsensicalKit.UGUI.Table
         /// 设置数据
         /// </summary>
         /// <param name="tableData"></param>
-        public void SetTableData(Array2<string> tableData)
+        /// <param name="columnWidth"></param>
+        /// <param name="rowHeight"></param>
+        public void SetTableData(Array2<string> tableData, List<float> columnWidth = null, List<float> rowHeight = null)
         {
             ClearTable();
             _tableData = tableData;
-            m_columnWidth = new List<float>();
-            m_columnWidth.Add(m_defaultWidth, tableData.m_Length0);
-            m_rowHeight = new List<float>();
-            m_rowHeight.Add(m_defaultHeight, tableData.m_Length1);
+            m_columnWidth = columnWidth ?? new List<float> { { m_defaultWidth, tableData.m_Length0 } };
+            m_rowHeight = rowHeight ?? new List<float> { { m_defaultHeight, tableData.m_Length1 } };
             ReSize();
+        }
+
+        /// <summary>
+        /// 设置默认单元格大小
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void SetDefaultSize(float width, float height)
+        {
+            m_defaultWidth = width;
+            m_defaultHeight = height;
         }
 
         /// <summary>
@@ -291,6 +302,7 @@ namespace NonsensicalKit.UGUI.Table
             {
                 rowPool.Pool.Clear();
             }
+
             _cells.Reset();
             _columns.Reset();
             _rows.Reset();
@@ -609,10 +621,11 @@ namespace NonsensicalKit.UGUI.Table
 
             CellPoolSetting.Pool.Flush();
 
-            for (int i = 0; i < ColumnImagePoolSetting.Count; i++)
+            if (ColumnImagePoolSetting.Count > 0)
             {
                 for (int x = oldTopLeft.x; x <= oldRightBottom.x + 1; x++)
                 {
+                    int i = x % ColumnImagePoolSetting.Count;
                     if (_columns[i, x] != null)
                     {
                         if (x >= newTopLeft.x && x <= newRightBottom.x + 1)
@@ -627,6 +640,7 @@ namespace NonsensicalKit.UGUI.Table
 
                 for (int x = newTopLeft.x; x <= newRightBottom.x + 1; x++)
                 {
+                    int i = x % ColumnImagePoolSetting.Count;
                     if (_columns[i, x] == null)
                     {
                         _columns[i, x] = ColumnImagePoolSetting[i].Pool.New();
@@ -635,13 +649,17 @@ namespace NonsensicalKit.UGUI.Table
                     _columns[i, x].SetState(x, 0);
                 }
 
-                ColumnImagePoolSetting[i].Pool.Flush();
+                foreach (var setting in ColumnImagePoolSetting)
+                {
+                    setting.Pool.Flush();
+                }
             }
 
-            for (int i = 0; i < RowImagePoolSetting.Count; i++)
+            if (RowImagePoolSetting.Count > 0)
             {
                 for (int y = oldTopLeft.y; y <= oldRightBottom.y + 1; y++)
                 {
+                    int i = y % RowImagePoolSetting.Count;
                     if (_rows[i, y] != null)
                     {
                         if (y >= newTopLeft.y && y <= newRightBottom.y + 1)
@@ -656,6 +674,7 @@ namespace NonsensicalKit.UGUI.Table
 
                 for (int y = newTopLeft.y; y <= newRightBottom.y + 1; y++)
                 {
+                    int i = y % RowImagePoolSetting.Count;
                     if (_rows[i, y] == null)
                     {
                         _rows[i, y] = RowImagePoolSetting[i].Pool.New();
@@ -664,7 +683,10 @@ namespace NonsensicalKit.UGUI.Table
                     _rows[i, y].SetState(0, y);
                 }
 
-                RowImagePoolSetting[i].Pool.Flush();
+                foreach (var setting in RowImagePoolSetting)
+                {
+                    setting.Pool.Flush();
+                }
             }
         }
 
