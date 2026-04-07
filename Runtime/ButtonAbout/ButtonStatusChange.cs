@@ -25,6 +25,17 @@ public class ButtonStatusChange : NonsensicalMono
 
     [SerializeField] private UnityEvent m_onResetEvent;
 
+    
+    public string SubscribeCommand
+    {
+        get=>m_subscribeCommand;
+        set=>m_subscribeCommand=value;
+    }
+    public string AutoResetCommand
+    {
+        get=>m_autoResetCommand;
+        set=>m_autoResetCommand=value;
+    }
     private void Reset()
     {
         m_oriObj = transform.GetChild(0).gameObject;
