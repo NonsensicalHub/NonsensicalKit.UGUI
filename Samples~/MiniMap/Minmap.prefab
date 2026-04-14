@@ -517,7 +517,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_resizeEdge: 3
-  m_cursorHotspot: {x: 32, y: 32}
+  m_cursorHotspot: {x: 16, y: 16}
 --- !u!1 &241499000530921517
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,7 +555,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 277.8, y: 136.4}
+  m_AnchoredPosition: {x: 191.6, y: 158.9}
   m_SizeDelta: {x: 35, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &241499000530921514
@@ -773,7 +773,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_resizeEdge: 1
-  m_cursorHotspot: {x: 32, y: 32}
+  m_cursorHotspot: {x: 16, y: 16}
 --- !u!1 &241499001286032476
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,7 +864,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_resizeEdge: 4
-  m_cursorHotspot: {x: 32, y: 32}
+  m_cursorHotspot: {x: 16, y: 16}
 --- !u!1 &241499001525326930
 GameObject:
   m_ObjectHideFlags: 0
@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_resizeEdge: 2
-  m_cursorHotspot: {x: 32, y: 32}
+  m_cursorHotspot: {x: 16, y: 16}
 --- !u!1 &241499001569454012
 GameObject:
   m_ObjectHideFlags: 0
@@ -1091,6 +1091,10 @@ PrefabInstance:
     - target: {fileID: 4937459426000549643, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
       propertyPath: m_startPoint
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4937459426000549643, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
+      propertyPath: m_listeningMapSizeChange
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6119138624379342833, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
       propertyPath: m_Name
@@ -1392,6 +1396,18 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 300
       objectReference: {fileID: 0}
+    - target: {fileID: 6119138626303371843, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
+      propertyPath: m_moveAreas.Array.data[0].MoveArea
+      value: 
+      objectReference: {fileID: 3931062019341154494}
+    - target: {fileID: 6119138626303371843, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
+      propertyPath: m_moveAreas.Array.data[1].MoveArea
+      value: 
+      objectReference: {fileID: 3931062019895564181}
+    - target: {fileID: 6119138626303371843, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
+      propertyPath: m_moveAreas.Array.data[2].MoveArea
+      value: 
+      objectReference: {fileID: 3931062019380172113}
     - target: {fileID: 6119138626303371845, guid: 07a3f0da82d135141bbbb17294361b19, type: 3}
       propertyPath: m_IsActive
       value: 0

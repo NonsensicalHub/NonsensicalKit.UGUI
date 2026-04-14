@@ -27,7 +27,7 @@ public class CoordinateTransformation : NonsensicalMono
         _checkCam = Camera.main;
         CalculateMap();
         _lastSize = m_mapRect.rect.size;
-        if (m_startPoint || m_endPoint)
+        if (m_startPoint == null || m_endPoint == null)
         {
             Debug.LogWarning("世界锚点配置为空,请检查 ");
         }

@@ -21,6 +21,6 @@ MonoBehaviour:
     - Type: Point
       Prefab: {fileID: 4286715308805129031, guid: 4f8fd4896d3ea514aa6a648fafe5fe05, type: 3}
       Path: ICON/point
-    - Type: 
+    - Type: Measure
       Prefab: {fileID: 8893822506548427945, guid: 0b067797dacf6384b86cd428e5c1235d, type: 3}
       Path: ICON/MeasureArea
