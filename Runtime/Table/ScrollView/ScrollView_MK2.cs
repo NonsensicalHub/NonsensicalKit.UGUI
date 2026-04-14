@@ -44,10 +44,11 @@ namespace NonsensicalKit.UGUI.Table
 
         public const int DIRECTION_FLAG = 1; // 0001
 
-        [SerializeField] protected bool m_fullMode;
-        [SerializeField] protected bool m_verticalMid;
+        
+        [SerializeField] [Tooltip("非滚动方向的子元素尺寸铺满")]protected bool m_fullMode;
+        [SerializeField][Tooltip("横向滚动时纵向保持中心")] protected bool m_verticalMid;
         [SerializeField] protected float m_top;
-        [SerializeField] protected bool m_horizonMid;
+        [SerializeField] [Tooltip("纵向滚动时横向保持中心")]protected bool m_horizonMid;
         [SerializeField] protected float m_left;
         [SerializeField] protected bool m_autoResize;
         [SerializeField] protected Vector2 m_spacing;
@@ -318,7 +319,6 @@ namespace NonsensicalKit.UGUI.Table
             }
 
             int newDataCount = ItemCountFunc();
-
             if (_managedItems != null)
             {
                 if (newDataCount != _managedItems.Length)

@@ -499,7 +499,7 @@ namespace NonsensicalKit.UGUI.VisualLogicGraph
     }
 
     /// <summary>
-    /// 存档类接口
+    /// 存档类接口 
     /// </summary>
     /// <typeparam name="TNodeInfo"></typeparam>
     /// <typeparam name="TPointInfo"></typeparam>
