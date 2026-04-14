@@ -9,4 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-基础功能，具体参考README文档
+- 基础功能，具体参考README文档
+
+## [1.0.0] - 2026-4-14
+
+### Removed  
+
+- 去除ButtonAbout相关代码
