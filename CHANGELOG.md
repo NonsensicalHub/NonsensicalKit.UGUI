@@ -34,3 +34,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - 修复示例冲突问题  
+
+## [1.0.3] - 2026-04-28
+
+### Added
+
+- NonsensicalButton 增加双击事件 
+- 指定触发交互按钮
