@@ -40,7 +40,7 @@ namespace NonsensicalKit.UGUI
         private Quaternion _cameraRotation;
 
         private bool _needRefresh;
-        private int _skip=6;
+        private int _skip = 6;
 
         private void Awake()
         {
@@ -68,6 +68,10 @@ namespace NonsensicalKit.UGUI
             if (m_mainCamera == null)
             {
                 m_mainCamera = Camera.main;
+                if (m_mainCamera == null)
+                {
+                    return;
+                }
             }
 
             if (m_target != null)
@@ -120,7 +124,7 @@ namespace NonsensicalKit.UGUI
         public void SetTarget(GameObject newTarget)
         {
             _needRefresh = true;
-            m_target = newTarget.transform;
+            m_target = newTarget == null ? null : newTarget.transform;
         }
 
         public void SetTarget(Transform newTarget)

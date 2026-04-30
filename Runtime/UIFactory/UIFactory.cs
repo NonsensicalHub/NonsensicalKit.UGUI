@@ -32,6 +32,12 @@ namespace NonsensicalKit.UGUI.UIFactory
 
         public GameObject OpenUI(string type, object arg)
         {
+            if (_pools == null || _pools.Count == 0)
+            {
+                LogCore.Warning("UIFactory 尚未配置可用 UI 预制体");
+                return null;
+            }
+
             if (_pools.ContainsKey(type) == false)
             {
                 LogCore.Warning($"未配置类型为{type}的UI");
@@ -41,6 +47,13 @@ namespace NonsensicalKit.UGUI.UIFactory
             var v = _pools[type].New();
 
             IFactoryUI ui = v.GetComponent<IFactoryUI>();
+            if (ui == null)
+            {
+                LogCore.Warning($"类型为{type}的UI实例缺少IFactoryUI实现");
+                v.SetActive(false);
+                return null;
+            }
+
             ui.SetArg(arg);
             return v;
         }
@@ -53,7 +66,7 @@ namespace NonsensicalKit.UGUI.UIFactory
         private void Init()
         {
             _pools = new Dictionary<string, GameObjectPool>();
-            if (m_prefabs==null)
+            if (m_prefabs == null)
             {
                 //自动生成时为null
                 return;
@@ -61,24 +74,29 @@ namespace NonsensicalKit.UGUI.UIFactory
             foreach (var item in m_prefabs)
             {
                 var key = string.IsNullOrEmpty(item.Alias) ? item.Type : item.Alias;
+                if (string.IsNullOrEmpty(key))
+                {
+                    LogCore.Warning("UIFactory 存在空键值配置，已跳过");
+                    continue;
+                }
 
                 if (_pools.ContainsKey(key))
                 {
                     LogCore.Warning($"键值{key} 配置了多次");
-                    return;
+                    continue;
                 }
 
                 if (item.Prefab == null)
                 {
                     LogCore.Warning($"键值为{key}的UI未配置预制体");
-                    return;
+                    continue;
                 }
 
                 IFactoryUI ui = item.Prefab.GetComponent<IFactoryUI>();
                 if (ui == null)
                 {
                     LogCore.Warning($"键值为{key}的UI其预制体未挂载实现了IFactoryUI的接口的脚本");
-                    return;
+                    continue;
                 }
 
                 GameObjectPool newPool = new GameObjectPool(item.Prefab, OnUIReset, OnUIInit, OnUIFirstInit);
@@ -101,8 +119,26 @@ namespace NonsensicalKit.UGUI.UIFactory
         {
             go.SetActive(false);
             IFactoryUI ui = go.GetComponent<IFactoryUI>();
+            if (ui == null)
+            {
+                LogCore.Warning("UIFactory 创建实例缺少 IFactoryUI，已跳过初始化。");
+                return;
+            }
+
             ui.Pool = pool;
-            go.transform.SetParent(m_canvas.transform, false);
+            if (m_canvas == null)
+            {
+                m_canvas = GetComponentInParent<Canvas>(true);
+            }
+
+            if (m_canvas != null)
+            {
+                go.transform.SetParent(m_canvas.transform, false);
+            }
+            else
+            {
+                LogCore.Warning("UIFactory 未找到 Canvas，UI 将保留在默认层级。");
+            }
         }
 
         private void Reset()

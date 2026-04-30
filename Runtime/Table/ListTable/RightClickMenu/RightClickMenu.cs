@@ -13,6 +13,7 @@ namespace NonsensicalKit.UGUI.Table
         [SerializeField] private RectTransform m_topNode;
 
         private bool _isHover;
+        private InputHub _inputHub;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -30,16 +31,24 @@ namespace NonsensicalKit.UGUI.Table
 
             Subscribe<List<RightClickMenuItem>>("OpenRightClickMenu", OnOpen);
             Subscribe("CloseRightClickMenu", OnCloseMenu);
-            InputHub.Instance.OnMouseLeftButtonDown += OnMouse;
-            InputHub.Instance.OnMouseRightButtonDown += OnMouse;
+            _inputHub = InputHub.Instance;
+            if (_inputHub == null)
+            {
+                Debug.LogWarning($"{nameof(RightClickMenu)} 未找到 {nameof(InputHub)} 实例，点击空白自动关闭功能不可用。", this);
+                return;
+            }
+
+            _inputHub.OnMouseLeftButtonDown += OnMouse;
+            _inputHub.OnMouseRightButtonDown += OnMouse;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            InputHub.Instance.OnMouseLeftButtonDown -= OnMouse;
-            InputHub.Instance.OnMouseRightButtonDown -= OnMouse;
+            if (_inputHub == null) return;
+            _inputHub.OnMouseLeftButtonDown -= OnMouse;
+            _inputHub.OnMouseRightButtonDown -= OnMouse;
         }
 
         private void OnMouse()
@@ -64,7 +73,10 @@ namespace NonsensicalKit.UGUI.Table
         protected override void UpdateUI(IEnumerable<RightClickMenuItem> data)
         {
             base.UpdateUI(data);
-            m_topNode.position = Input.mousePosition;
+            if (m_topNode != null)
+            {
+                m_topNode.position = Input.mousePosition;
+            }
         }
     }
 }

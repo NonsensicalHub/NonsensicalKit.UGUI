@@ -185,6 +185,7 @@ namespace NonsensicalKit.UGUI.Media
         private MediaProgressState _progress;
 
         private bool _fakeFrameFlag;
+        private bool _eventsBound;
 
 
         private void Awake()
@@ -200,6 +201,17 @@ namespace NonsensicalKit.UGUI.Media
             if (!m_initOnAwake)
             {
                 Init();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            UnbindVideoPlayerEvents();
+            if (_renderTexture != null)
+            {
+                _renderTexture.Release();
+                Destroy(_renderTexture);
+                _renderTexture = null;
             }
         }
 
@@ -409,13 +421,10 @@ namespace NonsensicalKit.UGUI.Media
 
             _videoPlayer.playOnAwake = false;
             _videoPlayer.sendFrameReadyEvents = true;
-            _videoPlayer.started += OnStarted;
-            _videoPlayer.frameReady += OnNewFrame;
-            _videoPlayer.loopPointReached += OnLoopPoint;
-            _videoPlayer.errorReceived += OnErrorReceived;
             _videoPlayer.renderMode = VideoRenderMode.RenderTexture;
             _videoPlayer.aspectRatio = m_aspectRatio;
             _videoPlayer.audioOutputMode = VideoAudioOutputMode.Direct;
+            BindVideoPlayerEvents();
 
             SetPlayerVolume();
             SetFullScreen();
@@ -423,6 +432,26 @@ namespace NonsensicalKit.UGUI.Media
             SetPlayerMute();
             SetFixed();
             _inited = true;
+        }
+
+        private void BindVideoPlayerEvents()
+        {
+            if (_videoPlayer == null || _eventsBound) return;
+            _videoPlayer.started += OnStarted;
+            _videoPlayer.frameReady += OnNewFrame;
+            _videoPlayer.loopPointReached += OnLoopPoint;
+            _videoPlayer.errorReceived += OnErrorReceived;
+            _eventsBound = true;
+        }
+
+        private void UnbindVideoPlayerEvents()
+        {
+            if (_videoPlayer == null || !_eventsBound) return;
+            _videoPlayer.started -= OnStarted;
+            _videoPlayer.frameReady -= OnNewFrame;
+            _videoPlayer.loopPointReached -= OnLoopPoint;
+            _videoPlayer.errorReceived -= OnErrorReceived;
+            _eventsBound = false;
         }
 
         private void InvokePlayStateChanged()

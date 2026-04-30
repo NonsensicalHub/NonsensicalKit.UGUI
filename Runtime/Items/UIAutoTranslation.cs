@@ -21,28 +21,52 @@ namespace NonsensicalKit.UGUI
 
         private void Awake()
         {
+            if (string.IsNullOrEmpty(m_signal))
+            {
+                Debug.LogWarning($"{nameof(UIAutoTranslation)} 信号名为空，组件不会生效。", this);
+                enabled = false;
+                return;
+            }
+
             Subscribe<float>(m_signal, OnTranslation);
             _rectSelf = GetComponent<RectTransform>();
+            if (_rectSelf == null || m_control == null || m_control.childCount == 0)
+            {
+                Debug.LogWarning($"{nameof(UIAutoTranslation)} 配置无效，需要绑定 control 且至少存在一个子节点。", this);
+                enabled = false;
+                return;
+            }
 
             GameObject go2 = Instantiate(m_control.GetChild(0).gameObject, m_control);
             GameObject go3 = Instantiate(m_control.GetChild(0).gameObject, m_control);
+            if (!go2.TryGetComponent(out RectTransform go2Rect) || !go3.TryGetComponent(out RectTransform go3Rect))
+            {
+                Debug.LogWarning($"{nameof(UIAutoTranslation)} 子节点缺少 RectTransform。", this);
+                enabled = false;
+                return;
+            }
+
             if (m_horizon)
             {
                 _offset = _rectSelf.rect.width;
-                go2.GetComponent<RectTransform>().anchoredPosition -= new Vector2(m_control.rect.width, 0);
-                go3.GetComponent<RectTransform>().anchoredPosition += new Vector2(m_control.rect.width, 0);
+                go2Rect.anchoredPosition -= new Vector2(m_control.rect.width, 0);
+                go3Rect.anchoredPosition += new Vector2(m_control.rect.width, 0);
             }
             else
             {
                 _offset = _rectSelf.rect.height;
-                go2.GetComponent<RectTransform>().anchoredPosition -= new Vector2(0, m_control.rect.height);
-                go3.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, m_control.rect.height);
+                go2Rect.anchoredPosition -= new Vector2(0, m_control.rect.height);
+                go3Rect.anchoredPosition += new Vector2(0, m_control.rect.height);
             }
         }
 
         private void OnTranslation(float value)
         {
             if (value == 0)
+            {
+                return;
+            }
+            if (Mathf.Approximately(_offset, 0f))
             {
                 return;
             }

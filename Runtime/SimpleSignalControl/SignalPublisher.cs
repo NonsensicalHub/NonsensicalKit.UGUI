@@ -37,7 +37,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
                     Publish(m_signal, m_intValue);
                     break;
                 case SignalType.Float:
-                    Publish(m_signal, m_boolValue);
+                    Publish(m_signal, m_floatValue);
                     break;
                 case SignalType.String:
                     Publish(m_signal, m_stringValue);
