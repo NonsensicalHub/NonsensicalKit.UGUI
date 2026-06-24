@@ -13,7 +13,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
     /// </summary>
     public class PrefabFontModifier : EditorWindow
     {
-        [MenuItem("NonsensicalKit/UGUI/预制体字体修改")]
+        [MenuItem("Tools/NonsensicalKit/UGUI/预制体字体修改")]
         public static void ShowWindow()
         {
             GetWindow(typeof(PrefabFontModifier));

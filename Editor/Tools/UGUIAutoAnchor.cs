@@ -9,7 +9,7 @@ namespace NonsensicalKit.UGUI.Editor.Tools
     /// </summary>
     public class UGUIAutoAnchor : EditorWindow
     {
-        [MenuItem("NonsensicalKit/UGUI/自动自适应锚点")]
+        [MenuItem("Tools/NonsensicalKit/UGUI/自动自适应锚点")]
         private static void AddComponentToCrtTargetWithChildren()
         {
             if (Selection.gameObjects.Length == 0)
