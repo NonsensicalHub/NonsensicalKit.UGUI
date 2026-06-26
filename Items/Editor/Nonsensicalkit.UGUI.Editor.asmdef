@@ -1,0 +1,46 @@
+{
+
+    "name": "NonsensicalKit.UGUI.Editor",
+
+    "rootNamespace": "",
+
+    "references": [
+
+        "Unity.TextMeshPro",
+
+        "NonsensicalKit.Core",
+
+        "NonsensicalKit.NaughtyAttributes",
+
+        "NonsensicalKit.Tools",
+
+        "NonsensicalKit.UGUI",
+
+        "NonsensicalKit.UGUI.Items"
+
+    ],
+
+    "includePlatforms": [
+
+        "Editor"
+
+    ],
+
+    "excludePlatforms": [],
+
+    "allowUnsafeCode": false,
+
+    "overrideReferences": false,
+
+    "precompiledReferences": [],
+
+    "autoReferenced": true,
+
+    "defineConstraints": [],
+
+    "versionDefines": [],
+
+    "noEngineReferences": false
+
+}
+

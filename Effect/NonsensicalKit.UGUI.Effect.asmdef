@@ -1,14 +1,10 @@
 {
-    "name": "NonsensicalKit.UGUI.Editor",
-    "rootNamespace": "",
+    "name": "NonsensicalKit.UGUI.Effect",
+    "rootNamespace": "NonsensicalKit.UGUI.Effect",
     "references": [
-        "Unity.TextMeshPro",
-        "NonsensicalKit.UGUI",
         "NonsensicalKit.Core"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

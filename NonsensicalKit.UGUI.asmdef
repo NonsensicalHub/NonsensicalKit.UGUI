@@ -1,0 +1,32 @@
+{
+    "name": "NonsensicalKit.UGUI",
+    "rootNamespace": "",
+    "references": [
+        "NonsensicalKit.Core",
+        "NonsensicalKit.NaughtyAttributes",
+        "NonsensicalKit.Tools",
+        "NonsensicalKit.Tools.ObjectPool",
+        "NonsensicalKit.UGUI.Items",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "1.0.0",
+            "define": "TEXTMESHPRO_PRESENT"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "2.0.0",
+            "define": "TEXTMESHPRO_PRESENT"
+        }
+    ],
+    "noEngineReferences": false
+}

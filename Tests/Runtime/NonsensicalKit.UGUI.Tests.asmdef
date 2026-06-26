@@ -4,7 +4,10 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "NonsensicalKit.UGUI"
+        "NonsensicalKit.UGUI",
+        "NonsensicalKit.UGUI.Items",
+        "NonsensicalKit.UGUI.Effect",
+        "NonsensicalKit.UGUI.UIFactory"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
