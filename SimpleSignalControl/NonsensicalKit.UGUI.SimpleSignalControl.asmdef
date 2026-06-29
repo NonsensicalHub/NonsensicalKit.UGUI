@@ -1,9 +1,10 @@
 {
-    "name": "NonsensicalKit.UGUI.Items",
-    "rootNamespace": "NonsensicalKit.UGUI",
+    "name": "NonsensicalKit.UGUI.SimpleSignalControl",
+    "rootNamespace": "NonsensicalKit.UGUI.SimpleSignalControl",
     "references": [
         "NonsensicalKit.Core.Runtime",
         "NonsensicalKit.NaughtyAttributes",
+        "NonsensicalKit.UGUI.Items",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

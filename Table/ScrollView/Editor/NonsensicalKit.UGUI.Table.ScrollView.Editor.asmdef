@@ -1,10 +1,12 @@
 {
-    "name": "NonsensicalKit.UGUI.Effect",
-    "rootNamespace": "NonsensicalKit.UGUI.Effect",
+    "name": "NonsensicalKit.UGUI.Table.ScrollView.Editor",
+    "rootNamespace": "NonsensicalKit.UGUI.Editor.Table",
     "references": [
-        "NonsensicalKit.Core.Runtime"
+        "NonsensicalKit.UGUI.Table"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

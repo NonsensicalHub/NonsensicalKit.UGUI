@@ -1,46 +1,18 @@
 {
-
-    "name": "NonsensicalKit.UGUI.Editor",
-
+    "name": "NonsensicalKit.UGUI.MiniMap",
     "rootNamespace": "",
-
     "references": [
-
-        "Unity.TextMeshPro",
-
-        "NonsensicalKit.Core",
-
+        "NonsensicalKit.Core.Runtime",
         "NonsensicalKit.NaughtyAttributes",
-
-        "NonsensicalKit.Tools",
-
-        "NonsensicalKit.UGUI",
-
         "NonsensicalKit.UGUI.Items"
-
     ],
-
-    "includePlatforms": [
-
-        "Editor"
-
-    ],
-
+    "includePlatforms": [],
     "excludePlatforms": [],
-
     "allowUnsafeCode": false,
-
     "overrideReferences": false,
-
     "precompiledReferences": [],
-
     "autoReferenced": true,
-
     "defineConstraints": [],
-
     "versionDefines": [],
-
     "noEngineReferences": false
-
 }
-

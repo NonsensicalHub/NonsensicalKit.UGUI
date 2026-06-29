@@ -1,11 +1,9 @@
 {
-    "name": "NonsensicalKit.UGUI",
-    "rootNamespace": "",
+    "name": "NonsensicalKit.UGUI.Table",
+    "rootNamespace": "NonsensicalKit.UGUI.Table",
     "references": [
-        "NonsensicalKit.Core",
+        "NonsensicalKit.Core.Runtime",
         "NonsensicalKit.NaughtyAttributes",
-        "NonsensicalKit.Tools",
-        "NonsensicalKit.Tools.ObjectPool",
         "NonsensicalKit.UGUI.Items",
         "Unity.TextMeshPro"
     ],

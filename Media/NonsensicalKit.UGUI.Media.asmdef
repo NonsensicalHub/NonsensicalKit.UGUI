@@ -1,9 +1,10 @@
 {
-    "name": "NonsensicalKit.UGUI.Items",
-    "rootNamespace": "NonsensicalKit.UGUI",
+    "name": "NonsensicalKit.UGUI.Media",
+    "rootNamespace": "NonsensicalKit.UGUI.Media",
     "references": [
         "NonsensicalKit.Core.Runtime",
         "NonsensicalKit.NaughtyAttributes",
+        "NonsensicalKit.UGUI.Items",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

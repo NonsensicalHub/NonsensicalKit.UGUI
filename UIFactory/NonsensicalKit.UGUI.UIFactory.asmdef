@@ -2,9 +2,8 @@
     "name": "NonsensicalKit.UGUI.UIFactory",
     "rootNamespace": "NonsensicalKit.UGUI.UIFactory",
     "references": [
-        "NonsensicalKit.Core",
-        "NonsensicalKit.Tools",
-        "NonsensicalKit.Tools.ObjectPool",
+        "NonsensicalKit.Core.Runtime",
+        "NonsensicalKit.UGUI.Items",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

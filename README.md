@@ -1,6 +1,7 @@
 # NonsensicalKit.UGUI
 
 `com.nonsensicallab.nonsensicalkit.ugui` 提供基于 Unity UGUI 的高复用 UI 组件与工具集合，用于快速搭建列表、弹窗、页面联动、媒体控制与小地图等常见界面能力。
+需要UGUI制作UI时导入这个包。
 
 ## 文档说明
 

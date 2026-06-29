@@ -1,3 +1,4 @@
+using NonsensicalKit.UGUI;
 using UnityEngine;
 
 namespace NonsensicalKit.UGUI.SimpleSignalControl

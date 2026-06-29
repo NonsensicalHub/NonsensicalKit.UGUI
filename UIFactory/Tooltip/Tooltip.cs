@@ -1,5 +1,6 @@
 using NonsensicalKit.Core.Log;
 using NonsensicalKit.Tools.ObjectPool;
+using NonsensicalKit.UGUI;
 using UnityEngine;
 #if TEXTMESHPRO_PRESENT
 using TMPro;

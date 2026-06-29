@@ -1,9 +1,9 @@
 {
-    "name": "NonsensicalKit.UGUI.Items",
-    "rootNamespace": "NonsensicalKit.UGUI",
+    "name": "NonsensicalKit.UGUI.VisualLogicGraph",
+    "rootNamespace": "NonsensicalKit.UGUI.VisualLogicGraph",
     "references": [
         "NonsensicalKit.Core.Runtime",
-        "NonsensicalKit.NaughtyAttributes",
+        "NonsensicalKit.UGUI.Table",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],

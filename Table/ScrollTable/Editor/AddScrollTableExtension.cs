@@ -1,3 +1,4 @@
+using NonsensicalKit.UGUI;
 using NonsensicalKit.UGUI.Table;
 using UnityEditor;
 using UnityEngine;
