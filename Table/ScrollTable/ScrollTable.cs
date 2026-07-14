@@ -479,22 +479,31 @@ namespace NonsensicalKit.UGUI.Table
                 return;
             }
 
+            int maxColumn = m_columnWidth.Count - 1;
+            int maxRow = m_rowHeight.Count - 1;
+            if (maxColumn < 0 || maxRow < 0)
+            {
+                return;
+            }
+
             var newLeftTopCell = GetLeftTopCell();
             int right = newLeftTopCell.x + 1;
             int bottom = newLeftTopCell.y + 1;
-            while (ShouldCellDisplayInView(right, bottom))
+            while (right <= maxColumn && ShouldCellDisplayInView(right, bottom))
             {
                 right++;
             }
 
             right--;
-            while (ShouldCellDisplayInView(right, bottom))
+            while (bottom <= maxRow && ShouldCellDisplayInView(right, bottom))
             {
                 bottom++;
             }
 
             bottom--;
-            var newRightBottomCell = new Vector2Int(right, bottom);
+            var newRightBottomCell = new Vector2Int(
+                Math.Clamp(right, newLeftTopCell.x, maxColumn),
+                Math.Clamp(bottom, newLeftTopCell.y, maxRow));
 
             if (newLeftTopCell != _leftTopCell || newRightBottomCell != _rightBottomCell)
             {
@@ -510,10 +519,15 @@ namespace NonsensicalKit.UGUI.Table
         /// <returns></returns>
         private Vector2Int GetLeftTopCell()
         {
+            int maxColumn = m_columnWidth.Count - 1;
+            int maxRow = m_rowHeight.Count - 1;
             var x = -content.anchoredPosition.x;
 
             float maxX = _cellX[^1];
-            int crtX = Math.Clamp((int)(x / maxX * _cellX.Length), 0, _cellX.Length - 1);
+            // _cellX 长度为列数+1（包含右边界），合法单元格列索引上限为 Count-1
+            int crtX = maxX <= 0
+                ? 0
+                : Math.Clamp((int)(x / maxX * maxColumn), 0, maxColumn);
 
             bool flag;
             do
@@ -531,7 +545,7 @@ namespace NonsensicalKit.UGUI.Table
                 }
                 else
                 {
-                    if (m_columnWidth.Count <= crtX + 1)
+                    if (crtX >= maxColumn)
                     {
                         break;
                     }
@@ -547,7 +561,9 @@ namespace NonsensicalKit.UGUI.Table
 
             float y = content.anchoredPosition.y;
             float maxY = _cellY[^1];
-            int crtY = Math.Clamp((int)(y / maxY * _cellY.Length), 0, _cellY.Length - 1);
+            int crtY = maxY <= 0
+                ? 0
+                : Math.Clamp((int)(y / maxY * maxRow), 0, maxRow);
 
             int lastY;
             do
@@ -564,7 +580,7 @@ namespace NonsensicalKit.UGUI.Table
                 }
                 else
                 {
-                    if (m_rowHeight.Count <= crtY + 1)
+                    if (crtY >= maxRow)
                     {
                         break;
                     }
@@ -577,7 +593,7 @@ namespace NonsensicalKit.UGUI.Table
             }
             while (lastY != crtY);
 
-            return new Vector2Int(crtX, crtY);
+            return new Vector2Int(Math.Clamp(crtX, 0, maxColumn), Math.Clamp(crtY, 0, maxRow));
         }
 
         /// <summary>
