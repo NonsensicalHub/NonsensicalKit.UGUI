@@ -31,6 +31,11 @@ namespace NonsensicalKit.UGUI
         /// </summary>
         [SerializeField] private bool m_hideFarWhenInactive;
 
+        [Header("不可信时段")]
+        [SerializeField] private bool m_useUntrustedPeriod = false;
+        [Tooltip("启用后在该时长内强制刷新跟随；每次禁用会重置计时")]
+        [SerializeField, Min(0f)] private float m_untrustedDuration = 0.5f;
+
         public bool Back { get; private set; }
         public Vector2 Offset { get; set; }
 
@@ -49,6 +54,7 @@ namespace NonsensicalKit.UGUI
         private bool _needRefresh;
         private bool _lastTargetActive = true;
         private int _skip = 6;
+        private float _untrustedEndTime = -1f;
 
         private void Awake()
         {
@@ -58,21 +64,52 @@ namespace NonsensicalKit.UGUI
         private void OnEnable()
         {
             Canvas.willRenderCanvases += Follow;
+            BeginUntrustedPeriod();
         }
 
         private void OnDisable()
         {
             Canvas.willRenderCanvases -= Follow;
+            // 每次禁用重置不可信时间，下次启用重新起算
+            ResetUntrustedPeriod();
+            _needRefresh = true;
+            _skip = 6;
+        }
+
+        private void BeginUntrustedPeriod()
+        {
+            if (!m_useUntrustedPeriod || m_untrustedDuration <= 0f)
+            {
+                _untrustedEndTime = -1f;
+                return;
+            }
+
+            _untrustedEndTime = Time.unscaledTime + m_untrustedDuration;
+            _needRefresh = true;
+        }
+
+        private void ResetUntrustedPeriod()
+        {
+            _untrustedEndTime = -1f;
+        }
+
+        private bool IsInUntrustedPeriod()
+        {
+            return m_useUntrustedPeriod &&
+                   m_untrustedDuration > 0f &&
+                   _untrustedEndTime > 0f &&
+                   Time.unscaledTime < _untrustedEndTime;
         }
 
         private void Follow()
         {
-            if (_skip>0)
+            if (_skip > 0)
             {
                 //一开始有可能遇到Canvas在初始化，等待数帧后再跟随
                 _skip--;
                 return;
             }
+
             if (m_mainCamera == null)
             {
                 m_mainCamera = Camera.main;
@@ -82,67 +119,76 @@ namespace NonsensicalKit.UGUI
                 }
             }
 
-            if (m_target != null)
+            if (m_target == null)
             {
-                bool targetActive = m_target.gameObject.activeInHierarchy;
-                if (m_hideFarWhenInactive && !targetActive)
+                return;
+            }
+
+            bool targetActive = m_target.gameObject.activeInHierarchy;
+            if (m_hideFarWhenInactive && !targetActive)
+            {
+                HideFarAway();
+                Back = true;
+                _lastTargetActive = false;
+                return;
+            }
+
+            if (targetActive != _lastTargetActive)
+            {
+                _needRefresh = true;
+                _lastTargetActive = targetActive;
+            }
+
+            _targetPosition = m_target.position;
+            _cameraPosition = m_mainCamera.transform.position;
+            _cameraRotation = m_mainCamera.transform.rotation;
+
+            // 不可信时段内始终刷新；之外仅在目标/相机变化时刷新
+            if (IsInUntrustedPeriod() ||
+                _targetPosition != _lastTargetPostion ||
+                _cameraPosition != _lastCameraPostion ||
+                _cameraRotation != _lastCameraRotation)
+            {
+                _needRefresh = true;
+            }
+
+            if (!_needRefresh)
+            {
+                return;
+            }
+
+            if (m_scaleByDistance && m_normalDistance != 0)
+            {
+                float dis = Vector3.Distance(m_target.position, m_mainCamera.transform.position);
+                if (dis > 1f)
                 {
-                    HideFarAway();
-                    Back = true;
-                    _lastTargetActive = false;
-                    return;
-                }
-
-                if (targetActive != _lastTargetActive)
-                {
-                    _needRefresh = true;
-                    _lastTargetActive = targetActive;
-                }
-
-                _targetPosition = m_target.position;
-                _cameraPosition = m_mainCamera.transform.position;
-                _cameraRotation = m_mainCamera.transform.rotation;
-                if (_targetPosition != _lastTargetPostion || _cameraPosition != _lastCameraPostion ||
-                    _cameraRotation != _lastCameraRotation)
-                {
-                    _needRefresh = true;
-                }
-
-                if (_needRefresh)
-                {
-                    if (m_scaleByDistance && m_normalDistance != 0)
-                    {
-                        float dis = Vector3.Distance(m_target.position, m_mainCamera.transform.position);
-                        if (dis > 1f)
-                        {
-                            transform.localScale = Vector3.one * ((m_normalDistance / dis) * m_scale);
-                        }
-                    }
-                    else
-                    {
-                        transform.localScale = Vector3.one * m_scale;
-                    }
-
-                    Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position) +
-                                  new Vector3(Offset.x, Offset.y, 0);
-                    Back = pos.z < 0;
-                    if (Back)
-                    {
-                        HideFarAway();
-                    }
-                    else if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos,
-                                 m_renderCamera, out Vector3 worldPoint))
-                    {
-                        transform.position = worldPoint;
-                    }
-
-                    _lastTargetPostion = _targetPosition;
-                    _lastCameraPostion = _cameraPosition;
-                    _lastCameraRotation = _cameraRotation;
-
-                    _needRefresh = false;
+                    transform.localScale = Vector3.one * ((m_normalDistance / dis) * m_scale);
                 }
             }
+            else
+            {
+                transform.localScale = Vector3.one * m_scale;
+            }
+
+            Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position) +
+                          new Vector3(Offset.x, Offset.y, 0);
+            Back = pos.z < 0;
+            if (Back)
+            {
+                HideFarAway();
+            }
+            else if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos,
+                         m_renderCamera, out Vector3 worldPoint))
+            {
+                transform.position = worldPoint;
+            }
+
+            _lastTargetPostion = _targetPosition;
+            _lastCameraPostion = _cameraPosition;
+            _lastCameraRotation = _cameraRotation;
+
+            // 不可信时段内保持需要刷新；结束后才允许短路
+            _needRefresh = IsInUntrustedPeriod();
         }
 
         private void HideFarAway()
