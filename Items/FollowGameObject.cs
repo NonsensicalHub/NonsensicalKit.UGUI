@@ -26,8 +26,15 @@ namespace NonsensicalKit.UGUI
         [SerializeField] [ShowIf(nameof(m_scaleByDistance))]
         private float m_normalDistance = 1;
 
+        /// <summary>
+        /// 开启后，当 target 未激活时将自身移到极远处隐藏
+        /// </summary>
+        [SerializeField] private bool m_hideFarWhenInactive;
+
         public bool Back { get; private set; }
         public Vector2 Offset { get; set; }
+
+        private static readonly Vector3 FarAwayPosition = new Vector3(-99999f, -99999f, -10f);
 
         private RectTransform _rectTransformSelf;
 
@@ -40,6 +47,7 @@ namespace NonsensicalKit.UGUI
         private Quaternion _cameraRotation;
 
         private bool _needRefresh;
+        private bool _lastTargetActive = true;
         private int _skip = 6;
 
         private void Awake()
@@ -76,6 +84,21 @@ namespace NonsensicalKit.UGUI
 
             if (m_target != null)
             {
+                bool targetActive = m_target.gameObject.activeInHierarchy;
+                if (m_hideFarWhenInactive && !targetActive)
+                {
+                    HideFarAway();
+                    Back = true;
+                    _lastTargetActive = false;
+                    return;
+                }
+
+                if (targetActive != _lastTargetActive)
+                {
+                    _needRefresh = true;
+                    _lastTargetActive = targetActive;
+                }
+
                 _targetPosition = m_target.position;
                 _cameraPosition = m_mainCamera.transform.position;
                 _cameraRotation = m_mainCamera.transform.rotation;
@@ -103,13 +126,14 @@ namespace NonsensicalKit.UGUI
                     Vector3 pos = m_mainCamera.WorldToScreenPoint(m_target.position) +
                                   new Vector3(Offset.x, Offset.y, 0);
                     Back = pos.z < 0;
-                    if (!Back)
+                    if (Back)
                     {
-                        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos,
-                                m_renderCamera, out Vector3 worldPoint))
-                        {
-                            transform.position = worldPoint;
-                        }
+                        HideFarAway();
+                    }
+                    else if (RectTransformUtility.ScreenPointToWorldPointInRectangle(_rectTransformSelf, pos,
+                                 m_renderCamera, out Vector3 worldPoint))
+                    {
+                        transform.position = worldPoint;
                     }
 
                     _lastTargetPostion = _targetPosition;
@@ -119,6 +143,11 @@ namespace NonsensicalKit.UGUI
                     _needRefresh = false;
                 }
             }
+        }
+
+        private void HideFarAway()
+        {
+            transform.position = FarAwayPosition;
         }
 
         public void SetTarget(GameObject newTarget)

@@ -160,6 +160,7 @@ namespace NonsensicalKit.UGUI.Table
             _tableData = tableData;
             m_columnWidth = columnWidth ?? new List<float> { { m_defaultWidth, tableData.m_Length0 } };
             m_rowHeight = rowHeight ?? new List<float> { { m_defaultHeight, tableData.m_Length1 } };
+            EnsureConsistentSizes();
             ReSize();
         }
 
@@ -224,7 +225,8 @@ namespace NonsensicalKit.UGUI.Table
         /// <param name="heights"></param>
         public void SetRowHeights(List<float> heights)
         {
-            m_rowHeight = heights;
+            m_rowHeight = heights ?? new List<float>();
+            EnsureConsistentSizes();
             ReSize();
         }
 
@@ -258,7 +260,8 @@ namespace NonsensicalKit.UGUI.Table
         /// <param name="widths"></param>
         public void SetColumnWidths(List<float> widths)
         {
-            m_columnWidth = widths;
+            m_columnWidth = widths ?? new List<float>();
+            EnsureConsistentSizes();
             ReSize();
         }
 
@@ -364,7 +367,16 @@ namespace NonsensicalKit.UGUI.Table
         }
 
         /// <summary>
-        /// 继承方法，在Content被ScrollRect组件修改位置时会被调用
+        /// 拖拽/惯性滚动时 ScrollRect 会走此路径，需同步刷新可见单元格
+        /// </summary>
+        protected override void SetContentAnchoredPosition(Vector2 position)
+        {
+            base.SetContentAnchoredPosition(position);
+            UpdateTable();
+        }
+
+        /// <summary>
+        /// 通过滚动条或设置 normalizedPosition 时调用
         /// </summary>
         /// <param name="value"></param>
         /// <param name="axis"></param>
@@ -372,6 +384,39 @@ namespace NonsensicalKit.UGUI.Table
         {
             base.SetNormalizedPosition(value, axis);
             UpdateTable();
+        }
+
+        /// <summary>
+        /// 保证 _tableData 与列宽/行高列表尺寸一致，避免 UpdateContent 越界
+        /// </summary>
+        private void EnsureConsistentSizes()
+        {
+            m_columnWidth ??= new List<float>();
+            m_rowHeight ??= new List<float>();
+
+            bool hasData = _tableData.m_Array != null;
+            if (hasData)
+            {
+                AlignListCount(m_columnWidth, _tableData.m_Length0, m_defaultWidth);
+                AlignListCount(m_rowHeight, _tableData.m_Length1, m_defaultHeight);
+            }
+            else if (m_columnWidth.Count > 0 && m_rowHeight.Count > 0)
+            {
+                _tableData = new Array2<string>(m_columnWidth.Count, m_rowHeight.Count);
+            }
+        }
+
+        private static void AlignListCount(List<float> list, int count, float fillValue)
+        {
+            while (list.Count < count)
+            {
+                list.Add(fillValue);
+            }
+
+            while (list.Count > count)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
         }
 
         private void InitPool()
@@ -393,9 +438,9 @@ namespace NonsensicalKit.UGUI.Table
                 }
             }
 
+            RowImagePoolSetting = new List<PoolSetting<ScrollTableImage>>();
             if (m_rowImagePrefabs != null)
             {
-                RowImagePoolSetting = new List<PoolSetting<ScrollTableImage>>();
                 foreach (var rowPrefab in m_rowImagePrefabs)
                 {
                     RowImagePoolSetting.Add(new PoolSetting<ScrollTableImage>(this, rowPrefab, m_rowParent));
@@ -425,6 +470,8 @@ namespace NonsensicalKit.UGUI.Table
         /// </summary>
         private void DoResize()
         {
+            EnsureConsistentSizes();
+
             if (m_rowHeight.Count == 0 || m_columnWidth.Count == 0)
             {
                 return;
@@ -443,8 +490,10 @@ namespace NonsensicalKit.UGUI.Table
 
             _cells = new Array2<ScrollTableCell>(m_columnWidth.Count, m_rowHeight.Count);
 
-            _columns = new Array2<ScrollTableImage>(m_columnImagePrefabs.Length, m_columnWidth.Count + 1); //框线需要多算一个
-            _rows = new Array2<ScrollTableImage>(m_rowImagePrefabs.Length, m_rowHeight.Count + 1);
+            int columnImageCount = m_columnImagePrefabs?.Length ?? 0;
+            int rowImageCount = m_rowImagePrefabs?.Length ?? 0;
+            _columns = new Array2<ScrollTableImage>(columnImageCount, m_columnWidth.Count + 1); //框线需要多算一个
+            _rows = new Array2<ScrollTableImage>(rowImageCount, m_rowHeight.Count + 1);
 
             _cellX = new float[m_columnWidth.Count + 1];
             _cellY = new float[m_rowHeight.Count + 1];
@@ -486,24 +535,7 @@ namespace NonsensicalKit.UGUI.Table
                 return;
             }
 
-            var newLeftTopCell = GetLeftTopCell();
-            int right = newLeftTopCell.x + 1;
-            int bottom = newLeftTopCell.y + 1;
-            while (right <= maxColumn && ShouldCellDisplayInView(right, bottom))
-            {
-                right++;
-            }
-
-            right--;
-            while (bottom <= maxRow && ShouldCellDisplayInView(right, bottom))
-            {
-                bottom++;
-            }
-
-            bottom--;
-            var newRightBottomCell = new Vector2Int(
-                Math.Clamp(right, newLeftTopCell.x, maxColumn),
-                Math.Clamp(bottom, newLeftTopCell.y, maxRow));
+            GetVisibleCellRange(maxColumn, maxRow, out var newLeftTopCell, out var newRightBottomCell);
 
             if (newLeftTopCell != _leftTopCell || newRightBottomCell != _rightBottomCell)
             {
@@ -511,6 +543,65 @@ namespace NonsensicalKit.UGUI.Table
                 _leftTopCell = newLeftTopCell;
                 _rightBottomCell = newRightBottomCell;
             }
+        }
+
+        /// <summary>
+        /// 按行列轴独立探测可见范围，避免以某一格两轴同时判定时在边框间隙漏扩
+        /// </summary>
+        private void GetVisibleCellRange(int maxColumn, int maxRow, out Vector2Int leftTop, out Vector2Int rightBottom)
+        {
+            var estimate = GetLeftTopCell();
+
+            int top = estimate.y;
+            while (top > 0 && ShouldRowDisplayInView(top - 1))
+            {
+                top--;
+            }
+
+            while (top < maxRow && !ShouldRowDisplayInView(top))
+            {
+                top++;
+            }
+
+            if (!ShouldRowDisplayInView(top))
+            {
+                leftTop = estimate;
+                rightBottom = estimate;
+                return;
+            }
+
+            int bottom = top;
+            while (bottom < maxRow && ShouldRowDisplayInView(bottom + 1))
+            {
+                bottom++;
+            }
+
+            int left = estimate.x;
+            while (left > 0 && ShouldColumnDisplayInView(left - 1))
+            {
+                left--;
+            }
+
+            while (left < maxColumn && !ShouldColumnDisplayInView(left))
+            {
+                left++;
+            }
+
+            if (!ShouldColumnDisplayInView(left))
+            {
+                leftTop = new Vector2Int(estimate.x, top);
+                rightBottom = new Vector2Int(estimate.x, bottom);
+                return;
+            }
+
+            int right = left;
+            while (right < maxColumn && ShouldColumnDisplayInView(right + 1))
+            {
+                right++;
+            }
+
+            leftTop = new Vector2Int(left, top);
+            rightBottom = new Vector2Int(right, bottom);
         }
 
         /// <summary>
@@ -631,7 +722,13 @@ namespace NonsensicalKit.UGUI.Table
                         _cells[x, y] = CellPoolSetting.Pool.New();
                     }
 
-                    _cells[x, y].SetState(_tableData[x, y], x, y);
+                    string cellText = null;
+                    if (_tableData.m_Array != null && x < _tableData.m_Length0 && y < _tableData.m_Length1)
+                    {
+                        cellText = _tableData[x, y];
+                    }
+
+                    _cells[x, y].SetState(cellText, x, y);
                 }
             }
 
@@ -707,6 +804,54 @@ namespace NonsensicalKit.UGUI.Table
         }
 
         /// <summary>
+        /// 单元格布局底边（含与下一格之间的边框），与 GetLeftTopCell 使用的 _cellY[i+1] 对齐，
+        /// 避免视口落在内容底边与下一格顶边之间的间隙时判定失败、无法向下扩展。
+        /// </summary>
+        private float GetCellLayoutBottom(int rowIndex)
+        {
+            if (rowIndex + 1 < _cellY.Length)
+            {
+                return _cellY[rowIndex + 1];
+            }
+
+            return _cellY[rowIndex] + m_rowHeight[rowIndex];
+        }
+
+        private float GetCellLayoutRight(int columnIndex)
+        {
+            if (columnIndex + 1 < _cellX.Length)
+            {
+                return _cellX[columnIndex + 1];
+            }
+
+            return _cellX[columnIndex] + m_columnWidth[columnIndex];
+        }
+
+        private bool ShouldRowDisplayInView(int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= m_rowHeight.Count)
+            {
+                return false;
+            }
+
+            var viewTop = content.anchoredPosition.y;
+            var viewBottom = viewTop + viewRect.rect.height;
+            return GetCellLayoutBottom(rowIndex) > viewTop && _cellY[rowIndex] < viewBottom;
+        }
+
+        private bool ShouldColumnDisplayInView(int columnIndex)
+        {
+            if (columnIndex < 0 || columnIndex >= m_columnWidth.Count)
+            {
+                return false;
+            }
+
+            var viewLeft = -content.anchoredPosition.x;
+            var viewRight = viewLeft + viewRect.rect.width;
+            return GetCellLayoutRight(columnIndex) > viewLeft && _cellX[columnIndex] < viewRight;
+        }
+
+        /// <summary>
         /// 判断单元格是否应当显示
         /// </summary>
         /// <param name="columnIndex"></param>
@@ -714,29 +859,7 @@ namespace NonsensicalKit.UGUI.Table
         /// <returns></returns>
         private bool ShouldCellDisplayInView(int columnIndex, int rowIndex)
         {
-            if (columnIndex < 0 || rowIndex < 0 || columnIndex >= m_columnWidth.Count || rowIndex >= m_rowHeight.Count)
-            {
-                return false;
-            }
-
-            var cellLeft = _cellX[columnIndex];
-            var cellRight = _cellX[columnIndex] + m_columnWidth[columnIndex];
-            var cellTop = _cellY[rowIndex];
-            var cellBottom = _cellY[rowIndex] + m_rowHeight[rowIndex];
-            var viewLeft = -content.anchoredPosition.x;
-            var viewRight = -content.anchoredPosition.x + viewport.rect.width;
-            var viewTop = content.anchoredPosition.y;
-            var viewBottom = content.anchoredPosition.y + viewport.rect.height;
-
-            if (cellRight > viewLeft
-                && cellBottom > viewTop
-                && cellLeft < viewRight
-                && cellTop < viewBottom)
-            {
-                return true;
-            }
-
-            return false;
+            return ShouldColumnDisplayInView(columnIndex) && ShouldRowDisplayInView(rowIndex);
         }
     }
 }
