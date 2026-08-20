@@ -41,6 +41,11 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         {
             m_signal = newSignal;
         }
+        
+        public string GetSignal()
+        {
+            return m_signal;
+        }
 
         private void SendSignal()
         {
