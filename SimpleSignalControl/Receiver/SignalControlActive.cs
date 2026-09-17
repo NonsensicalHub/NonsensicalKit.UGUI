@@ -15,6 +15,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         [SerializeField] private string m_signal;
         [SerializeField][ShowIf("m_twoSignalControl")] private string m_signal2;
         [SerializeField] private bool m_defaultState = true;
+        [SerializeField][HideIf("m_twoSignalControl")] private bool m_invert;
 
         private void Reset()
         {
@@ -37,7 +38,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
                 Subscribe(m_signal, Switch);
             }
 
-            Switch(m_defaultState);
+            m_target.SetActive(m_defaultState);
         }
 
         private void Switch()
@@ -47,7 +48,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
 
         private void Switch(bool state)
         {
-            m_target.SetActive(state);
+            m_target.SetActive(m_invert ? !state : state);
         }
 
         private void Show()

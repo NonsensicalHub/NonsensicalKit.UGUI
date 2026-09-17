@@ -9,6 +9,7 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
         [SerializeField] private string m_hideSignal;
         [SerializeField] private string m_switchSignal;
         [SerializeField] private string m_changeSignal;
+        [SerializeField] private bool m_invert;
 
         protected override void Awake()
         {
@@ -16,7 +17,12 @@ namespace NonsensicalKit.UGUI.SimpleSignalControl
             if (!string.IsNullOrEmpty(m_showSignal)) Subscribe(m_showSignal, OpenSelf);
             if (!string.IsNullOrEmpty(m_hideSignal)) Subscribe(m_hideSignal, CloseSelf);
             if (!string.IsNullOrEmpty(m_switchSignal)) Subscribe(m_switchSignal, SwitchSelf);
-            if (!string.IsNullOrEmpty(m_changeSignal)) Subscribe<bool>(m_changeSignal, ChangeSelf);
+            if (!string.IsNullOrEmpty(m_changeSignal)) Subscribe<bool>(m_changeSignal, OnChange);
+        }
+
+        private void OnChange(bool value)
+        {
+            ChangeSelf(m_invert ? !value : value);
         }
     }
 }
