@@ -121,6 +121,12 @@ namespace NonsensicalKit.UGUI
 
             if (m_target == null)
             {
+                if (m_hideFarWhenInactive)
+                {
+                    HideFarAway();
+                    Back = true;
+                    _lastTargetActive = false;
+                }
                 return;
             }
 
