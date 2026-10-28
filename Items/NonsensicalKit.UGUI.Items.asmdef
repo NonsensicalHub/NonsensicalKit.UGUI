@@ -3,6 +3,8 @@
     "rootNamespace": "NonsensicalKit.UGUI",
     "references": [
         "NonsensicalKit.Core.Runtime",
+        "NonsensicalKit.Setting.Integration",
+        "NonsensicalKit.Setting",
         "NonsensicalKit.NaughtyAttributes",
         "Unity.TextMeshPro"
     ],
